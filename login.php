@@ -10,6 +10,26 @@ if ($conn->connect_error) {
 	die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
 }
 
+// Check if user timed out
+$sql = 'SELECT lastActivity FROM session WHERE sessionId = "'.session_id().'";';
+$result = $conn->query($sql);
+// No need to check query result. If query failed, the user is not logged in
+$row = mysqli_fetch_assoc($result);
+if ((($row['lastActivity'] + $userTimeout) < time())) {
+  // Logout the user
+  session_unset();
+	mysqli_free_result($result);
+  $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
+  $conn->query($sql);
+  // No need to check result here as well
+}
+
+// Check if user is logged in
+if ($_SESSION['logged_in'] == 1) {
+	header('Location: index.php');
+	die();
+}
+
 // Check if form is submitted
 if ($_POST['submit'] == "submit") {
 
@@ -25,9 +45,10 @@ if ($_POST['submit'] == "submit") {
 
   $stmt->bind_result($qStudentId,$qHash);
   $stmt->fetch();
+	$stmt->free_result();
 
   // Check if the inputted studentId is correct / exists
-  if (!$qStudentId == $_POST['studentId']) {
+  if ($qStudentId !== $_POST['studentId']) {
     die('Student ID or password is incorrect!');
   }
 
@@ -38,21 +59,19 @@ if ($_POST['submit'] == "submit") {
     // regenerate session id on Login
     session_regenerate_id();
 
-    // free previous query result
-    $stmt->free_result();
-
     // Update database (update before setting variable. If update failed (maybe duplicate session id), user need to retry and generate new session id)
-    $sql = 'INSERT INTO session VALUES ("'.session_id().'", "'.$qStudentId.'", '.time().');';
-    echo $sql;
-    $result = $conn->query($sql);
+    $stmt = $conn->prepare('INSERT INTO session VALUES ("'.session_id().'", ?, '.time().');');
+    $stmt->bind_param("s",$qStudentId);
+    $result = $stmt->execute();
     if (!$result) {
-      die('Query failed! Please retry<br>'.$conn->error);
+      die('Query failed! Please retry');
     }
     // Set session variable to indicate logged in
-    // $_SESSION['logged_in'] = 1;
+    $_SESSION['logged_in'] = 1;
 
-    // Update last activity
-    // $_SESSION['last_activity'] = time();
+		header('Location: index.php');
+		die();
+
 
   } else {
     // Login failed
