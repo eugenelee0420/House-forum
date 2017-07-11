@@ -39,7 +39,6 @@ if (!$result) {
   die('Query failed');
 }
 
-echo "Hi<br>";
 echo "Session ID: ".session_id()."<br>";
 
 
