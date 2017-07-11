@@ -10,6 +10,26 @@ if ($conn->connect_error) {
 	die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
 }
 
+// Check if user timed out
+$sql = 'SELECT lastActivity FROM session WHERE sessionId = "'.session_id().'";';
+$result = $conn->query($sql);
+// No need to check query result. If query failed, the user is not logged in
+$row = mysqli_fetch_assoc($result);
+if ((($row['lastActivity'] + $userTimeout) < time())) {
+  // Logout the user
+  session_unset();
+	mysqli_free_result($result);
+  $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
+  $conn->query($sql);
+  // No need to check result here as well
+}
+
+// Check if user is logged in
+if ($_SESSION['logged_in'] == 1) {
+	header('Location: index.php');
+	die();
+}
+
 // Check if form is submitted
 if ($_POST['submit'] == "submit") {
 
@@ -49,8 +69,9 @@ if ($_POST['submit'] == "submit") {
     // Set session variable to indicate logged in
     $_SESSION['logged_in'] = 1;
 
-    // Update last activity
-    $_SESSION['last_activity'] = time();
+		header('Location: index.php');
+		die();
+
 
   } else {
     // Login failed
