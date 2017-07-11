@@ -28,7 +28,7 @@ if ($_POST['submit'] == "submit") {
 	$stmt->free_result();
 
   // Check if the inputted studentId is correct / exists
-  if (!$qStudentId == $_POST['studentId']) {
+  if ($qStudentId !== $_POST['studentId']) {
     die('Student ID or password is incorrect!');
   }
 
