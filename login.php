@@ -1,7 +1,8 @@
 <?php
 // login page
-
 require "cfg.php";
+
+session_start();
 
 // Connect to database
 $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
@@ -14,8 +15,51 @@ if ($_POST['submit'] == "submit") {
 
   // Login Check
   $stmt = $conn->prepare('SELECT studentId, hash FROM users WHERE studentId = ? ');
+  $stmt->bind_param("s",$_POST['studentId']);
+  $result = $stmt->execute();
 
-}
+  // Check query result
+  if (!$result) {
+    die('Query failed');
+  }
+
+  $stmt->bind_result($qStudentId,$qHash);
+  $stmt->fetch();
+
+  // Check if the inputted studentId is correct / exists
+  if (!$qStudentId == $_POST['studentId']) {
+    die('Student ID or password is incorrect!');
+  }
+
+  // Check password
+  if (password_verify($_POST['pass'],$qHash)) {
+
+    // Login success
+    // regenerate session id on Login
+    session_regenerate_id();
+
+    // free previous query result
+    $stmt->free_result();
+
+    // Update database (update before setting variable. If update failed (maybe duplicate session id), user need to retry and generate new session id)
+    $sql = 'INSERT INTO session VALUES ("'.session_id().'", "'.$qStudentId.'", '.time().');';
+    echo $sql;
+    $result = $conn->query($sql);
+    if (!$result) {
+      die('Query failed! Please retry<br>'.$conn->error);
+    }
+    // Set session variable to indicate logged in
+    // $_SESSION['logged_in'] = 1;
+
+    // Update last activity
+    // $_SESSION['last_activity'] = time();
+
+  } else {
+    // Login failed
+    die('Student ID or password is incorrect!');
+  }
+
+// If form was not submitted, display the form (html)
 
 } else {
 
