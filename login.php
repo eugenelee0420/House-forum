@@ -13,7 +13,7 @@ if ($conn->connect_error) {
 if ($_POST['submit'] == "submit") {
 
   // Login Check
-  $stmt=$conn->prepare('SELECT userName, hash ')
+  $stmt = $conn->prepare('SELECT studentId, hash FROM users WHERE studentId = ? ');
 
 }
 
