@@ -17,6 +17,7 @@ if ($_POST['submit'] == "submit") {
 
 }
 
+} else {
 
 ?>
 
@@ -88,3 +89,8 @@ $(document).ready(function() {
 
 </body>
 </html>
+
+<?php
+// Close if statement
+}
+?>
