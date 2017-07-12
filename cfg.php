@@ -8,6 +8,6 @@ $dbPass = "eugenelee";
 $dbName = "id214994_ict";
 
 // Idle time before user is logged out automatically (seconds)
-$userTimeout = 60;
+$userTimeout = 600;
 
 ?>
