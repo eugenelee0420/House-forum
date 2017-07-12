@@ -87,7 +87,7 @@ $(document).ready(function() {
 				<ul id="slide-out" class="side-nav">
 					<li><div class="user-view">
 						<div class="background">
-							<img src="images/office.jpg">
+							<img src="https://puu.sh/vutY0.jpg">
 						</div>
 						<a href="profile.php"><img class="circle" src="https://puu.sh/wFuFj.jpg"></a>
 						<span class="white-text name"><?php getUserName(session_id()); ?></span>
