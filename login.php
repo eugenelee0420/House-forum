@@ -101,13 +101,6 @@ if ($_POST['submit'] == "submit") {
 <!-- Compiled and minified JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
 
-<!-- Initialize mobile sidenav-->
-<script>
-$(document).ready(function() {
-		$(".button-collapse").sideNav();
-  });
-</script>
-
 <nav>
   <div class="nav-wrapper purple lighten-2">
 		<div class="row">
