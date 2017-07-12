@@ -52,9 +52,7 @@ function getUserName($sessId) {
   }
 
   $row = mysqli_fetch_assoc($result);
-  echo $row['userName'];
-
-  mysqli_free_result($result);
+  return $row['userName'];
 
 }
 
