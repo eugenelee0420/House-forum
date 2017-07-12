@@ -112,17 +112,7 @@ $(document).ready(function() {
   <div class="nav-wrapper purple lighten-2">
 		<div class="row">
 			<div class="col s12">
-    		<a href="index.php" class="brand-logo hide-on-small-only flow-text">House Forums</a>
-        <a href="index.php" class="brand-logo right hide-on-med-and-up flow-text">House Forums</a>
-    		<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-    		<ul class="right hide-on-med-and-down">
-      		<li><a href="profile.php">Profile</a></li>
-          <li><a href="logout.php">Logout</a></li>
-    		</ul>
-    		<ul class="side-nav" id="mobile-demo">
-      		<li><a href="profile.php">Profile</a></li>
-          <li><a href="logout.php">Logout</a></li>
-    		</ul>
+    		<a href="index.php" class="brand-logo center flow-text">House Forums</a>
 			</div>
 		</div>
   </div>
