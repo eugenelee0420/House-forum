@@ -80,7 +80,7 @@ $(document).ready(function() {
 						<span class="white-text name"><?php echoGetUserName(session_id()); ?></span>
 						<span class="white-text email"><?php echoGetStudentId(session_id()); ?></span>
 					</div></li>
-					<li><a href="index.php" class="waves-effect"><i class="material-icons">chat</i>? House Forum</a></li>
+					<li><a href="index.php" class="waves-effect"><i class="material-icons">chat</i><?php echoGetUserHouseName(session_id()); ?> House Forum</a></li>
 					<li><a href="" class="waves-effect"><i class="material-icons">forum</i>Inter-house Forum</a></li>
 				</ul>
 				<a href="#" data-activates="slide-out" class="button-collapse show-on-large"><i class="material-icons">menu</i></a>
