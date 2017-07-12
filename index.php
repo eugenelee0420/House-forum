@@ -77,8 +77,8 @@ $(document).ready(function() {
 							<img src="https://puu.sh/vutY0.jpg">
 						</div>
 						<a href="profile.php"><img class="circle" src="https://puu.sh/wFuFj.jpg"></a>
-						<span class="white-text name"><?php getUserName(session_id()); ?></span>
-						<span class="white-text email"><?php getStudentId(session_id()); ?></span>
+						<span class="white-text name"><?php echoGetUserName(session_id()); ?></span>
+						<span class="white-text email"><?php echoGetStudentId(session_id()); ?></span>
 					</div></li>
 					<li><a href="index.php" class="waves-effect"><i class="material-icons">chat</i>? House Forum</a></li>
 					<li><a href="" class="waves-effect"><i class="material-icons">forum</i>Inter-house Forum</a></li>

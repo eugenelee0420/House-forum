@@ -19,44 +19,50 @@ function getStudentId($sessId) {
   }
 
   $row = mysqli_fetch_assoc($result);
-  echo $row['studentId'];
+  return $row['studentId'];
 
   mysqli_free_result($result);
+}
+
+// Warpper function to echo getStudentId
+function echoGetStudentId($sessId) {
+
+  $return = getStudentId($sessId);
+  echo $return;
+
 }
 
 // Function to return the userName of the current sessionId
 function getUserName($sessId) {
 
-    // Same as getStudentId
-    require "cfg.php";
+  require "cfg.php";
 
-    // Connect to database
-    $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
-    if ($conn->connect_error) {
-    	die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
-    }
+  // Connect to database
+  $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
+  if ($conn->connect_error) {
+    die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
+  }
 
-    $sql = 'SELECT studentId FROM session WHERE sessionId = "'.$sessId.'";';
-    $result = $conn->query($sql);
-    if (!$result) {
-      die('Query failed');
-    }
+  $studentId = getStudentId($sessId);
 
-    $row = mysqli_fetch_assoc($result);
-    $studentId = $row['studentId'];
+  $sql = 'SELECT userName from users WHERE studentId = "'.$studentId.'";';
+  $result = $conn->query($sql);
+  if (!$result) {
+    die('Query failed');
+  }
 
-    mysqli_free_result($result);
+  $row = mysqli_fetch_assoc($result);
+  echo $row['userName'];
 
-    $sql = 'SELECT userName from users WHERE studentId = "'.$studentId.'";';
-    $result = $conn->query($sql);
-    if (!$result) {
-      die('Query failed');
-    }
+  mysqli_free_result($result);
 
-    $row = mysqli_fetch_assoc($result);
-    echo $row['userName'];
+}
 
-    mysqli_free_result($result);
+// Wrapper function to echo getUserName
+function echoGetUserName($sessId) {
+
+  $return = getUserName($sessId);
+  echo $return;
 
 }
 
