@@ -54,6 +54,8 @@ function getUserName($sessId) {
   $row = mysqli_fetch_assoc($result);
   return $row['userName'];
 
+  mysqli_free_result($result);
+
 }
 
 // Wrapper function to echo getUserName
