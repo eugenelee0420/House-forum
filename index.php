@@ -80,11 +80,8 @@ $(document).ready(function() {
 						<span class="white-text name"><?php getUserName(session_id()); ?></span>
 						<span class="white-text email"><?php getStudentId(session_id()); ?></span>
 					</div></li>
-					<li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
-					<li><a href="#!">Second Link</a></li>
-					<li><div class="divider"></div></li>
-					<li><a class="subheader">Subheader</a></li>
-					<li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
+					<li><a href="index.php" class="waves-effect"><i class="material-icons">chat</i>? House Forum</a></li>
+					<li><a href="" class="waves-effect"><i class="material-icons">forum</i>Inter-house Forum</a></li>
 				</ul>
 				<a href="#" data-activates="slide-out" class="button-collapse show-on-large"><i class="material-icons">menu</i></a>
 			</div>
