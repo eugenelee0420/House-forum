@@ -40,19 +40,6 @@ if (!$result) {
   die('Query failed');
 }
 
-echo "Session ID: ".session_id()."<br>";
-
-
-$sql = 'SELECT studentId FROM session WHERE sessionId = "'.session_id().'";';
-$result = $conn->query($sql);
-if (!$result) {
-  die('Query failed');
-}
-
-$row = mysqli_fetch_assoc($result);
-
-echo "Student ID: ".$row['studentId']."<br>";
-
 ?>
 
 <!DOCTYPE html>
