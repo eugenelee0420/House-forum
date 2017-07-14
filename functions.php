@@ -126,5 +126,30 @@ function getUserHId($sessId) {
 
 }
 
+// Function to get user setting
+function getUserSetting($sessId,$setting) {
+
+  require "cfg.php";
+
+  // Connect to database
+  $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
+  if ($conn->connect_error) {
+    die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
+  }
+
+  $studentId = getStudentId($sessId);
+
+  $sql = 'SELECT '.$setting.' FROM userSetting WHERE studentId = "'.$studentId.'";';
+  $result = $conn->query($sql);
+  if (!$result) {
+    die('Query failed. '.$conn->error);
+  }
+
+  $row = mysqli_fetch_assoc($result);
+  return $row["$setting"];
+
+  mysqli_free_result($result);
+
+}
 
 ?>
