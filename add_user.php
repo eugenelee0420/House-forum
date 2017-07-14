@@ -38,13 +38,13 @@ $hash = password_hash($_POST['pass'], PASSWORD_DEFAULT);
 echo "<br>";
 echo 'Generated hash: '.$hash.'<br>';
 
-$stmt = $conn->prepare('INSERT INTO users VALUES (?, ?, ?, ?, "'.$hash.'")');
+$stmt = $conn->prepare('INSERT INTO users VALUES (?, ?, ?, ?, "'.$hash.'");');
 $stmt->bind_param("ssss",$_POST['studentId'],$_POST['studentId'],$_POST['hId'],$_POST['userGroup']);
 $result = $stmt->execute();
 
 // Check and echo query result
 if (!$result) {
-	echo "Query status: Failed";
+	echo "Query status: Failed<br>";
 	echo "Error: ".$conn->error;
 } else {
 	echo "Query status: Success";
