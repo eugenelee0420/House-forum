@@ -100,5 +100,31 @@ function echoGetUserHouseName($sessId) {
 
 }
 
+// Function to get hId of current sessionId
+function getUserHId($sessId) {
+
+    require "cfg.php";
+
+    // Connect to database
+    $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
+    if ($conn->connect_error) {
+      die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
+    }
+
+    $studentId = getStudentId($sessId);
+
+    $sql = 'SELECT hId from users WHERE studentId = "'.$studentId.'";';
+    $result = $conn->query($sql);
+    if (!$result) {
+      die('Query failed. '.$conn->error);
+    }
+
+    $row = mysqli_fetch_assoc($result);
+    return $row['hId'];
+
+    mysqli_free_result($result);
+
+  }
+
 
 ?>
