@@ -70,8 +70,13 @@ $(document).ready(function() {
   <div class="nav-wrapper purple lighten-2">
 		<div class="row">
 			<div class="col s12">
+				<!-- Logo -->
     		<a href="index.php" class="brand-logo center flow-text">House Forums</a>
+
+				<!-- Sidenav -->
 				<ul id="slide-out" class="side-nav">
+
+					<!-- User-view -->
 					<li><div class="user-view">
 						<div class="background">
 							<img src="https://puu.sh/vutY0.jpg">
@@ -80,12 +85,16 @@ $(document).ready(function() {
 						<span class="white-text name"><?php echoGetUserName(session_id()); ?></span>
 						<span class="white-text email"><?php echoGetStudentId(session_id()); ?></span>
 					</div></li>
+
+					<!-- Menu -->
 					<li><a href="index.php" class="waves-effect"><i class="material-icons">chat</i><?php echoGetUserHouseName(session_id()); ?> House Forum</a></li>
 					<li><a href="" class="waves-effect"><i class="material-icons">forum</i>Inter-house Forum</a></li>
+
 					<li><div class="divider"></div></li>
 					<li><a href="logout.php" class="waves-effect"><i class="material-icons">exit_to_app</i>Logout</a></li>
 				</ul>
 				<a href="#" data-activates="slide-out" class="button-collapse show-on-large"><i class="material-icons">menu</i></a>
+				
 			</div>
 		</div>
   </div>
