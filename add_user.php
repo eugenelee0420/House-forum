@@ -44,12 +44,31 @@ $result = $stmt->execute();
 
 // Check and echo query result
 if (!$result) {
-	echo "Query status: Failed<br>";
+	echo "Add user query status: Failed<br>";
 	echo "Error: ".$conn->error;
+	$stmt->free_result();
+	die();
 } else {
-	echo "Query status: Success";
+	echo "Add user query status: Success<br>";
 }
 
 $stmt->free_result();
+
+// Create a userSetting record
+$stmt = $conn->prepare('INSERT INTO userSetting (studentId) VALUES (?);');
+$stmt->bind_param("s",$_POST['studentId']);
+$result = $stmt->execute();
+
+// Check and echo query result
+if (!$result) {
+	echo "Create setting record query status: Failed<br>";
+	echo "Error: ".$conn->error;
+	$stmt->free_result();
+	die();
+} else {
+	echo "Create setting record query status: Success<br>";
+}
+
+$stmt -> free_result();
 
 ?>
