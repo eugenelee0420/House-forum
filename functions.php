@@ -79,7 +79,7 @@ function getUserHouseName($sessId) {
 
   $studentId = getStudentId($sessId);
 
-  $sql = 'SELECT h.houseName FROM users u JOIN house h ON u.houseId = h.houseId WHERE u.studentId = "'.$studentId.'";';
+  $sql = 'SELECT h.houseName FROM users u JOIN house h ON u.hId = h.hId WHERE u.studentId = "'.$studentId.'";';
   $result = $conn->query($sql);
   if (!$result) {
     die('Query failed');
