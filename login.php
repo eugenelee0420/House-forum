@@ -40,7 +40,7 @@ if ($_POST['submit'] == "submit") {
 
   // Check query result
   if (!$result) {
-    die('Query failed');
+    die('Query failed. '.$conn->error);
   }
 
   $stmt->bind_result($qStudentId,$qHash);

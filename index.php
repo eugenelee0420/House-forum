@@ -37,7 +37,7 @@ mysqli_free_result($result);
 $sql = 'UPDATE session SET lastActivity = '.time().' WHERE sessionId = "'.session_id().'"';
 $result = $conn->query($sql);
 if (!$result) {
-  die('Query failed');
+  die('Query failed. '.$conn->error);
 }
 
 ?>

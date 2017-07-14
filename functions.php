@@ -15,7 +15,7 @@ function getStudentId($sessId) {
   $sql = 'SELECT studentId FROM session WHERE sessionId = "'.$sessId.'";';
   $result = $conn->query($sql);
   if (!$result) {
-    die('Query failed');
+    die('Query failed. '.$conn->error);
   }
 
   $row = mysqli_fetch_assoc($result);
@@ -48,7 +48,7 @@ function getUserName($sessId) {
   $sql = 'SELECT userName from users WHERE studentId = "'.$studentId.'";';
   $result = $conn->query($sql);
   if (!$result) {
-    die('Query failed');
+    die('Query failed. '.$conn->error);
   }
 
   $row = mysqli_fetch_assoc($result);
@@ -82,7 +82,7 @@ function getUserHouseName($sessId) {
   $sql = 'SELECT h.houseName FROM users u JOIN house h ON u.hId = h.hId WHERE u.studentId = "'.$studentId.'";';
   $result = $conn->query($sql);
   if (!$result) {
-    die('Query failed');
+    die('Query failed. '.$conn->error);
   }
 
   $row = mysqli_fetch_assoc($result);
