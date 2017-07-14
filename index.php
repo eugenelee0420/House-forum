@@ -94,8 +94,96 @@ $(document).ready(function() {
 					<li><a href="logout.php" class="waves-effect"><i class="material-icons">exit_to_app</i>Logout</a></li>
 				</ul>
 				<a href="#" data-activates="slide-out" class="button-collapse show-on-large"><i class="material-icons">menu</i></a>
-				
+
 			</div>
 		</div>
   </div>
 </nav>
+
+
+<?php
+
+// Get hId of current session
+$hId = getUserHId(session_id());
+
+// Find the relative forum of the house the user belongs to
+$sql = 'SELECT fId FROM forum WHERE hId = "'.$hId.'"';
+$result = $conn->query($sql);
+if (!$result) {
+	die('Query failed. '.$conn->error);
+}
+
+$row = mysqli_fetch_assoc($result);
+$fId = $row['fId'];
+
+mysqli_free_result($result);
+
+// Count the number of threads
+$sql = 'SELECT COUNT(*) AS numT FROM thread WHERE fId = "'.$fId.'";';
+$result = $conn->query($sql);
+if (!$result) {
+	die('Query failed. '.$conn->error);
+}
+
+$row = mysqli_fetch_assoc($result);
+$numT = $row['numT'];
+
+// Get user's rowsPerPage
+$rowsPerPage = getUserSetting(session_id(),"rowsPerPage");
+
+// Calculate how many pages are needed
+$numPage = ceil($numT/$rowsPerPage);
+
+// Get current page
+if (!isset($_GET['page'])) {
+	$cPage = 1;
+} else {
+	$cPage = intval($_GET['page']);
+}
+
+// Pagination
+echo '<div class="row"><div class="col s12">';
+echo '<ul class="pagination">';
+
+// Backwawrds button
+// <li class="(disabled)"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+echo '<li class="';
+if ($cPage < 2) {
+	echo 'disabled';
+} else {
+	echo 'waves-effect';
+}
+echo '">';
+echo '<a href="index.php?page='.($cPage - 1).'">';
+echo '<i class="material-icons">chevron_left</i></a></li>';
+
+// Numbers
+// Active: <li class="active"><a href="#!">1</a></li>
+// Not active: <li class="waves-effect"><a href="#!">2</a></li>
+for ($x=1;$x<=$numPage;$x++) {
+	echo '<li class="';
+	if ($x == $cPage) {
+		echo 'active';
+	} else {
+		echo 'waves-effect';
+	}
+	echo '">';
+	echo '<a href="index.php?page='.$x.'">'.$x.'</a></li>';
+}
+
+// Forward button
+// <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+echo '<li class="';
+if ($cPage == $numPage) {
+	echo 'disabled';
+} else {
+	echo 'waves-effect';
+}
+echo '">';
+echo '<a href="index.php?page='.($cPage + 1).'">';
+echo '<i class="material-icons">chevron_right</i></a></li>';
+
+echo '</ul>';
+echo '</div></div>';
+
+?>
