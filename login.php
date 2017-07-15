@@ -40,7 +40,7 @@ if ($_POST['submit'] == "submit") {
 
   // Check query result
   if (!$result) {
-    die('Query failed');
+    die('Query failed. '.$conn->error);
   }
 
   $stmt->bind_result($qStudentId,$qHash);
@@ -101,28 +101,11 @@ if ($_POST['submit'] == "submit") {
 <!-- Compiled and minified JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
 
-<!-- Initialize mobile sidenav-->
-<script>
-$(document).ready(function() {
-		$(".button-collapse").sideNav();
-  });
-</script>
-
 <nav>
   <div class="nav-wrapper purple lighten-2">
 		<div class="row">
 			<div class="col s12">
-    		<a href="index.php" class="brand-logo hide-on-small-only flow-text">House Forums</a>
-        <a href="index.php" class="brand-logo right hide-on-med-and-up flow-text">House Forums</a>
-    		<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-    		<ul class="right hide-on-med-and-down">
-      		<li><a href="profile.php">Profile</a></li>
-          <li><a href="logout.php">Logout</a></li>
-    		</ul>
-    		<ul class="side-nav" id="mobile-demo">
-      		<li><a href="profile.php">Profile</a></li>
-          <li><a href="logout.php">Logout</a></li>
-    		</ul>
+    		<a href="index.php" class="brand-logo center flow-text">House Forums</a>
 			</div>
 		</div>
   </div>

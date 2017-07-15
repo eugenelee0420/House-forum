@@ -3,11 +3,15 @@
 // Contains all database credentials and settings
 
 $dbHost = "localhost";
-$dbUser = "id214994_ict";
-$dbPass = "eugenelee";
-$dbName = "id214994_ict";
+$dbUser = "forum";
+$dbPass = "password";
+$dbName = "forum";
 
 // Idle time before user is logged out automatically (seconds)
-$userTimeout = 60;
+$userTimeout = 600;
+
+// UNIX epoch timezone offset
+// Refer to https://www.epochconverter.com/timezones for more details
+$timezoneOffset = + 28800;
 
 ?>
