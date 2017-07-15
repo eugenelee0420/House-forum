@@ -135,7 +135,7 @@ $rowsPerPage = getUserSetting(session_id(),"rowsPerPage");
 $numPage = ceil($numT/$rowsPerPage);
 
 // Get current page
-if (!isset($_GET['page'])) {
+if (!isset($_GET['page']) OR $_GET['page'] < 1) {
 	$cPage = 1;
 } else {
 	$cPage = intval($_GET['page']);
