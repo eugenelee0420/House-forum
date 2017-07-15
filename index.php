@@ -199,4 +199,44 @@ echo '<i class="material-icons">chevron_right</i></a></li>';
 echo '</ul>';
 echo '</div></div>';
 
+// Get the thread listing of the current page
+$sql = 'SELECT * FROM thread WHERE fId = "'.$fId.'" ORDER BY tTime DESC LIMIT '.$rowsPerPage.' OFFSET '.($rowsPerPage * ($cPage - 1)).';';
+$result = $conn->query($sql);
+if (!$result) {
+	die('Query failed. '.$conn->error);
+}
+
+echo '<div class="row"><div class="col s12">';
+echo '<table><thead><tr>';
+echo '<th>Title</th>';
+echo '<th class="hide-on-small-only">Time posted</th>';
+echo '<th class="hide-on-small-only">Started by</th>';
+echo '</tr></thead>';
+echo '<tbody>';
+
+while ($row = mysqli_fetch_assoc($result)) {
+
+	echo '<tr>';
+
+	echo '<td>';
+	echo '<a href="">';
+	echo $row['tTitle'];
+	echo '</a></td>';
+
+	echo '<td class="hide-on-small-only">';
+	echo date('j/n/Y G:i',$row['tTime'] + $timezoneOffset);
+	echo '</td>';
+
+	echo '<td class="hide-on-small-only">';
+	echo '<a href="">';
+	echo $row['studentId'];
+	echo '</a></td>';
+
+	echo '</tr>';
+
+}
+
+echo '</tbody></table>';
+echo '</div></div>';
+
 ?>
