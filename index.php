@@ -157,18 +157,31 @@ echo '">';
 echo '<a href="index.php?page='.($cPage - 1).'">';
 echo '<i class="material-icons">chevron_left</i></a></li>';
 
-// Numbers
-// Active: <li class="active"><a href="#!">1</a></li>
-// Not active: <li class="waves-effect"><a href="#!">2</a></li>
-for ($x=1;$x<=$numPage;$x++) {
-	echo '<li class="';
-	if ($x == $cPage) {
-		echo 'active';
-	} else {
-		echo 'waves-effect';
-	}
-	echo '">';
-	echo '<a href="index.php?page='.$x.'">'.$x.'</a></li>';
+// Display the page numbers of the current page, 3 pages before and 3 pages array_filter
+
+// 3 pages before current page
+if (($cPage - 3) > 0) {
+	echo '<li class="waves-effect"><a href="index.php?page='.($cPage - 3).'">'.($cPage - 3).'</a></li>';
+}
+if (($cPage - 2) > 0) {
+	echo '<li class="waves-effect"><a href="index.php?page='.($cPage - 2).'">'.($cPage - 2).'</a></li>';
+}
+if (($cPage - 1) > 0) {
+	echo '<li class="waves-effect"><a href="index.php?page='.($cPage - 1).'">'.($cPage - 1).'</a></li>';
+}
+
+// Current page
+echo '<li class="active"><a href="index.php?page='.($cPage).'">'.($cPage).'</a></li>';
+
+// 3 pages after the current page
+if (($cPage + 1) <= $numPage) {
+	echo '<li class="waves-effect"><a href="index.php?page='.($cPage + 1).'">'.($cPage + 1).'</a></li>';
+}
+if (($cPage + 2) <= $numPage) {
+	echo '<li class="waves-effect"><a href="index.php?page='.($cPage + 2).'">'.($cPage + 2).'</a></li>';
+}
+if (($cPage + 3) <= $numPage) {
+	echo '<li class="waves-effect"><a href="index.php?page='.($cPage + 3).'">'.($cPage + 3).'</a></li>';
 }
 
 // Forward button
