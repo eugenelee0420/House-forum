@@ -1,18 +1,19 @@
 <?php
 // Functions to be included in other pages
 
-// Function to connect to the database
+// Conenct to database
+require "cfg.php";
+
+// Connect to database
+$conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
+if ($conn->connect_error) {
+  die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
+}
 
 // Function to return the studentId of the current sessionId
 function getStudentId($sessId) {
 
-  require "cfg.php";
-
-  // Connect to database
-  $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
-  if ($conn->connect_error) {
-  	die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
-  }
+  global $conn;
 
   $sql = 'SELECT studentId FROM session WHERE sessionId = "'.$sessId.'";';
   $result = $conn->query($sql);
@@ -37,13 +38,7 @@ function echoGetStudentId($sessId) {
 // Function to return the userName of the current sessionId
 function getUserName($sessId) {
 
-  require "cfg.php";
-
-  // Connect to database
-  $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
-  if ($conn->connect_error) {
-    die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
-  }
+  global $conn;
 
   $studentId = getStudentId($sessId);
 
@@ -71,13 +66,7 @@ function echoGetUserName($sessId) {
 // Function to get userName from studentId
 function userNameFromStudentId($studentId) {
 
-  require "cfg.php";
-
-  // Connect to database
-  $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
-  if ($conn->connect_error) {
-    die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
-  }
+  global $conn;
 
   $sql = 'SELECT userName FROM users WHERE studentId = "'.$studentId.'";';
   $result = $conn->query($sql);
@@ -96,13 +85,7 @@ function userNameFromStudentId($studentId) {
 // Function to return the houseName of the current sessison
 function getUserHouseName($sessId) {
 
-  require "cfg.php";
-
-  // Connect to database
-  $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
-  if ($conn->connect_error) {
-    die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
-  }
+  global $conn;
 
   $studentId = getStudentId($sessId);
 
@@ -130,13 +113,7 @@ function echoGetUserHouseName($sessId) {
 // Function to get hId of current sessionId
 function getUserHId($sessId) {
 
-  require "cfg.php";
-
-  // Connect to database
-  $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
-  if ($conn->connect_error) {
-    die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
-  }
+  global $conn;
 
   $studentId = getStudentId($sessId);
 
@@ -156,13 +133,7 @@ function getUserHId($sessId) {
 // Function to get user setting
 function getUserSetting($sessId,$setting) {
 
-  require "cfg.php";
-
-  // Connect to database
-  $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
-  if ($conn->connect_error) {
-    die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
-  }
+  global $conn;
 
   $studentId = getStudentId($sessId);
 
@@ -182,13 +153,7 @@ function getUserSetting($sessId,$setting) {
 // Function to get userGroup of current session
 function getUserGroup($sessId) {
 
-  require "cfg.php";
-
-  // Connect to database
-  $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
-  if ($conn->connect_error) {
-    die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
-  }
+  global $conn;
 
   $studentId = getStudentId($sessId);
 
@@ -209,13 +174,7 @@ function getUserGroup($sessId) {
 // Function to get userGroupName of current session
 function getUserGroupName($sessId) {
 
-  require "cfg.php";
-
-  // Connect to database
-  $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
-  if ($conn->connect_error) {
-    die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
-  }
+  global $conn;
 
   $studentId = getStudentId($sessId);
 
