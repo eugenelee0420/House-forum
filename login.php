@@ -46,6 +46,7 @@ if ($_POST['submit'] == "submit") {
   $stmt->bind_result($qStudentId,$qHash);
   $stmt->fetch();
 	$stmt->free_result();
+	$stmt->close();
 
   // Check if the inputted studentId is correct / exists
   if ($qStudentId !== $_POST['studentId']) {
