@@ -77,20 +77,15 @@ function userNameFromStudentId($studentId) {
     die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
   }
 
-  $stmt = $conn->prepare('SELECT userName FROM users WHERE studentId = ?');
-  $stmt->bind_param("s",$studentId);
-  $result = $stmt->execute();
+  $sql = 'SELECT userName FROM users WHERE studentId = "'.$studentId.'";';
+  $result = $conn->query($sql);
   if (!$result) {
     die('Query failed. '.$stmt->error);
   }
 
-  $stmt->bind_result($userName);
-  $stmt->fetch();
+  $row = mysqli_fetch_assoc($result);
 
-  return $userName;
-
-  $stmt->free_result();
-  $stmt->close();
+  return $row['userName'];
 
 }
 
