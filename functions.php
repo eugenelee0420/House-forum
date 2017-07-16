@@ -66,6 +66,34 @@ function echoGetUserName($sessId) {
 
 }
 
+// Function to get userName from studentId
+function userNameFromStudentId($studentId) {
+
+  require "cfg.php";
+
+  // Connect to database
+  $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
+  if ($conn->connect_error) {
+    die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
+  }
+
+  $stmt = $conn->prepare('SELECT userName FROM users WHERE studentId = ?');
+  $stmt->bind_param("s",$studentId);
+  $result = $stmt->execute();
+  if (!$result) {
+    die('Query failed. '.$stmt->error);
+  }
+
+  $stmt->bind_result($userName);
+  $stmt->fetch();
+
+  return $userName;
+
+  $stmt->free_result();
+  $stmt->close();
+
+}
+
 // Function to return the houseName of the current sessison
 function getUserHouseName($sessId) {
 
