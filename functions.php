@@ -89,6 +89,8 @@ function userNameFromStudentId($studentId) {
 
   return $row['userName'];
 
+  mysqli_free_result($reuslt);
+
 }
 
 // Function to return the houseName of the current sessison
