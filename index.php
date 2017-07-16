@@ -229,7 +229,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 
 	echo '<td class="hide-on-small-only">';
 	echo '<a href="">';
-	echo $row['studentId'];
+	echo userNameFromStudentId($row['studentId']);
 	echo '</a></td>';
 
 	echo '</tr>';
