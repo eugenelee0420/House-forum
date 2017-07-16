@@ -1,6 +1,8 @@
 <?php
 // Functions to be included in other pages
 
+// Function to connect to the database
+
 // Function to return the studentId of the current sessionId
 function getStudentId($sessId) {
 
