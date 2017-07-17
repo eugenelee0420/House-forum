@@ -111,15 +111,16 @@ function showSideNav() {
 
 					}
 
+					// Show inter-house forum link
 					if (havePermission(session_id(),"VI")) {
-
 						echo '<li><a href="viewforum.php?fId=IHF" class="waves-effect"><i class="material-icons">forum</i>Inter-house Forum</a></li>';
-
 					}
 
-					?>
+					// Divider
+					echo '<li><div class="divider"></div></li>';
 
-					<li><div class="divider"></div></li>
+					?>
+				
 					<li><a href="logout.php" class="waves-effect"><i class="material-icons">exit_to_app</i>Logout</a></li>
 				</ul>
 				<a href="#" data-activates="slide-out" class="button-collapse show-on-large"><i class="material-icons">menu</i></a>
