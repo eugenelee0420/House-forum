@@ -86,9 +86,13 @@ function showSideNav() {
 					<!-- Menu -->
 					<?php
 
+					// Show house-specific forum link(s)
+
 					// If the user only have permission to view one house-specific forum (the one they belong to)
 					if (havePermission(session_id(),"VH")) {
+
 						echo '<li><a href="index.php" class="waves-effect"><i class="material-icons">chat</i>'.getUserHouseName(session_id()).' House Forum</a></li>';
+
 					} elseif (havePermission(session_id(),"VAH")) { // If user have permission to view all houses' forums
 
 						// Find all house forums
