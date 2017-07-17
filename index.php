@@ -6,12 +6,6 @@ require "functions.php";
 
 session_start();
 
-// Connect to database
-$conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
-if ($conn->connect_error) {
-	die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
-}
-
 // Check if user timed out
 $sql = 'SELECT lastActivity FROM session WHERE sessionId = "'.session_id().'";';
 $result = $conn->query($sql);
