@@ -97,6 +97,11 @@ $(document).ready(function() {
 
 <?php
 
+// Check if user have permission to view this forum
+if (!havePermission(session_id(),"VH")) {
+	die('You do not have permission to view this forum');
+}
+
 // Get hId of current session
 $hId = getUserHId(session_id());
 
