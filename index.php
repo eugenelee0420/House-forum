@@ -89,7 +89,7 @@ $(document).ready(function() {
 					} elseif (havePermission(session_id(),"VAH")) { // If user have permission to view all houses' forums
 
 						// Find all house forums
-						$sql = 'SELECT h.houseName FROM forum f JOIN house h ON f.hId = h.hId WHERE f.hId IS NOT NULL';
+						$sql = 'SELECT h.houseName, f.fId FROM forum f JOIN house h ON f.hId = h.hId WHERE f.hId IS NOT NULL';
 						$result = $conn->query($sql);
 						if (!$result) {
 							die('Query failed. '.$conn->error);
@@ -98,7 +98,7 @@ $(document).ready(function() {
 						// List all the house forums
 						while($row = mysqli_fetch_assoc($result)) {
 
-							echo '<li><a href="index.php" class="waves-effect"><i class="material-icons">chat</i>'.$row['houseName'].' House Forum</a></li>';
+							echo '<li><a href="viewforum.php?fId='.$row['fId'].'" class="waves-effect"><i class="material-icons">chat</i>'.$row['houseName'].' House Forum</a></li>';
 
 						}
 
