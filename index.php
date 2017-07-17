@@ -107,9 +107,13 @@ function showSideNav() {
 
 					}
 
-					?>
+					if (havePermission(session_id(),"VI")) {
 
-					<li><a href="viewforum.php?fId=IHF" class="waves-effect"><i class="material-icons">forum</i>Inter-house Forum</a></li>
+						echo '<li><a href="viewforum.php?fId=IHF" class="waves-effect"><i class="material-icons">forum</i>Inter-house Forum</a></li>';
+
+					}
+
+					?>
 
 					<li><div class="divider"></div></li>
 					<li><a href="logout.php" class="waves-effect"><i class="material-icons">exit_to_app</i>Logout</a></li>
