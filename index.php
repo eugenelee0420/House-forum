@@ -127,6 +127,8 @@ if (!$result) {
 $row = mysqli_fetch_assoc($result);
 $numT = $row['numT'];
 
+mysqli_free_result($result);
+
 // Get user's rowsPerPage
 $rowsPerPage = getUserSetting(session_id(),"rowsPerPage");
 
@@ -234,6 +236,8 @@ while ($row = mysqli_fetch_assoc($result)) {
 	echo '</tr>';
 
 }
+
+mysqli_free_result($result);
 
 echo '</tbody></table>';
 echo '</div></div>';
