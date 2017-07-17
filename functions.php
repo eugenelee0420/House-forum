@@ -199,4 +199,25 @@ function echoGetUserGroupName($sessId) {
 
 }
 
+// Function to check if the current session have certain permission
+function havePermission($sessId,$perm) {
+
+  global $conn;
+
+  $userGroup = getUserGroup($sessId);
+
+  $sql = 'SELECT * FROM userPermission WHERE userGroup = "'.$userGroup.'" AND permission = "'.$perm.'";';
+  $result = $conn->query($sql);
+  if (!$result) {
+    die('Query failed. '.$conn->error);
+  }
+
+  if (($result->num_rows) > 0) {
+    return TRUE;
+  } else {
+    return FALSE;
+  }
+
+}
+
 ?>
