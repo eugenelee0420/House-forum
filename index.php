@@ -81,7 +81,31 @@ $(document).ready(function() {
 					</div></li>
 
 					<!-- Menu -->
-					<li><a href="index.php" class="waves-effect"><i class="material-icons">chat</i><?php echoGetUserHouseName(session_id()); ?> House Forum</a></li>
+					<?php
+
+					// If the user only have permission to view one house-specific forum (the one they belong to)
+					if (havePermission(session_id(),"VH")) {
+						echo '<li><a href="index.php" class="waves-effect"><i class="material-icons">chat</i>'.getUserHouseName(session_id()).' House Forum</a></li>';
+					} elseif (havePermission(session_id(),"VAH")) { // If user have permission to view all houses' forums
+
+						// Find all house forums
+						$sql = 'SELECT h.houseName FROM forum f JOIN house h ON f.hId = h.hId WHERE f.hId IS NOT NULL';
+						$result = $conn->query($sql);
+						if (!$result) {
+							die('Query failed. '.$conn->error);
+						}
+
+						// List all the house forums
+						while($row = mysqli_fetch_assoc($result)) {
+
+							echo '<li><a href="index.php" class="waves-effect"><i class="material-icons">chat</i>'.$row['houseName'].' House Forum</a></li>';
+
+						}
+
+					}
+
+					?>
+
 					<li><a href="" class="waves-effect"><i class="material-icons">forum</i>Inter-house Forum</a></li>
 
 					<li><div class="divider"></div></li>
