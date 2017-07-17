@@ -98,7 +98,7 @@ $(document).ready(function() {
 <?php
 
 // Check if user have permission to view this forum
-if (!havePermission(session_id(),"VH")) {
+if (!havePermission(session_id(),"VH") AND !havePermission(session_id(),"VAH")) {
 	die('You do not have permission to view this forum');
 }
 
