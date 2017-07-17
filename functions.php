@@ -1,7 +1,6 @@
 <?php
 // Functions to be included in other pages
 
-// Conenct to database
 require "cfg.php";
 
 // Connect to database
