@@ -81,7 +81,6 @@ function userNameFromStudentId($studentId) {
 
 }
 
-// Function to return the houseName of the current sessison
 // Function to return the houseName of the current session
 function getUserHouseName($sessId) {
 
