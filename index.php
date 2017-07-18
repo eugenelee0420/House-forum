@@ -89,9 +89,18 @@ function showSideNav() {
 					// Show house-specific forum link(s)
 
 					// If the user only have permission to view one house-specific forum (the one they belong to)
-					if (havePermission(session_id(),"VH")) {
+					if (havePermission(session_id(),"VH") AND !havePermission(session_id(),"VAH")) {
 
-						echo '<li><a href="index.php" class="waves-effect"><i class="material-icons">chat</i>'.getUserHouseName(session_id()).' House Forum</a></li>';
+						// Find the fId of the user's house
+						$sql = 'SELECT fId, fName FROM forum WHERE hId = "'.getUserHId(session_id()).'";';
+						$result = $conn->query($sql);
+						if (!$result) {
+							die('Query failed. '.$conn->error);
+						}
+
+						$row = mysqli_fetch_assoc($result);
+
+						echo '<li><a href="viewforum.php?fId='.$row['fId'].'" class="waves-effect"><i class="material-icons">chat</i>'.$row['fName'].'</a></li>';
 
 					} elseif (havePermission(session_id(),"VAH")) { // If user have permission to view all houses' forums
 
