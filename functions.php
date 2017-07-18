@@ -1,16 +1,18 @@
 <?php
 // Functions to be included in other pages
 
+require "cfg.php";
+
+// Connect to database
+$conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
+if ($conn->connect_error) {
+  die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
+}
+
 // Function to return the studentId of the current sessionId
 function getStudentId($sessId) {
 
-  require "cfg.php";
-
-  // Connect to database
-  $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
-  if ($conn->connect_error) {
-  	die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
-  }
+  global $conn;
 
   $sql = 'SELECT studentId FROM session WHERE sessionId = "'.$sessId.'";';
   $result = $conn->query($sql);
@@ -35,13 +37,7 @@ function echoGetStudentId($sessId) {
 // Function to return the userName of the current sessionId
 function getUserName($sessId) {
 
-  require "cfg.php";
-
-  // Connect to database
-  $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
-  if ($conn->connect_error) {
-    die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
-  }
+  global $conn;
 
   $studentId = getStudentId($sessId);
 
@@ -69,41 +65,26 @@ function echoGetUserName($sessId) {
 // Function to get userName from studentId
 function userNameFromStudentId($studentId) {
 
-  require "cfg.php";
+  global $conn;
 
-  // Connect to database
-  $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
-  if ($conn->connect_error) {
-    die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
-  }
-
-  $stmt = $conn->prepare('SELECT userName FROM users WHERE studentId = ?');
-  $stmt->bind_param("s",$studentId);
-  $result = $stmt->execute();
+  $sql = 'SELECT userName FROM users WHERE studentId = "'.$studentId.'";';
+  $result = $conn->query($sql);
   if (!$result) {
-    die('Query failed. '.$stmt->error);
+    die('Query failed. '.$conn->error);
   }
 
-  $stmt->bind_result($userName);
-  $stmt->fetch();
+  $row = mysqli_fetch_assoc($result);
 
-  return $userName;
+  return $row['userName'];
 
-  $stmt->free_result();
-  $stmt->close();
+  mysqli_free_result($reuslt);
 
 }
 
-// Function to return the houseName of the current sessison
+// Function to return the houseName of the current session
 function getUserHouseName($sessId) {
 
-  require "cfg.php";
-
-  // Connect to database
-  $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
-  if ($conn->connect_error) {
-    die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
-  }
+  global $conn;
 
   $studentId = getStudentId($sessId);
 
@@ -131,13 +112,7 @@ function echoGetUserHouseName($sessId) {
 // Function to get hId of current sessionId
 function getUserHId($sessId) {
 
-  require "cfg.php";
-
-  // Connect to database
-  $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
-  if ($conn->connect_error) {
-    die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
-  }
+  global $conn;
 
   $studentId = getStudentId($sessId);
 
@@ -157,13 +132,7 @@ function getUserHId($sessId) {
 // Function to get user setting
 function getUserSetting($sessId,$setting) {
 
-  require "cfg.php";
-
-  // Connect to database
-  $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
-  if ($conn->connect_error) {
-    die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
-  }
+  global $conn;
 
   $studentId = getStudentId($sessId);
 
@@ -177,6 +146,77 @@ function getUserSetting($sessId,$setting) {
   return $row["$setting"];
 
   mysqli_free_result($result);
+
+}
+
+// Function to get userGroup of current session
+function getUserGroup($sessId) {
+
+  global $conn;
+
+  $studentId = getStudentId($sessId);
+
+  $sql = 'SELECT userGroup from users WHERE studentId = "'.$studentId.'";';
+  $result = $conn->query($sql);
+  if (!$result) {
+    die('Query failed. '.$conn->error);
+  }
+
+  $row = mysqli_fetch_assoc($result);
+
+  return $row['userGroup'];
+
+  mysqli_free_result($result);
+
+}
+
+// Function to get userGroupName of current session
+function getUserGroupName($sessId) {
+
+  global $conn;
+
+  $studentId = getStudentId($sessId);
+
+  $sql = 'SELECT g.userGroupName from users u JOIN userGroup g ON u.userGroup = g.userGroup WHERE u.studentId = "'.$studentId.'";';
+  $result = $conn->query($sql);
+  if (!$result) {
+    die('Query failed. '.$conn->error);
+  }
+
+  $row = mysqli_fetch_assoc($result);
+
+  return $row['userGroupName'];
+
+  mysqli_free_result($result);
+
+}
+
+// Wrapper function to echo userGroupName
+function echoGetUserGroupName($sessId) {
+
+  $return = getUserGroupName($sessId);
+  echo $return;
+
+}
+
+// Function to check if the current session have certain permission
+function havePermission($sessId,$perm) {
+
+  global $conn;
+
+  $userGroup = getUserGroup($sessId);
+
+  $sql = 'SELECT * FROM userPermission WHERE userGroup = "'.$userGroup.'" AND permission = "'.$perm.'";';
+  $result = $conn->query($sql);
+  if (!$result) {
+    die('Query failed. '.$conn->error);
+  }
+
+  if (($result->num_rows) > 0) {
+    return TRUE;
+  } else {
+    return FALSE;
+  }
 
 }
 

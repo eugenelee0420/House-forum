@@ -2,12 +2,7 @@
 // Page the logs user out
 
 require "cfg.php";
-
-// Connect to database
-$conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
-if ($conn->connect_error) {
-	die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
-}
+require "functions.php";
 
 session_start();
 
