@@ -13,11 +13,11 @@ $result = $conn->query($sql);
 $row = mysqli_fetch_assoc($result);
 if ((($row['lastActivity'] + $userTimeout) < time())) {
   // Logout the user
-  session_unset();
 	mysqli_free_result($result);
   $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
   $conn->query($sql);
   // No need to check result here as well
+  session_unset();
 }
 
 // Check if user is logged in
