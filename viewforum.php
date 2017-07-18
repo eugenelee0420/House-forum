@@ -101,6 +101,8 @@ $(document).ready(function() {
 
 						echo '<li><a href="viewforum.php?fId='.$row['fId'].'" class="waves-effect"><i class="material-icons">chat</i>'.$row['fName'].'</a></li>';
 
+						mysqli_free_result($result);
+
 					} elseif (havePermission(session_id(),"VAH")) { // If user have permission to view all houses' forums
 
 						// Find all house forums
@@ -118,6 +120,8 @@ $(document).ready(function() {
 						}
 
 					}
+
+					mysqli_free_result($result);
 
 					// Show inter-house forum link
 					if (havePermission(session_id(),"VI")) {
