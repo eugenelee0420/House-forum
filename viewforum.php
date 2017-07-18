@@ -310,7 +310,7 @@ while ($stmt->fetch()) {
 	echo '<tr>';
 
 	echo '<td>';
-	echo '<a href="">';
+	echo '<a href="viewthread.php?tId='.$tId.'">';
 	echo $tTitle;
 	echo '</a></td>';
 
