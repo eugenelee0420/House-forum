@@ -70,7 +70,7 @@ function userNameFromStudentId($studentId) {
   $sql = 'SELECT userName FROM users WHERE studentId = "'.$studentId.'";';
   $result = $conn->query($sql);
   if (!$result) {
-    die('Query failed. '.$stmt->error);
+    die('Query failed. '.$conn->error);
   }
 
   $row = mysqli_fetch_assoc($result);
