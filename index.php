@@ -96,7 +96,7 @@ function showSideNav() {
 					} elseif (havePermission(session_id(),"VAH")) { // If user have permission to view all houses' forums
 
 						// Find all house forums
-						$sql = 'SELECT h.houseName, f.fId FROM forum f JOIN house h ON f.hId = h.hId WHERE f.hId IS NOT NULL';
+						$sql = 'SELECT fId, fName FROM forum WHERE hId IS NOT NULL';
 						$result = $conn->query($sql);
 						if (!$result) {
 							die('Query failed. '.$conn->error);
@@ -105,7 +105,7 @@ function showSideNav() {
 						// List all the house forums
 						while($row = mysqli_fetch_assoc($result)) {
 
-							echo '<li><a href="viewforum.php?fId='.$row['fId'].'" class="waves-effect"><i class="material-icons">chat</i>'.$row['houseName'].' House Forum</a></li>';
+							echo '<li><a href="viewforum.php?fId='.$row['fId'].'" class="waves-effect"><i class="material-icons">chat</i>'.$row['fName'].'</a></li>';
 
 						}
 
@@ -120,7 +120,7 @@ function showSideNav() {
 					echo '<li><div class="divider"></div></li>';
 
 					?>
-				
+
 					<li><a href="logout.php" class="waves-effect"><i class="material-icons">exit_to_app</i>Logout</a></li>
 				</ul>
 				<a href="#" data-activates="slide-out" class="button-collapse show-on-large"><i class="material-icons">menu</i></a>
