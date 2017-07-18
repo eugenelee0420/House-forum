@@ -288,14 +288,14 @@ echo '</ul>';
 echo '</div></div>';
 
 // Get the thread listing of the current page
-$stmt = $conn->prepare('SELECT t.tId,t.tTitle,t.tTime,u.userName FROM thread t JOIN users u ON t.studentId = u.studentId WHERE fId = ? ORDER BY tTime DESC LIMIT '.$rowsPerPage.' OFFSET '.($rowsPerPage * ($cPage - 1)).';');
+$stmt = $conn->prepare('SELECT t.tId,t.tTitle,t.tTime,t.studentId,u.userName FROM thread t JOIN users u ON t.studentId = u.studentId WHERE fId = ? ORDER BY tTime DESC LIMIT '.$rowsPerPage.' OFFSET '.($rowsPerPage * ($cPage - 1)).';');
 $stmt->bind_param("s",$_GET['fId']);
 $result = $stmt->execute();
 if (!$result) {
 	die('Query failed. '.$stmt->error);
 }
 
-$stmt->bind_result($tId,$tTitle,$tTime,$userName);
+$stmt->bind_result($tId,$tTitle,$tTime,$studentId,$userName);
 
 echo '<div class="row"><div class="col s12">';
 echo '<table><thead><tr>';
@@ -319,7 +319,7 @@ while ($stmt->fetch()) {
 	echo '</td>';
 
 	echo '<td class="hide-on-small-only">';
-	echo '<a href="">';
+	echo '<a href="profile.php?studentId='.$studentId.'">';
 	echo $userName;
 	echo '</a></td>';
 
