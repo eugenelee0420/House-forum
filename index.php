@@ -117,10 +117,25 @@ function showSideNav() {
 					}
 
 					// Divider
-					echo '<li><div class="divider"></div></li>';
+					if (havePermission(session_id(),"AGS") OR havePermission(session_id(),"AUS")) {
+						echo '<li><div class="divider"></div></li>';
+					}
+
+					// Settings
+					// Global settings
+					if (havePermission(session_id(),"AGS")) {
+						echo '<li><a href="settings_global.php"><i class="material-icons">settings</i>Global Settings</a></li>';
+					}
+
+					// userGroup settings
+					if (havePermission(session_id(),"AUS")) {
+						echo '<li><a href="settings_userGroup.php"><i class="material-icons">settings</i>User Group Settings</a></li>';
+					}
 
 					?>
 
+					<li><div class="divider"></div></li>
+					<li><a href="settings_user.php" class="waves-effect"><i class="material-icons">settings</i>User Settings</a></li>
 					<li><a href="logout.php" class="waves-effect"><i class="material-icons">exit_to_app</i>Logout</a></li>
 				</ul>
 				<a href="#" data-activates="slide-out" class="button-collapse show-on-large"><i class="material-icons">menu</i></a>
