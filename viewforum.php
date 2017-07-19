@@ -166,6 +166,25 @@ if (!isset($_GET['fId'])) {
   die();
 }
 
+// Check if requested forum exist
+$stmt = $conn->prepare('SELECT fId FROM forum WHERE fId = ?');
+$stmt->bind_param("s",$_GET['fId']);
+$result = $stmt->execute();
+if (!$result) {
+	die('Query failed. '.$stmt->error);
+}
+
+$stmt->bind_result($fId);
+$stmt->fetch();
+
+if ($fId !== $_GET['fId']) {
+	die('The requested forum does not exist!');
+}
+
+$stmt->free_result();
+$stmt->close();
+
+
 // Check forum type then check permission accordingly
 $stmt = $conn->prepare('SELECT hId FROM forum WHERE fId = ?');
 $stmt->bind_param("s",$_GET['fId']);
