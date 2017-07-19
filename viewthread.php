@@ -166,6 +166,24 @@ if (!isset($_GET['tId'])) {
   die();
 }
 
+// Check if the requested thread exist
+$stmt = $conn->prepare('SELECT tId FROM thread WHERE tId = ?');
+$stmt->bind_param("s",$_GET['tId']);
+$result = $stmt->execute();
+if (!$result) {
+	die('Query failed. '.$stmt->error);
+}
+
+$stmt->bind_result($tId);
+$stmt->fetch();
+
+if ($tId !== $_GET['tId']) {
+	die('The requested thread does not exist!');
+}
+
+$stmt->free_result();
+$stmt->close();
+
 // Get the fId that this thread belongs to
 $stmt = $conn->prepare('SELECT fId FROM thread WHERE tId = ?');
 $stmt->bind_param("s",$_GET['tId']);
