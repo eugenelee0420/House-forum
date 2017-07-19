@@ -87,7 +87,7 @@ $(document).ready(function() {
 
 					// Show house-specific forum link(s)
 
-          // If the user only have permission to view one house-specific forum (the one they belong to)
+					// If the user only have permission to view one house-specific forum (the one they belong to)
 					if (havePermission(session_id(),"VH") AND !havePermission(session_id(),"VAH")) {
 
 						// Find the fId of the user's house
@@ -100,8 +100,6 @@ $(document).ready(function() {
 						$row = mysqli_fetch_assoc($result);
 
 						echo '<li><a href="viewforum.php?fId='.$row['fId'].'" class="waves-effect"><i class="material-icons">chat</i>'.$row['fName'].'</a></li>';
-
-						mysqli_free_result($result);
 
 					} elseif (havePermission(session_id(),"VAH")) { // If user have permission to view all houses' forums
 
@@ -125,7 +123,17 @@ $(document).ready(function() {
 
 					// Show inter-house forum link
 					if (havePermission(session_id(),"VI")) {
-						echo '<li><a href="viewforum.php?fId=IHF" class="waves-effect"><i class="material-icons">forum</i>Inter-house Forum</a></li>';
+
+						// Find the inter-house forum ID and name
+						$sql = 'SELECT fId, fName FROM forum WHERE hId IS NULL';
+						$result = $conn->query($sql);
+						if (!$result) {
+							die('Query failed. '.$conn->error);
+						}
+
+						$row = mysqli_fetch_assoc($result);
+
+						echo '<li><a href="viewforum.php?fId='.$row['fId'].'" class="waves-effect"><i class="material-icons">forum</i>'.$row['fName'].'</a></li>';
 					}
 
 					// Divider
