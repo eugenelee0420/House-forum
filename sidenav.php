@@ -61,7 +61,7 @@
 					if (havePermission(session_id(),"VI")) {
 
 						// Find the inter-house forum ID and name
-						$sql = 'SELECT fId, fName FROM forum WHERE hId IS NULL';
+						$sql = 'SELECT fId, fName FROM forum WHERE hId IS NULL LIMIT 1';
 						$result = $conn->query($sql);
 						if (!$result) {
 							die('Query failed. '.$conn->error);
