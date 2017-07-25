@@ -117,7 +117,7 @@ if ($hId === NULL) {
 
   // Check for VH or VAH permission
   if (!havePermission(session_id(),"VH") AND !havePermission(session_id(),"VAH")) {
-    die('You do not have permission to view this forum');
+    die('You do not have permission to view this forum!');
   }
 
   // If user only have VH permission
@@ -125,7 +125,7 @@ if ($hId === NULL) {
 
     // Check if the user's house and forum's house match
     if (getUserHId(session_id()) !== $hId) {
-      die('You do not have permission to view this forum');
+      die('You do not have permission to view this forum!');
     }
 
   }
