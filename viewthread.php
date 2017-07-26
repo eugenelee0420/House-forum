@@ -75,7 +75,7 @@ if (!isset($_GET['tId'])) {
 
 // Check if the requested thread exist
 $stmt = $conn->prepare('SELECT tId FROM thread WHERE tId = ?');
-$stmt->bind_param("s",$_GET['tId']);
+$stmt->bind_param("i",intval($_GET['tId']));
 $result = $stmt->execute();
 if (!$result) {
 	die('Query failed. '.$stmt->error);
@@ -84,7 +84,7 @@ if (!$result) {
 $stmt->bind_result($tId);
 $stmt->fetch();
 
-if ($tId !== $_GET['tId']) {
+if ($tId !== intval($_GET['tId'])) {
 	die('The requested thread does not exist!');
 }
 
@@ -93,7 +93,7 @@ $stmt->close();
 
 // Get the fId that this thread belongs to
 $stmt = $conn->prepare('SELECT fId FROM thread WHERE tId = ?');
-$stmt->bind_param("s",$_GET['tId']);
+$stmt->bind_param("i",intval($_GET['tId']));
 $result = $stmt->execute();
 if (!$result) {
 	die('Query failed. '.$stmt->error);
@@ -145,7 +145,7 @@ if ($hId === NULL) {
 
 // Get the thread contents
 $stmt = $conn->prepare('SELECT t.tTitle, t.tContent, t.tTime, t.fId, f.fName, t.studentId FROM thread t JOIN forum f ON t.fId = f.fId WHERE t.tId = ?');
-$stmt->bind_param("s",$_GET['tId']);
+$stmt->bind_param("i",intval($_GET['tId']));
 $result = $stmt->execute();
 if (!$result) {
 	die('Query failed. '.$conn->error);
