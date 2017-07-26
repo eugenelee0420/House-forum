@@ -41,6 +41,29 @@ Field Name | Data Type (Size) | Constraints
 permisison | char(3) | `PRIMARY KEY`
 permissionDescription | varchar(100) | `NOT NULL`
 
+#### Default data
+
+permission | permissionDescription
+----- | -----
+AGS | Access global settings
+AUG | Access userGroup settings
+AUS | Access user settings (change his/her userGroup)(accessible within profile page)
+DAH | Delete posts and replies in all house forums
+DH | Delete posts and replies within their respective house-specific forum
+DI | Delete posts and replies within inter-house forum
+EAH | Edit posts and replies in all house forums
+EH | Edit posts and replies within their respective house-specific forum
+EI | Edit posts and replies within inter-house forum
+PAH | Post in all house-specific forums
+PH | Post in their respective house-specific forum
+PI | Post in inter-house forum
+RAH | Reply to all house-specific forum threads
+RH | Reply to posts within their respective house-specific forum
+RI | Reply to posts within inter-house forum
+VAH | View all house-specific forums
+VH | View house-specific forum for user's house
+VI | View inter-house forums
+
 ### `session` table
 
 Used to store information of sessions
