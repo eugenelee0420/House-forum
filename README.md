@@ -10,6 +10,10 @@ ICT SBA Project
 
 Used to store information of individual forums
 
+Must have one and only one inter-house forum, where members of all houses can access. The record of the inter-house forum will have hId set to `NULL`
+
+Each house must only have 1 forum
+
 Field Name | Data Type (Size) | Constraints
 ----- | ----- | -----
 fId | char(3) | `PRIMARY KEY`
@@ -44,7 +48,7 @@ Used to store information of sessions
 Field Name | Data Type (Size) | Constraints
 ----- | ----- | -----
 sessionId | char(40) | `PRIMARY KEY`
-studentId | char(7) | `FOREIGN KEY REFERENCING users(studentId)`
+studentId | char(7) | `NOT NULL`, `FOREIGN KEY REFERENCING users(studentId)`
 lastActivity | int(10) | `NOT NULL`
 
 ### `thread` table
@@ -58,4 +62,47 @@ tTitle | varchar(40) | `NOT NULL`
 tContent | text | `NOT NULL`
 tTime | char(10) | `NOT NULL`
 fId | char(3) | `NOT NULL`
-studentId | char(7)| `FOREIGN KEY REFERENCING users(studentId)`
+studentId | char(7)| `NOT NULL`, `FOREIGN KEY REFERENCING users(studentId)`
+
+### `userGroup` table
+
+Used to store information of user groups
+
+Field Name | Data Type (Size) | Constraints
+----- | ----- | -----
+userGroup | char(3) | `PRIMARY KEY`
+userGroupName | varchar(50) | `NOT NULL`
+userGroupDescription | varchar(100) |
+
+### `userPermisison` table
+
+Used to store information of permissions of each user groups
+
+Field Name | Data Type (Size) | Constraints
+----- | ----- | -----
+userGroup | char(3) | `PRIMARY KEY`
+permission | char(3) | `PRIMARY KEY`, `FOREIGN KEY REFERENCING permission(permission)`
+
+### `users` table
+
+Used to store information of users
+
+Data should be inserted using [add_user.php](https://github.com/eugenelee0420/House-forum/blob/master/add_user.php)
+
+Field Name | Data Type (Size) | Constraints
+----- | ----- | -----
+studentId | char(7) | `PRIMARY KEY`
+userName | varchar(30) | `NOT NULL`, `UNIQUE`
+hId | char(3) | `NOT NULL`, `FOREIGN KEY REFERENCING house(hId)`
+userGroup | char(3) | `NOT NULL`, `FOREIGN KEY REFERENCING userGroup(userGroup)`
+hash | varchar(100) | `NOT NULL`
+
+### `userSetting` table
+
+Used to store users' settings
+
+Field Name | Data Type (Size) | Constraints
+----- | ----- | -----
+studentId | char(7) | `PRIMARY KEY`, `FOREIGN KEY REFERENCING users(studentId)`
+rowsPerPage | int(5) | `DEFAULT 10`
+avatarPic | varchar(200) | `DEFAULT 'https://upload.wikimedia.org/wikipedia/commons/1/1e/Default-avatar.jpg'`
