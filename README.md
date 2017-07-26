@@ -84,7 +84,7 @@ tId | char(10) | `PRIMARY KEY`
 tTitle | varchar(40) | `NOT NULL`
 tContent | text | `NOT NULL`
 tTime | char(10) | `NOT NULL`
-fId | char(3) | `NOT NULL`
+fId | char(3) | `NOT NULL`, `FOREIGN KEY REFERENCING forum(fId)`
 studentId | char(7)| `NOT NULL`, `FOREIGN KEY REFERENCING users(studentId)`
 
 ### `userGroup` table
