@@ -265,7 +265,7 @@ echo '</div></div>';
 
 // FAB to create new thread
 echo '<div class="fixed-action-btn">';
-echo '<a href="postthread.php?fId='.$_GET['fId'].'" class="btn-floating btn-large red">';
+echo '<a href="postthread.php?fId='.$_GET['fId'].'" class="btn-floating btn-large red waves-effect waves-light">';
 echo '<i class="large material-icons">add</i>';
 echo '</a></div>';
 
