@@ -6,7 +6,7 @@ ICT SBA Project
 
 ## Database tables
 
-'forum' table
+`forum` table
 
 Field Name | Data Type (Size) | Constraints
 ----- | --- | -----
