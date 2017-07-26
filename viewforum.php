@@ -93,14 +93,15 @@ $stmt->close();
 
 
 // Check forum type then check permission accordingly
-$stmt = $conn->prepare('SELECT hId FROM forum WHERE fId = ?');
+// Also get fName for later use
+$stmt = $conn->prepare('SELECT hId,fName FROM forum WHERE fId = ?');
 $stmt->bind_param("s",$_GET['fId']);
 $result = $stmt->execute();
 if (!$result) {
   die('Query failed. '.$stmt->error);
 }
 
-$stmt->bind_result($hId);
+$stmt->bind_result($hId,$fName);
 $stmt->fetch();
 
 $stmt->free_result();
@@ -133,6 +134,11 @@ if ($hId === NULL) {
 }
 
 // The user have sufficient permissions, can safely perform actions
+
+// Echo the forum name
+echo '<div class="row"><div class="col s12">';
+echo '<font face="roboto"><h3>'.$fName.'</h3>';
+echo '</div></div>';
 
 // Count the number of threads
 $stmt = $conn->prepare('SELECT COUNT(*) AS numT FROM thread WHERE fId = ?');
