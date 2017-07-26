@@ -80,7 +80,7 @@ Used to store information of threads
 
 Field Name | Data Type (Size) | Constraints
 ----- | ----- | -----
-tId | char(10) | `PRIMARY KEY`
+tId | int(10) | `PRIMARY KEY`
 tTitle | varchar(40) | `NOT NULL`
 tContent | text | `NOT NULL`
 tTime | char(10) | `NOT NULL`
