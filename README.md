@@ -6,7 +6,7 @@ ICT SBA Project
 
 ## Database tables
 
-`forum` table
+### `forum` table
 
 Used to store information of individual forums
 
@@ -17,7 +17,7 @@ fName | varchar(30) | `NOT NULL`
 fDescription | varchar(100) |
 hId | char(3) | `UNIQUE`, `FOREIGN KEY REFERENCING house(hId)`
 
-`house` table
+### `house` table
 
 Used to store information of the houses
 
@@ -26,7 +26,7 @@ Field Name | Data Type (Size) | Constraints
 hId | char(3) | `PRIMARY KEY`
 houseName | varchar(20) | `NOT NULL`
 
-`permission` table
+### `permission` table
 
 Stores a set of permission that is used in the code
 
@@ -37,7 +37,7 @@ Field Name | Data Type (Size) | Constraints
 permisison | char(3) | `PRIMARY KEY`
 permissionDescription | varchar(100) | `NOT NULL`
 
-`session` table
+### `session` table
 
 Used to store information of sessions
 
@@ -47,7 +47,7 @@ sessionId | char(40) | `PRIMARY KEY`
 studentId | char(7) | `FOREIGN KEY REFERENCING users(studentId)`
 lastActivity | int(10) | `NOT NULL`
 
-`thread` table
+### `thread` table
 
 Used to store information of threads
 
