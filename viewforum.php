@@ -132,6 +132,8 @@ if ($hId === NULL) {
 
 }
 
+// The user have sufficient permissions, can safely perform actions
+
 // Count the number of threads
 $stmt = $conn->prepare('SELECT COUNT(*) AS numT FROM thread WHERE fId = ?');
 $stmt->bind_param("s",$_GET['fId']);
