@@ -124,6 +124,10 @@ hash | varchar(100) | `NOT NULL`
 
 Used to store users' settings
 
+New record with default settings will be added when an user is created using [add_user.php](https://github.com/eugenelee0420/House-forum/blob/master/add_user.php)
+
+Records should not be added or deleted, but the defaults can be customized
+
 Field Name | Data Type (Size) | Constraints
 ----- | ----- | -----
 studentId | char(7) | `PRIMARY KEY`, `FOREIGN KEY REFERENCING users(studentId)`
