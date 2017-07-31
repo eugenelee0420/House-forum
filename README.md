@@ -133,3 +133,12 @@ Field Name | Data Type (Size) | Constraints
 studentId | char(7) | `PRIMARY KEY`, `FOREIGN KEY REFERENCING users(studentId)`
 rowsPerPage | int(5) | `DEFAULT 10`
 avatarPic | varchar(200) | `DEFAULT 'https://upload.wikimedia.org/wikipedia/commons/1/1e/Default-avatar.jpg'`
+
+### `reply` table
+
+Field Name | Data Type (Size) | Constraints
+----- | ----- | -----
+rId | int(10) | `PRIMARY KEY`
+rContent | text | `NOT NULL`
+tId | int(10) | `NOT NULL`, `FOREIGN KEY REFERENCING thread(tId)`
+studentId | char(7) | `NOT NULL`, `FOREIGN KEY REFERENCING users(studentId)`
