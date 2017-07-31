@@ -196,7 +196,7 @@ while ($stmt->fetch()) {
 	echo '<li>';
 	echo '<div class="collapsible-header">'.$userName.'</div>';
 	echo '<div class="collapsible-body">';
-	echo '<p class="grey-text"><a href="profile.php?studentId='.$studentId.'">'.$userName.'</a> replied on '.date('j/n/Y G:i',$tTime + $timezoneOffset).'</p>';
+	echo '<p class="grey-text"><a href="profile.php?studentId='.$studentId.'">'.$userName.'</a> replied on '.date('j/n/Y G:i',$rTime + $timezoneOffset).'</p>';
 	echo '<p class="flow-text">'.$rContent.'</p>';
 	echo '</li>';
 
