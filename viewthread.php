@@ -59,6 +59,7 @@ if (!$result) {
 <script>
 $(document).ready(function() {
 		$(".button-collapse").sideNav();
+		$('.collapsible').collapsible();
   });
 </script>
 
@@ -173,5 +174,37 @@ echo '<h3>'.$tTitle.'</h3>';
 echo '<p class="grey-text">Started by <a href="profile.php?studentId='.$studentId.'">'.userNameFromStudentId($studentId).'</a> on '.date('j/n/Y G:i',$tTime + $timezoneOffset).'</p>';
 
 echo '<p class="flow-text">'.$tContent.'</p>';
+
+echo '<hr>';
+
+// Get replies
+$stmt = $conn->prepare('SELECT r.rId, r.rContent, r.rTime, r.studentId, u.userName FROM reply r JOIN users u ON r.studentId = u.studentId WHERE r.tId = ? ORDER BY r.rTime ASC');
+$stmt->bind_param("i",intval($_GET['tId']));
+$result = $stmt->execute();
+if (!$result) {
+	die('Query failed. '.$stmt->error);
+}
+
+$stmt->bind_result($rId, $rContent, $rTime, $studentId, $userName);
+
+// Collapsible
+echo '<ul class="collapsible" data-collapsible="expandable">';
+
+// Display the replies
+while ($stmt->fetch()) {
+
+	echo '<li>';
+	echo '<div class="collapsible-header">'.$userName.'</div>';
+	echo '<div class="collapsible-body">';
+	echo '<p class="grey-text"><a href="profile.php?studentId='.$studentId.'">'.$userName.'</a> replied on '.date('j/n/Y G:i',$tTime + $timezoneOffset).'</p>';
+	echo '<p class="flow-text">'.$rContent.'</p>';
+	echo '</li>';
+
+}
+
+echo '</ul>';
+
+$stmt->free_result();
+$stmt->close();
 
 ?>
