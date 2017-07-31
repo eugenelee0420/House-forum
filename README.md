@@ -142,5 +142,6 @@ Field Name | Data Type (Size) | Constraints
 ----- | ----- | -----
 rId | int(10) | `PRIMARY KEY`
 rContent | text | `NOT NULL`
+rTime | int(10) | `NOT NULL`
 tId | int(10) | `NOT NULL`, `FOREIGN KEY REFERENCING thread(tId)`
 studentId | char(7) | `NOT NULL`, `FOREIGN KEY REFERENCING users(studentId)`
