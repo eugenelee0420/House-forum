@@ -136,6 +136,8 @@ avatarPic | varchar(200) | `DEFAULT 'https://upload.wikimedia.org/wikipedia/comm
 
 ### `reply` table
 
+Used to store replies to threads
+
 Field Name | Data Type (Size) | Constraints
 ----- | ----- | -----
 rId | int(10) | `PRIMARY KEY`
