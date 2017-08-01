@@ -193,15 +193,33 @@ $stmt->bind_result($rId, $rContent, $rTime, $studentId, $userName);
 echo '<div class="row"><div class="col s12">';
 echo '<ul class="collapsible" data-collapsible="expandable">';
 
+// Set up counter
+$x = 1;
+
+// Store the results so $stmt->num_rows can return a number
+$stmt->store_result();
+// Get the number of rows
+$numrow = $stmt->num_rows;
+
 // Display the replies
 while ($stmt->fetch()) {
 
 	echo '<li>';
-	echo '<div class="collapsible-header">'.$userName.'</div>';
+
+	// Expand the reply if this is the last row
+	if ($x == $numrow) {
+		echo '<div class="collapsible-header active">'.$userName.'</div>';
+	} else {
+		echo '<div class="collapsible-header">'.$userName.'</div>';
+	}
+
 	echo '<div class="collapsible-body">';
 	echo '<p class="grey-text"><a href="profile.php?studentId='.$studentId.'">'.$userName.'</a> replied on '.date('j/n/Y G:i',$rTime + $timezoneOffset).'</p>';
 	echo '<p class="flow-text">'.$rContent.'</p>';
 	echo '</li>';
+
+	// Increment counter
+	$x++;
 
 }
 
