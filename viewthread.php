@@ -175,6 +175,8 @@ echo '<p class="grey-text">Started by <a href="profile.php?studentId='.$studentI
 
 echo '<p class="flow-text">'.$tContent.'</p>';
 
+echo '</div></div>';
+
 echo '<hr>';
 
 // Get replies
@@ -188,6 +190,7 @@ if (!$result) {
 $stmt->bind_result($rId, $rContent, $rTime, $studentId, $userName);
 
 // Collapsible
+echo '<div class="row"><div class="col s12">';
 echo '<ul class="collapsible" data-collapsible="expandable">';
 
 // Display the replies
@@ -203,6 +206,7 @@ while ($stmt->fetch()) {
 }
 
 echo '</ul>';
+echo '</div></div>';
 
 $stmt->free_result();
 $stmt->close();
