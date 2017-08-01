@@ -215,11 +215,13 @@ $stmt->close();
 // Because this form will appear in code multiple times, but will only be called once
 function displayForm() {
 
+	global $_GET;
+
 	echo
 	'<hr>
 
 	<div class="row">
-		<form class="col s12" action="" method="post">
+		<form class="col s12" action="postreply.php?tId='.$_GET['tId'].'" method="post">
 
 			<div class="row">
 				<div class="input-field col s12">
