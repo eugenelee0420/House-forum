@@ -211,27 +211,47 @@ echo '</div></div>';
 $stmt->free_result();
 $stmt->close();
 
-// Form to submit a new reply
+// Function to display post reply form
+// Because this form will appear in code multiple times, but will only be called once
+function displayForm() {
+
+	echo
+	'<hr>
+
+	<div class="row">
+		<form class="col s12" action="" method="post">
+
+			<div class="row">
+				<div class="input-field col s12">
+					<textarea id="reply" name="reply" class="materialize-textarea"></textarea>
+					<label for="reply">Your reply</label>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col s12">
+					<button class="btn waves-effect waves-light" type="submit" name="submit" value="submit">Post reply
+					<i class="material-icons right">send</i></button>
+				</div>
+			</div>
+
+		</form>
+	</div>';
+
+}
+
+if ($hId == NULL) {
+
+	if (havePermission(session_id(),"RI")) {
+		displayForm();
+	}
+
+} else {
+
+	if (havePermission(session_id(),"RH") OR havePermission(session_id(),"RAH")) {
+		displayForm();
+	}
+
+}
+
 ?>
-
-<hr>
-
-<div class="row">
-	<form class="col s12" action="" method="post">
-
-		<div class="row">
-			<div class="input-field col s12">
-				<textarea id="reply" name="reply" class="materialize-textarea"></textarea>
-				<label for="reply">Your reply</label>
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col s12">
-				<button class="btn waves-effect waves-light" type="submit" name="submit" value="submit">Post reply
-				<i class="material-icons right">send</i></button>
-			</div>
-		</div>
-
-	</form>
-</div>
