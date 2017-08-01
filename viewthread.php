@@ -243,7 +243,7 @@ function displayForm() {
 
 			<div class="row">
 				<div class="input-field col s12">
-					<textarea id="reply" name="reply" class="materialize-textarea"></textarea>
+					<textarea id="reply" name="reply" class="materialize-textarea" data-length="65535"></textarea>
 					<label for="reply">Your reply</label>
 				</div>
 			</div>
