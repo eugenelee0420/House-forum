@@ -214,6 +214,8 @@ $stmt->close();
 // Form to submit a new reply
 ?>
 
+<hr>
+
 <div class="row">
 	<form class="col s12" action="" method="post">
 
