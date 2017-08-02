@@ -1,5 +1,6 @@
 <?php
 // Page to perform various action that does not need feedback, specified by get request
+// Redirect after the action have been performed
 // No html, just php
 
 require "cfg.php";
