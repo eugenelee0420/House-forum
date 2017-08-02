@@ -69,8 +69,13 @@ require "sidenav.php";
 // Check if user requested a forum to display
 // If not, redirect to index.php
 if (!isset($_GET['fId'])) {
-  header('Location: index.php');
-  die();
+	// Cannot use header because some html have already been sent
+	?>
+	<script type="text/javascript">
+		window.location = "index.php";
+  </script>
+	<?php
+	die();
 }
 
 // Check if requested forum exist

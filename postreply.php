@@ -38,8 +38,13 @@ if (!$result) {
 // Check if user requested anything
 // If not, redirect to index.php
 if (!isset($_GET['tId']) OR !isset($_POST['submit']) OR !isset($_POST['reply'])) {
-  header('Location: index.php');
-  die();
+	// Cannot use header because some html have already been sent
+	?>
+	<script type="text/javascript">
+		window.location = "index.php";
+  </script>
+	<?php
+	die();
 }
 
 // Check if the requested thread exist
