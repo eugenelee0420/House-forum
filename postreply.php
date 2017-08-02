@@ -1,6 +1,6 @@
 <?php
-// Page to post new thread (requires login and sufficient permission)
-// Self-submitting form
+// Page to post new reply (requires login and sufficient permission)
+// No html, just php
 
 require "cfg.php";
 require "functions.php";
