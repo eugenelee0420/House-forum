@@ -244,7 +244,7 @@ function displayForm() {
 	'<hr>
 
 	<div class="row">
-		<form class="col s12" action="postreply.php?tId='.$_GET['tId'].'" method="post">
+		<form class="col s12" action="actions.php?tId='.$_GET['tId'].'&action=reply" method="post">
 
 			<div class="row">
 				<div class="input-field col s12">
