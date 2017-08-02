@@ -276,10 +276,28 @@ $stmt->close();
 echo '</tbody></table>';
 echo '</div></div>';
 
-// FAB to create new thread
-echo '<div class="fixed-action-btn">';
-echo '<a href="postthread.php?fId='.$_GET['fId'].'" class="btn-floating btn-large red waves-effect waves-light">';
-echo '<i class="large material-icons">add</i>';
-echo '</a></div>';
+// Function to display post reply form
+// Because this button will appear in code multiple times, but will only be called once
+function displayFAB() {
+
+	// FAB to create new thread
+	echo '<div class="fixed-action-btn">';
+	echo '<a href="postthread.php?fId='.$_GET['fId'].'" class="btn-floating btn-large red waves-effect waves-light">';
+	echo '<i class="large material-icons">add</i>';
+	echo '</a></div>';
+
+}
+
+if ($hId == NULL) {
+
+	if(havePermission(session_id(),"PI")) {
+		displayFAB();
+	}
+
+} elseif (havePermission(session_id(),"PH") OR havePermission(session_id(),"PAH")) {
+
+	displayFAB();
+
+}
 
 ?>
