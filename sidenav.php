@@ -11,7 +11,7 @@
 					<!-- User-view -->
 					<li><div class="user-view">
 						<div class="background">
-							<img src="https://puu.sh/vutY0.jpg">
+							<img src="<?php echoGetUserSetting(getStudentId(session_id()),'bgPic'); ?>">
 						</div>
 						<?php echo '<a href="profile.php"><img class="circle" src="'.getUserSetting(getStudentId(session_id()),"avatarPic").'"></a>'; ?>
 						<span class="white-text name"><?php echoGetUserName(session_id()); ?> (<?php echoGetUserGroupName(session_id()); ?>)</span>
