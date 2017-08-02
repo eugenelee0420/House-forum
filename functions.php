@@ -147,6 +147,14 @@ function getUserSetting($studentId,$setting) {
 
 }
 
+// Wrapper function to echo getUserSetting
+function echoGetUserSetting($studentId,$setting) {
+
+  $return = getUserSetting($studentId,$setting);
+  echo $return;
+
+}
+
 // Function to get userGroup of current session
 function getUserGroup($sessId) {
 
