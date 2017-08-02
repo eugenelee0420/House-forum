@@ -130,11 +130,9 @@ function getUserHId($sessId) {
 }
 
 // Function to get user setting
-function getUserSetting($sessId,$setting) {
+function getUserSetting($studentId,$setting) {
 
   global $conn;
-
-  $studentId = getStudentId($sessId);
 
   $sql = 'SELECT '.$setting.' FROM userSetting WHERE studentId = "'.$studentId.'";';
   $result = $conn->query($sql);

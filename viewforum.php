@@ -155,7 +155,7 @@ $stmt->free_result();
 $stmt->close();
 
 // Get user's rowsPerPage
-$rowsPerPage = getUserSetting(session_id(),"rowsPerPage");
+$rowsPerPage = getUserSetting(getStudentId(session_id()),"rowsPerPage");
 
 // Calculate how many pages are needed
 $numPage = ceil($numT/$rowsPerPage);
