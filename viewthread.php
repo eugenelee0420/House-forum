@@ -284,7 +284,7 @@ function displayFABEdit() {
 	echo '<li><a class="btn-floating tooltipped red" data-tooltip="Edit thread" data-position="left" data-delay="0"><i class="material-icons">edit</i></a></li>';
 }
 function displayFABDelete() {
-	echo '<li><a class="btn-floating tooltipped yellow darken-1" data-tooltip="Delete thread" data-position="left" data-delay="0"><i class="material-icons">delete</i></a></li>';
+	echo '<li><a href="actions.php?action=delete&tId='.$_GET['tId'].'" class="btn-floating tooltipped yellow darken-1" data-tooltip="Delete thread" data-position="left" data-delay="0"><i class="material-icons">delete</i></a></li>';
 }
 function displayFABPin() {
 	echo '<li><a class="btn-floating tooltipped blue" data-tooltip="Pin thread" data-position="left" data-delay="0"><i class="material-icons">label</i></a></li>';

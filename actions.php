@@ -160,7 +160,113 @@ if ($_GET['action'] == "reply") {
 
 }
 
+// Delete thread
+if ($_GET['action'] == "delete") {
 
+	// Check if the user requested anything
+	// If not, redirect to index.php
+	if (!isset($_GET['tId'])) {
+		header('Location: index.php');
+		die();
+	}
+
+	// Check if the thread exist
+	$stmt = $conn->prepare('SELECT tId FROM thread WHERE tId = ?');
+	$stmt->bind_param("i",intval($_GET['tId']));
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($tId);
+	$stmt->fetch();
+
+	if ($tId !== intval($_GET['tId'])) {
+		die('The requested thread does not exist!');
+	}
+
+	$stmt->free_result();
+	$stmt->close();
+
+	// Get the fId that this thread belongs to
+	$stmt = $conn->prepare('SELECT fId FROM thread WHERE tId = ?');
+	$stmt->bind_param("i",intval($_GET['tId']));
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($fId);
+	$stmt->fetch();
+
+	$stmt->free_result();
+	$stmt->close();
+
+	// Check forum type then check permission accordingly
+	$sql = 'SELECT hId FROM forum WHERE fId = "'.$fId.'"';
+	$result = $conn->query($sql);
+	if (!$result) {
+	  die('Query failed. '.$conn->error);
+	}
+
+	$row = mysqli_fetch_assoc($result);
+	$hId = $row['hId'];
+
+	mysqli_free_result($result);
+
+	if ($hId == NULL) {
+
+		// Check for DI permission
+		if (!havePermission(session_id(),"DI")) {
+			die('You do not have permission to delete this thread!');
+		}
+
+	} else {
+
+		// Check for DH or DAH permission
+		if (!havePermission(session_id(),"DH") AND !havePermission(session_id(),"DAH")) {
+			die('You do not have permission to delete this thread!');
+		}
+
+		// If user only have DH permission
+		if (havePermission(session_id(),"DH") AND !havePermission(session_id(),"DAH")) {
+
+			// Check if the user's house and forum's house match
+			if (getUserHId(session_id()) !== $hId) {
+				die('You do not have permission to delete this thread!');
+			}
+
+		}
+
+	}
+
+	// Delete the replies associated with the deleted thread
+	// Because foreign key constraint this must be deleted first
+	$stmt = $conn->prepare('DELETE FROM reply WHERE tId = ?');
+	$stmt->bind_param("i",intval($_GET['tId']));
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	// Delete the requested thread
+	$stmt = $conn->prepare('DELETE FROM thread WHERE tId = ?');
+	$stmt->bind_param("i",intval($_GET['tId']));
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->free_result();
+	$stmt->close();
+
+
+
+	$stmt->free_result();
+	$stmt->close();
+
+	header('Location: viewforum.php?fId='.$fId);
+	die();
 
 }
 
