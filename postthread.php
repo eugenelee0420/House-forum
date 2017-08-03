@@ -148,6 +148,13 @@ if ($_POST['submit'] == 'submit') {
 		die('Please do not enter more than 65,535 characters for the content!');
 	}
 
+	// Strip html tags
+	$title = strip_tags($_POST['tTitle']);
+	$content = strip_tags($_POST['tContent']);
+
+	// Markdown in content
+	$mdcontent = $parsedown->text($content);
+
 	// Get tId
 	$sql = 'SELECT MAX(tId) AS tMax FROM thread';
 	$result = $conn->query($sql);
@@ -162,7 +169,7 @@ if ($_POST['submit'] == 'submit') {
 
 	// Add to database
 	$stmt = $conn->prepare('INSERT INTO thread (tId, tTitle, tContent, tTime, fId, studentId) VALUES ('.$tId.', ?, ?, "'.time().'", ?, ?)');
-	$stmt->bind_param("ssss",$_POST['tTitle'],$_POST['tContent'],$_GET['fId'],getStudentId(session_id()));
+	$stmt->bind_param("ssss",$title,$mdcontent,$_GET['fId'],getStudentId(session_id()));
 	$result = $stmt->execute();
 	if (!$result) {
 		die('Query failed. '.$stmt->error);
