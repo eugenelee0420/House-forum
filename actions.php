@@ -134,6 +134,12 @@ if ($_GET['action'] == "reply") {
 	  die('Please do not enter more than 65,535 characters for the reply!');
 	}
 
+	// Strip html tags
+	$reply = strip_tags($_POST['reply']);
+
+	// Markdown
+	$mdreply = $parsedown->text($reply);
+
 	// Get max rId
 	$sql = 'SELECT MAX(rId) AS rMax FROM reply';
 	$result = $conn->query($sql);
@@ -145,7 +151,7 @@ if ($_GET['action'] == "reply") {
 	$rId = (intval($row['rMax']) + 1);
 
 	$stmt = $conn->prepare('INSERT INTO reply (rId, rContent, rTime, tId, studentId) VALUES ('.$rId.', ?, "'.time().'", ?, ?)');
-	$stmt->bind_param("sis",$_POST['reply'],intval($_GET['tId']),getStudentId(session_id()));
+	$stmt->bind_param("sis",$mdreply,intval($_GET['tId']),getStudentId(session_id()));
 	$result = $stmt->execute();
 	if (!$result) {
 	  die('Query failed. '.$stmt->error);
