@@ -3,7 +3,8 @@
 		<div class="row">
 			<div class="col s12">
 				<!-- Logo -->
-    		<a href="index.php" class="brand-logo center flow-text">House Forums</a>
+    		<a href="index.php" class="brand-logo center flow-text hide-on-small-only">House Forums</a>
+        <a href="index.php" class="brand-logo right flow-text hide-on-med-and-up">House Forums</a>
 
 				<!-- Sidenav -->
 				<ul id="slide-out" class="side-nav">
