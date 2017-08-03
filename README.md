@@ -4,6 +4,11 @@
 
 ICT SBA Project
 
+## Other projects used
+
+* [materialize](https://github.com/dogfalo/materialize/)
+* [Parsedown](https://github.com/erusev/parsedown)
+
 ## Database tables
 
 ### `forum` table
