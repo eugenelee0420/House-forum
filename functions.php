@@ -3,6 +3,9 @@
 
 require "cfg.php";
 
+require "Parsedown.php";
+$parsedown = new Parsedown();
+
 // Connect to database
 $conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
 if ($conn->connect_error) {
