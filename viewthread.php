@@ -163,6 +163,9 @@ $stmt->fetch();
 $stmt->free_result();
 $stmt->close();
 
+// Parse markdown
+$mdContent = $parsedown->text($tContent);
+
 // Display the thread content
 echo '<font face="roboto">';
 echo '<div class="row"><div class="col s12">';
@@ -178,7 +181,7 @@ echo '<div class="row"><div class="col s12">';
 echo '<h3>'.$tTitle.'</h3>';
 echo '<p class="grey-text">Started by <a href="profile.php?studentId='.$studentId.'">'.userNameFromStudentId($studentId).'</a> on '.date('j/n/Y G:i',$tTime + $timezoneOffset).'</p>';
 
-echo '<div class="flow-text">'.$tContent.'</div>';
+echo '<div class="flow-text">'.$mdContent.'</div>';
 
 echo '</div></div>';
 
@@ -218,9 +221,12 @@ while ($stmt->fetch()) {
 		echo '<div class="collapsible-header">'.$userName.'</div>';
 	}
 
+	// Parse markdown
+	$mdReply = $parsedown->text($rContent);
+
 	echo '<div class="collapsible-body">';
 	echo '<p class="grey-text"><a href="profile.php?studentId='.$studentId.'">'.$userName.'</a> replied on '.date('j/n/Y G:i',$rTime + $timezoneOffset).'</p>';
-	echo '<div class="flow-text">'.$rContent.'</div>';
+	echo '<div class="flow-text">'.$mdReply.'</div>';
 	echo '</li>';
 
 	// Increment counter
