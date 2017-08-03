@@ -178,7 +178,7 @@ echo '<div class="row"><div class="col s12">';
 echo '<h3>'.$tTitle.'</h3>';
 echo '<p class="grey-text">Started by <a href="profile.php?studentId='.$studentId.'">'.userNameFromStudentId($studentId).'</a> on '.date('j/n/Y G:i',$tTime + $timezoneOffset).'</p>';
 
-echo '<p class="flow-text">'.$tContent.'</p>';
+echo '<div class="flow-text">'.$tContent.'</div>';
 
 echo '</div></div>';
 
@@ -220,7 +220,7 @@ while ($stmt->fetch()) {
 
 	echo '<div class="collapsible-body">';
 	echo '<p class="grey-text"><a href="profile.php?studentId='.$studentId.'">'.$userName.'</a> replied on '.date('j/n/Y G:i',$rTime + $timezoneOffset).'</p>';
-	echo '<p class="flow-text">'.$rContent.'</p>';
+	echo '<div class="flow-text">'.$rContent.'</div>';
 	echo '</li>';
 
 	// Increment counter
