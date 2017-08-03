@@ -155,6 +155,11 @@ if ($_GET['action'] == "reply") {
 	$stmt->close();
 
 	header('Location: viewthread.php?tId='.$_GET['tId']);
+	die();
+
+
+}
+
 
 
 }
