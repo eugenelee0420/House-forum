@@ -279,4 +279,69 @@ if ($hId == NULL) {
 
 }
 
+// Functions to display buttons in FAB
+function displayFABEdit() {
+	echo '<li><a class="btn-floating tooltipped red" data-tooltip="Edit thread" data-position="left" data-delay="0"><i class="material-icons">edit</i></a></li>';
+}
+function displayFABDelete() {
+	echo '<li><a class="btn-floating tooltipped yellow darken-1" data-tooltip="Delete thread" data-position="left" data-delay="0"><i class="material-icons">delete</i></a></li>';
+}
+function displayFABPin() {
+	echo '<li><a class="btn-floating tooltipped blue" data-tooltip="Pin thread" data-position="left" data-delay="0"><i class="material-icons">label</i></a></li>';
+}
+function displayFABUnpin() {
+	echo '<li><a class="btn-floating tooltipped blue" data-tooltip="Unpin thread" data-position="left" data-delay="0"><i class="material-icons">label_outline</i></a></li>';
+}
+
+// If user have either one permission to delete or edit
+// If hId is null, either EI or DI must be true
+// If hId is not null, either EAH or EH or DAH or DH must be true
+if (( ($hId == NULL) AND (havePermission(session_id(),"EI") OR havePermission(session_id(),"DI")) ) OR ( ($hId !== NULL) AND (havePermission(session_id(),"EAH") OR havePermission(session_id(),"EH") OR havePermission(session_id(),"DAH") OR havePermission(session_id(),"DH") ))) {
+
+	// Display the "more" icon/FAB
+	echo '<div class="fixed-action-btn">';
+	echo '<a class="btn-floating btn-large red">';
+	echo '<i class="large material-icons">more_vert</i>';
+	echo '</a>';
+
+	echo '<ul>';
+	// Display sub-fab based on permissions
+	if ($hId == NULL) {
+
+		if (havePermission(session_id(),"EI")) {
+			displayFABEdit();
+		}
+
+		if (havePermission(session_id(),"DI")) {
+			displayFABDelete();
+		}
+
+	} else {
+
+		if (havePermission(session_id(),"EH") OR havePermission(session_id(),"EAH")) {
+			displayFABEdit();
+		}
+
+		if (havePermission(session_id(),"DH") OR havePermission(session_id(),"DAH")) {
+			displayFABDelete();
+		}
+
+	}
+
+	echo '</ul>';
+	echo '</div>';
+
+}
+
 ?>
+
+<!-- <div class="fixed-action-btn">
+    <a class="btn-floating btn-large red">
+      <i class="large material-icons">more_vert</i>
+    </a>
+    <ul>
+      <li><a class="btn-floating tooltipped red" data-tooltip="Edit thread" data-position="left" data-delay="0"><i class="material-icons">edit</i></a></li>
+      <li><a class="btn-floating tooltipped yellow darken-1" data-tooltip="Delete thread" data-position="left" data-delay="0"><i class="material-icons">delete</i></a></li>
+      <li><a class="btn-floating tooltipped blue" data-tooltip="Pin thread" data-position="left" data-delay="0"><i class="material-icons">label</i></a></li>
+    </ul>
+  </div> -->
