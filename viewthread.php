@@ -209,6 +209,15 @@ $stmt->store_result();
 // Get the number of rows
 $numrow = $stmt->num_rows;
 
+// Functions to display buttons to delete or edit reply
+function displayBtnEdit($rId) {
+	echo '<a href="edit.php?rId='.$rId.'" class="btn-floating tooltipped red" data-tooltip="Edit reply" data-position="down" data-delay="0"><i class="material-icons">edit</i></a>';
+}
+function displayBtnDelete($rId) {
+	echo ' ';
+	echo '<a href="actions.php?action=rdelete&rId='.$rId.'" class="btn-floating tooltipped yellow darken-1" data-tooltip="Delete reply" data-position="down" data-delay="0"><i class="material-icons">delete</i></a>';
+}
+
 // Display the replies
 while ($stmt->fetch()) {
 
@@ -227,6 +236,32 @@ while ($stmt->fetch()) {
 	echo '<div class="collapsible-body">';
 	echo '<p class="grey-text"><a href="profile.php?studentId='.$studentId.'">'.$userName.'</a> replied on '.date('j/n/Y G:i',$rTime + $timezoneOffset).'</p>';
 	echo '<div class="flow-text">'.$mdReply.'</div>';
+	echo '<p>';
+
+	// Display buttons based on permissions
+	if ($hId == NULL) {
+
+		if (havePermission(session_id(),"EI")) {
+			displayBtnEdit($rId);
+		}
+
+		if (havePermission(session_id(),"DI")) {
+			displayBtnDelete($rId);
+		}
+
+	} else {
+
+		if (havePermission(session_id(),"EH") OR havePermission(session_id(),"EAH")) {
+			displayBtnEdit($rId);
+		}
+
+		if (havePermission(session_id(),"DH") OR havePermission(session_id(),"DAH")) {
+			displayBtnDelete($rId);
+		}
+
+	}
+
+	echo '</p>';
 	echo '</li>';
 
 	// Increment counter
