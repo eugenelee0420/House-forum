@@ -137,7 +137,7 @@ function getUserHId($sessId) {
     die('Query failed. '.$stmt->error);
   }
 
-  $stmt->bind_param($hId);
+  $stmt->bind_result($hId);
   $stmt->fetch();
 
   return $hId;
