@@ -11,6 +11,7 @@ ICT SBA Project
 
 ## To-do list
 
+- [ ] Change queries to prepared statement
 - [ ] Delete reply
 - [ ] Pin thread
 - [ ] User settings
