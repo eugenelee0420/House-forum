@@ -255,6 +255,9 @@ function havePermission($sessId,$perm) {
     return FALSE;
   }
 
+  $stmt->free_result();
+  $stmt->close();
+
 }
 
 ?>

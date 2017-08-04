@@ -27,16 +27,24 @@
 					// If the user only have permission to view one house-specific forum (the one they belong to)
 					if (havePermission(session_id(),"VH") AND !havePermission(session_id(),"VAH")) {
 
+            // Get user's hId
+            $hId = getUserHId(session_id());
+
 						// Find the fId of the user's house
-						$sql = 'SELECT fId, fName FROM forum WHERE hId = "'.getUserHId(session_id()).'";';
-						$result = $conn->query($sql);
+						$stmt = $conn->prepare('SELECT fId, fName FROM forum WHERE hId = ?');
+            $stmt->bind_param("s",$hId);
+						$result = $stmt->execute();
 						if (!$result) {
-							die('Query failed. '.$conn->error);
+							die('Query failed. '.$stmt->error);
 						}
 
-						$row = mysqli_fetch_assoc($result);
+						$stmt->bind_result($fId,$fName);
+            $stmt->fetch();
 
-						echo '<li><a href="viewforum.php?fId='.$row['fId'].'" class="waves-effect"><i class="material-icons">chat</i>'.$row['fName'].'</a></li>';
+						echo '<li><a href="viewforum.php?fId='.$fId.'" class="waves-effect"><i class="material-icons">chat</i>'.$fName.'</a></li>';
+
+            $stmt->free_result();
+            $stmt->close();
 
 					} elseif (havePermission(session_id(),"VAH")) { // If user have permission to view all houses' forums
 
@@ -54,9 +62,9 @@
 
 						}
 
-					}
+            mysqli_free_result($result);
 
-					mysqli_free_result($result);
+					}
 
 					// Show inter-house forum link
 					if (havePermission(session_id(),"VI")) {
@@ -71,7 +79,10 @@
 						$row = mysqli_fetch_assoc($result);
 
 						echo '<li><a href="viewforum.php?fId='.$row['fId'].'" class="waves-effect"><i class="material-icons">forum</i>'.$row['fName'].'</a></li>';
-					}
+
+            mysqli_free_result($result);
+
+          }
 
 					// Divider
 					if (havePermission(session_id(),"AGS") OR havePermission(session_id(),"AUS")) {

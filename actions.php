@@ -86,16 +86,18 @@ if ($_GET['action'] == "reply") {
 	$stmt->close();
 
 	// Check forum type then check permission accordingly
-	$sql = 'SELECT hId FROM forum WHERE fId = "'.$fId.'"';
-	$result = $conn->query($sql);
+	$stmt = $conn->prepare('SELECT hId FROM forum WHERE fId = ?');
+	$stmt->bind_param("s",$fId);
+	$result = $stmt->execute();
 	if (!$result) {
-	  die('Query failed. '.$conn->error);
+	  die('Query failed. '.$stmt->error);
 	}
 
-	$row = mysqli_fetch_assoc($result);
-	$hId = $row['hId'];
+	$stmt->bind_result($hId);
+	$stmt->fetch();
 
-	mysqli_free_result($result);
+	$stmt->free_result();
+	$stmt->close();
 
 	if ($hId === NULL) {
 
@@ -206,16 +208,18 @@ if ($_GET['action'] == "delete") {
 	$stmt->close();
 
 	// Check forum type then check permission accordingly
-	$sql = 'SELECT hId FROM forum WHERE fId = "'.$fId.'"';
-	$result = $conn->query($sql);
+	$stmt = $conn->prepare('SELECT hId FROM forum WHERE fId = ?');
+	$stmt->bind_param("s",$fId);
+	$result = $stmt->execute();
 	if (!$result) {
-	  die('Query failed. '.$conn->error);
+	  die('Query failed. '.$stmt->error);
 	}
 
-	$row = mysqli_fetch_assoc($result);
-	$hId = $row['hId'];
+	$stmt->bind_result($hId);
+	$stmt->fetch();
 
-	mysqli_free_result($result);
+	$stmt->free_result();
+	$stmt->close();
 
 	if ($hId == NULL) {
 
