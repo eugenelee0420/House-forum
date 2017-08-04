@@ -44,16 +44,20 @@ function getUserName($sessId) {
 
   $studentId = getStudentId($sessId);
 
-  $sql = 'SELECT userName from users WHERE studentId = "'.$studentId.'";';
-  $result = $conn->query($sql);
+  $stmt = $conn->prepare('SELECT userName from users WHERE studentId = ?');
+  $stmt->bind_param("s",$studentId);
+  $result = $stmt->execute();
   if (!$result) {
-    die('Query failed. '.$conn->error);
+    die('Query failed. '.$stmt->error);
   }
 
-  $row = mysqli_fetch_assoc($result);
-  return $row['userName'];
+  $stmt->bind_result($userName);
+  $stmt->fetch();
 
-  mysqli_free_result($result);
+  return $userName;
+
+  $stmt->free_result();
+  $stmt->close();
 
 }
 
@@ -70,17 +74,20 @@ function userNameFromStudentId($studentId) {
 
   global $conn;
 
-  $sql = 'SELECT userName FROM users WHERE studentId = "'.$studentId.'";';
-  $result = $conn->query($sql);
+  $stmt = $conn->prepare('SELECT userName FROM users WHERE studentId = ?');
+  $stmt->bind_param("s",$studentId);
+  $result = $stmt->execute();
   if (!$result) {
-    die('Query failed. '.$conn->error);
+    die('Query failed. '.$stmt->error);
   }
 
-  $row = mysqli_fetch_assoc($result);
+  $stmt->bind_result($userName);
+  $stmt->fetch();
 
-  return $row['userName'];
+  return $userName;
 
-  mysqli_free_result($reuslt);
+  $stmt->free_result();
+  $stmt->close();
 
 }
 
@@ -91,16 +98,20 @@ function getUserHouseName($sessId) {
 
   $studentId = getStudentId($sessId);
 
-  $sql = 'SELECT h.houseName FROM users u JOIN house h ON u.hId = h.hId WHERE u.studentId = "'.$studentId.'";';
-  $result = $conn->query($sql);
+  $stmt = $conn->prepare('SELECT h.houseName FROM users u JOIN house h ON u.hId = h.hId WHERE u.studentId = ?');
+  $stmt->bind_param("s",$studentId);
+  $result = $stmt->execute();
   if (!$result) {
-    die('Query failed. '.$conn->error);
+    die('Query failed. '.$stmt->error);
   }
 
-  $row = mysqli_fetch_assoc($result);
-  return $row['houseName'];
+  $stmt->bind_result($houseName);
+  $stmt->fetch();
 
-  mysqli_free_result($result);
+  return $houseName;
+
+  $stmt->free_result();
+  $stmt->close();
 
 }
 
@@ -119,16 +130,20 @@ function getUserHId($sessId) {
 
   $studentId = getStudentId($sessId);
 
-  $sql = 'SELECT hId from users WHERE studentId = "'.$studentId.'";';
-  $result = $conn->query($sql);
+  $stmt = $conn->prepare('SELECT hId from users WHERE studentId = ?');
+  $stmt->bind_param("s",$studentId);
+  $result = $stmt->execute();
   if (!$result) {
-    die('Query failed. '.$conn->error);
+    die('Query failed. '.$stmt->error);
   }
 
-  $row = mysqli_fetch_assoc($result);
-  return $row['hId'];
+  $stmt->bind_param($hId);
+  $stmt->fetch();
 
-  mysqli_free_result($result);
+  return $hId;
+
+  $stmt->free_result();
+  $stmt->close();
 
 }
 
@@ -137,16 +152,20 @@ function getUserSetting($studentId,$setting) {
 
   global $conn;
 
-  $sql = 'SELECT '.$setting.' FROM userSetting WHERE studentId = "'.$studentId.'";';
-  $result = $conn->query($sql);
+  $stmt = $conn->prepare('SELECT '.$setting.' FROM userSetting WHERE studentId = ?');
+  $stmt->bind_param("s",$studentId);
+  $result = $stmt->execute();
   if (!$result) {
-    die('Query failed. '.$conn->error);
+    die('Query failed. '.$stmt->error);
   }
 
-  $row = mysqli_fetch_assoc($result);
-  return $row["$setting"];
+  $stmt->bind_result($setting);
+  $stmt->fetch();
 
-  mysqli_free_result($result);
+  return $setting;
+
+  $stmt->free_result();
+  $stmt->close();
 
 }
 
@@ -165,17 +184,20 @@ function getUserGroup($sessId) {
 
   $studentId = getStudentId($sessId);
 
-  $sql = 'SELECT userGroup from users WHERE studentId = "'.$studentId.'";';
-  $result = $conn->query($sql);
+  $stmt = $conn->prepare('SELECT userGroup from users WHERE studentId = ?');
+  $stmt->bind_param("s",$studentId);
+  $result = $stmt->execute();
   if (!$result) {
-    die('Query failed. '.$conn->error);
+    die('Query failed. '.$stmt->error);
   }
 
-  $row = mysqli_fetch_assoc($result);
+  $stmt->bind_result($userGroup);
+  $stmt->fetch();
 
-  return $row['userGroup'];
+  return $userGroup;
 
-  mysqli_free_result($result);
+  $stmt->free_result();
+  $stmt->close();
 
 }
 
@@ -186,17 +208,20 @@ function getUserGroupName($sessId) {
 
   $studentId = getStudentId($sessId);
 
-  $sql = 'SELECT g.userGroupName from users u JOIN userGroup g ON u.userGroup = g.userGroup WHERE u.studentId = "'.$studentId.'";';
-  $result = $conn->query($sql);
+  $stmt = $conn->prepare('SELECT g.userGroupName from users u JOIN userGroup g ON u.userGroup = g.userGroup WHERE u.studentId = ?');
+  $stmt->bind_param("s",$studentId);
+  $result = $stmt->execute();
   if (!$result) {
-    die('Query failed. '.$conn->error);
+    die('Query failed. '.$stmt->error);
   }
 
-  $row = mysqli_fetch_assoc($result);
+  $stmt->bind_result($userGroupName);
+  $stmt->fetch();
 
-  return $row['userGroupName'];
+  return $userGroupName;
 
-  mysqli_free_result($result);
+  $stmt->free_result();
+  $stmt->close();
 
 }
 
@@ -215,13 +240,16 @@ function havePermission($sessId,$perm) {
 
   $userGroup = getUserGroup($sessId);
 
-  $sql = 'SELECT * FROM userPermission WHERE userGroup = "'.$userGroup.'" AND permission = "'.$perm.'";';
-  $result = $conn->query($sql);
+  $stmt = $conn->prepare('SELECT * FROM userPermission WHERE userGroup = ? AND permission = ?');
+  $stmt->bind_param("ss",$userGroup,$perm);
+  $result = $stmt->execute();
   if (!$result) {
-    die('Query failed. '.$conn->error);
+    die('Query failed. '.$stmt->error);
   }
 
-  if (($result->num_rows) > 0) {
+  $stmt->store_result();
+
+  if (($stmt->num_rows) > 0) {
     return TRUE;
   } else {
     return FALSE;
