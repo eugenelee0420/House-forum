@@ -9,6 +9,15 @@ ICT SBA Project
 * [materialize](https://github.com/dogfalo/materialize/)
 * [Parsedown](https://github.com/erusev/parsedown)
 
+## To-do list
+
+- [ ] Delete reply
+- [ ] Pin thread
+- [ ] User settings
+- [ ] Global settings
+- [ ] User group change
+- [ ] Scoreboard
+
 ## Database tables
 
 ### `forum` table
