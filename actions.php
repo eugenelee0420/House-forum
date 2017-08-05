@@ -256,6 +256,9 @@ if ($_GET['action'] == "delete") {
 		die('Query failed. '.$stmt->error);
 	}
 
+	$stmt->free_result();
+	$stmt->close();
+
 	// Delete the requested thread
 	$stmt = $conn->prepare('DELETE FROM thread WHERE tId = ?');
 	$stmt->bind_param("i",intval($_GET['tId']));
@@ -267,6 +270,10 @@ if ($_GET['action'] == "delete") {
 	$stmt->free_result();
 	$stmt->close();
 
+	header('Location: viewforum.php?fId='.$fId);
+	die();
+
+}
 
 
 	$stmt->free_result();
