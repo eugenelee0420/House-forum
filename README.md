@@ -148,9 +148,9 @@ Records should not be added or deleted, but the defaults can be customized
 Field Name | Data Type (Size) | Constraints
 ----- | ----- | -----
 studentId | char(7) | `PRIMARY KEY`, `FOREIGN KEY REFERENCING users(studentId)`
-rowsPerPage | int(5) | `DEFAULT 10`
-avatarPic | varchar(200) | `DEFAULT 'https://upload.wikimedia.org/wikipedia/commons/1/1e/Default-avatar.jpg'`
-bgPic | varchar(200) | `DEFAULT 'http://puu.sh/wZnZr.jpg'`
+rowsPerPage | int(5) | `NOT NULL`, `DEFAULT 10`
+avatarPic | varchar(200) | `NOT NULL`, `DEFAULT 'https://upload.wikimedia.org/wikipedia/commons/1/1e/Default-avatar.jpg'`
+bgPic | varchar(200) | `NOT NULL`, `DEFAULT 'http://puu.sh/wZnZr.jpg'`
 
 ### `reply` table
 
