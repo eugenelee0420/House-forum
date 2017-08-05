@@ -16,7 +16,7 @@ ICT SBA Project
 - [x] Change queries to prepared statement
 - [x] Delete reply
 - [x] Pin thread
-- [ ] Optimize queries
+- [x] Optimize queries
 - [ ] User settings
 - [ ] Global settings
 - [ ] User group change
