@@ -275,11 +275,102 @@ if ($_GET['action'] == "delete") {
 
 }
 
+// Delete reply
+if ($_GET['action'] == "rdelete") {
+
+	// Check if the user requested anything
+	// If not, redirect to index.php
+	if (!isset($_GET['rId'])) {
+		header('Location: index.php');
+		die();
+	}
+
+	// Check if the specified reply exist
+	$stmt = $conn->prepare('SELECT rId FROM reply WHERE rId = ?');
+	$stmt->bind_param("i",intval($_GET['rId']));
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($rId);
+	$stmt->fetch();
+
+	if ($rId !== intval($_GET['rId'])) {
+		die('The requested reply does not exist!');
+	}
 
 	$stmt->free_result();
 	$stmt->close();
 
-	header('Location: viewforum.php?fId='.$fId);
+	// Get fId
+	// Also get tId for redirect
+	$stmt = $conn->prepare('SELECT t.fId, r.tId FROM thread t JOIN reply r ON t.tId = r.tId WHERE r.rId = ?');
+	$stmt->bind_param("i",intval($_GET['rId']));
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($fId,$tId);
+	$stmt->fetch();
+
+	$stmt->free_result();
+	$stmt->close();
+
+	// Check forum type then check permission accordingly
+	$stmt = $conn->prepare('SELECT hId FROM forum WHERE fId = ?');
+	$stmt->bind_param("s",$fId);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($hId);
+	$stmt->fetch();
+
+	$stmt->free_result();
+	$stmt->close();
+
+	if ($hId == NULL) {
+
+		// Check for DI permission
+		if (!havePermission(session_id(),"DI")) {
+			die('You do not have permission to delete this reply!');
+		}
+
+	} else {
+
+		// Check for DH or DAH permission
+		if (!havePermission(session_id(),"DH") AND !havePermission(session_id(),"DAH")) {
+			die('You do not have permission to delete this reply!');
+		}
+
+		// If user only have DH permission
+		if (havePermission(session_id(),"DH") AND !havePermission(session_id(),"DAH")) {
+
+			// Check if the user's house and forum's house match
+			if (getUserHId(session_id()) !== $hId) {
+				die('You do not have permission to delete this reply!');
+			}
+
+		}
+
+	}
+
+	// Delete the requested reply
+	$stmt = $conn->prepare('DELETE FROM reply WHERE rId = ?');
+	$stmt->bind_param("i",intval($_GET['rId']));
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->free_result();
+	$stmt->close();
+
+	// Redirect to the thread
+	header('Location: viewthread.php?tId='.$tId);
 	die();
 
 }
