@@ -145,6 +145,56 @@ echo '<div class="row"><div class="col s12">';
 echo '<font face="roboto"><h3>'.$fName.'</h3>';
 echo '</div></div>';
 
+echo '<div class="row"><div class="col s12">';
+echo '<font face="roboto"><h4>Pinned threads</h4>';
+echo '</div></div>';
+
+// Get the pinned thread listing of the current page
+$stmt = $conn->prepare('SELECT t.tId,t.tTitle,t.tTime,t.studentId,u.userName FROM thread t JOIN users u ON t.studentId = u.studentId WHERE fId = ? AND pin = "1" ORDER BY tTime DESC');
+$stmt->bind_param("s",$_GET['fId']);
+$result = $stmt->execute();
+if (!$result) {
+	die('Query failed. '.$stmt->error);
+}
+
+$stmt->bind_result($tId,$tTitle,$tTime,$studentId,$userName);
+
+echo '<div class="row"><div class="col s12">';
+echo '<table><thead><tr>';
+echo '<th>Title</th>';
+echo '<th class="hide-on-small-only">Time posted</th>';
+echo '<th class="hide-on-small-only">Started by</th>';
+echo '</tr></thead>';
+echo '<tbody>';
+
+while ($stmt->fetch()) {
+
+	echo '<tr>';
+
+	echo '<td>';
+	echo '<a href="viewthread.php?tId='.$tId.'">';
+	echo $tTitle;
+	echo '</a></td>';
+
+	echo '<td class="hide-on-small-only">';
+	echo date('j/n/Y G:i',$tTime + $timezoneOffset);
+	echo '</td>';
+
+	echo '<td class="hide-on-small-only">';
+	echo '<a href="profile.php?studentId='.$studentId.'">';
+	echo $userName;
+	echo '</a></td>';
+
+	echo '</tr>';
+
+}
+
+$stmt->free_result();
+$stmt->close();
+
+echo '</tbody></table>';
+echo '</div></div>';
+
 // Count the number of threads
 $stmt = $conn->prepare('SELECT COUNT(*) AS numT FROM thread WHERE fId = ?');
 $stmt->bind_param("s",$_GET['fId']);
@@ -231,7 +281,7 @@ echo '</ul>';
 echo '</div></div>';
 
 // Get the thread listing of the current page
-$stmt = $conn->prepare('SELECT t.tId,t.tTitle,t.tTime,t.studentId,u.userName FROM thread t JOIN users u ON t.studentId = u.studentId WHERE fId = ? ORDER BY tTime DESC LIMIT '.$rowsPerPage.' OFFSET '.($rowsPerPage * ($cPage - 1)).';');
+$stmt = $conn->prepare('SELECT t.tId,t.tTitle,t.tTime,t.studentId,u.userName FROM thread t JOIN users u ON t.studentId = u.studentId WHERE fId = ? AND pin = "0" ORDER BY tTime DESC LIMIT '.$rowsPerPage.' OFFSET '.($rowsPerPage * ($cPage - 1)).';');
 $stmt->bind_param("s",$_GET['fId']);
 $result = $stmt->execute();
 if (!$result) {
