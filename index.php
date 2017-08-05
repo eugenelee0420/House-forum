@@ -77,6 +77,7 @@ if (!$result) {
 $row = mysqli_fetch_assoc($result);
 $welcomeMsg = $row['value'];
 
+// Parse markdown
 $mdWelcomeMsg = $parsedown->text($welcomeMsg);
 
 echo '<div class="row">';
