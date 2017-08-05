@@ -20,6 +20,7 @@ ICT SBA Project
 - [ ] User settings
 - [ ] Global settings
 - [ ] User group change
+- [ ] User group settings
 - [ ] Scoreboard
 - [ ] Script to clean up session table
 
