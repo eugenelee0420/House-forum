@@ -23,6 +23,7 @@ ICT SBA Project
 - [ ] User group settings
 - [ ] Scoreboard
 - [ ] Script to clean up session table
+- [ ] Clean up unused functions and variables
 
 ## Database tables
 
