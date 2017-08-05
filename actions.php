@@ -375,6 +375,202 @@ if ($_GET['action'] == "rdelete") {
 
 }
 
+// Pin thread
+if ($_GET['action'] == "pin") {
+
+	// Check if user specified anything
+	// If not, redirect to index.php
+	if (!isset($_GET['tId'])) {
+		header('Location: index.php');
+		die();
+	}
+
+	// Check if the thread exist
+	$stmt = $conn->prepare('SELECT tId FROM thread WHERE tId = ?');
+	$stmt->bind_param("i",intval($_GET['tId']));
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($tId);
+	$stmt->fetch();
+
+	if ($tId !== intval($_GET['tId'])) {
+		die('The requested thread does not exist!');
+	}
+
+	$stmt->free_result();
+	$stmt->close();
+
+	// Get the fId that this thread belongs to
+	$stmt = $conn->prepare('SELECT fId FROM thread WHERE tId = ?');
+	$stmt->bind_param("i",intval($_GET['tId']));
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($fId);
+	$stmt->fetch();
+
+	$stmt->free_result();
+	$stmt->close();
+
+	// Check forum type then check permission accordingly
+	$stmt = $conn->prepare('SELECT hId FROM forum WHERE fId = ?');
+	$stmt->bind_param("s",$fId);
+	$result = $stmt->execute();
+	if (!$result) {
+	  die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($hId);
+	$stmt->fetch();
+
+	$stmt->free_result();
+	$stmt->close();
+
+	if ($hId == NULL) {
+
+		// Check for EI permission
+		if (!havePermission(session_id(),"EI")) {
+			die('You do not have permission to pin/unpin this thread!');
+		}
+
+	} else {
+
+		// Check for EH or EAH permission
+		if (!havePermission(session_id(),"EH") AND !havePermission(session_id(),"EAH")) {
+			die('You do not have permission to pin/unpin this thread!');
+		}
+
+		// If user only have EH permission
+		if (havePermission(session_id(),"EH") AND !havePermission(session_id(),"EAH")) {
+
+			// Check if the user's house and forum's house match
+			if (getUserHId(session_id()) !== $hId) {
+				die('You do not have permission to pin/unpin this thread!');
+			}
+
+		}
+
+	}
+
+	// Pin the thread
+	$stmt = $conn->prepare('UPDATE thread SET pin = "1" WHERE tId = ?');
+	$stmt->bind_param("i",intval($_GET['tId']));
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->free_result();
+	$stmt->close();
+
+	header('Location: viewthread.php?tId='.$_GET['tId']);
+	die();
+
+}
+
+// Unpin thread
+if ($_GET['action'] == "unpin") {
+
+	// Check if user specified anything
+	// If not, redirect to index.php
+	if (!isset($_GET['tId'])) {
+		header('Location: index.php');
+		die();
+	}
+
+	// Check if the thread exist
+	$stmt = $conn->prepare('SELECT tId FROM thread WHERE tId = ?');
+	$stmt->bind_param("i",intval($_GET['tId']));
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($tId);
+	$stmt->fetch();
+
+	if ($tId !== intval($_GET['tId'])) {
+		die('The requested thread does not exist!');
+	}
+
+	$stmt->free_result();
+	$stmt->close();
+
+	// Get the fId that this thread belongs to
+	$stmt = $conn->prepare('SELECT fId FROM thread WHERE tId = ?');
+	$stmt->bind_param("i",intval($_GET['tId']));
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($fId);
+	$stmt->fetch();
+
+	$stmt->free_result();
+	$stmt->close();
+
+	// Check forum type then check permission accordingly
+	$stmt = $conn->prepare('SELECT hId FROM forum WHERE fId = ?');
+	$stmt->bind_param("s",$fId);
+	$result = $stmt->execute();
+	if (!$result) {
+	  die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($hId);
+	$stmt->fetch();
+
+	$stmt->free_result();
+	$stmt->close();
+
+	if ($hId == NULL) {
+
+		// Check for EI permission
+		if (!havePermission(session_id(),"EI")) {
+			die('You do not have permission to pin/unpin this thread!');
+		}
+
+	} else {
+
+		// Check for EH or EAH permission
+		if (!havePermission(session_id(),"EH") AND !havePermission(session_id(),"EAH")) {
+			die('You do not have permission to pin/unpin this thread!');
+		}
+
+		// If user only have EH permission
+		if (havePermission(session_id(),"EH") AND !havePermission(session_id(),"EAH")) {
+
+			// Check if the user's house and forum's house match
+			if (getUserHId(session_id()) !== $hId) {
+				die('You do not have permission to pin/unpin this thread!');
+			}
+
+		}
+
+	}
+
+	// unpin the thread
+	$stmt = $conn->prepare('UPDATE thread SET pin = "0" WHERE tId = ?');
+	$stmt->bind_param("i",intval($_GET['tId']));
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->free_result();
+	$stmt->close();
+
+	header('Location: viewthread.php?tId='.$_GET['tId']);
+	die();
+
+}
+
 // No action was performed, redirect to index.php
 header('Location: login.php');
 die();

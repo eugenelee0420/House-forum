@@ -330,10 +330,10 @@ function displayFABDelete() {
 	echo '<li><a href="actions.php?action=delete&tId='.$_GET['tId'].'" class="btn-floating tooltipped yellow darken-1" data-tooltip="Delete thread" data-position="left" data-delay="0"><i class="material-icons">delete</i></a></li>';
 }
 function displayFABPin() {
-	echo '<li><a class="btn-floating tooltipped blue" data-tooltip="Pin thread" data-position="left" data-delay="0"><i class="material-icons">label</i></a></li>';
+	echo '<li><a href="actions.php?action=pin&tId='.$_GET['tId'].'" class="btn-floating tooltipped blue" data-tooltip="Pin thread" data-position="left" data-delay="0"><i class="material-icons">label</i></a></li>';
 }
 function displayFABUnpin() {
-	echo '<li><a class="btn-floating tooltipped blue" data-tooltip="Unpin thread" data-position="left" data-delay="0"><i class="material-icons">label_outline</i></a></li>';
+	echo '<li><a href="actions.php?action=unpin&tId='.$_GET['tId'].'" class="btn-floating tooltipped blue" data-tooltip="Unpin thread" data-position="left" data-delay="0"><i class="material-icons">label_outline</i></a></li>';
 }
 
 // If user have either one permission to delete or edit
@@ -353,6 +353,13 @@ if (( ($hId == NULL) AND (havePermission(session_id(),"EI") OR havePermission(se
 
 		if (havePermission(session_id(),"EI")) {
 			displayFABEdit();
+
+			if (!isPinned($_GET['tId'])) {
+				displayFABPin();
+			} elseif (isPinned($_GET['tId'])) {
+				displayFABUnpin();
+			}
+
 		}
 
 		if (havePermission(session_id(),"DI")) {
@@ -363,6 +370,13 @@ if (( ($hId == NULL) AND (havePermission(session_id(),"EI") OR havePermission(se
 
 		if (havePermission(session_id(),"EH") OR havePermission(session_id(),"EAH")) {
 			displayFABEdit();
+
+			if (!isPinned($_GET['tId'])) {
+				displayFABPin();
+			} elseif (isPinned($_GET['tId'])) {
+				displayFABUnpin();
+			}
+
 		}
 
 		if (havePermission(session_id(),"DH") OR havePermission(session_id(),"DAH")) {

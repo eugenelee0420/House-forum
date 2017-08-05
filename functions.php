@@ -260,4 +260,32 @@ function havePermission($sessId,$perm) {
 
 }
 
+// Function to check if thread is pinned
+function isPinned($tId) {
+
+  global $conn;
+
+  $stmt = $conn->prepare('SELECT pin FROM thread WHERE tId = ?');
+  $stmt->bind_param("s",intval($tId));
+  $result = $stmt->execute();
+  if (!$result) {
+    die('Query failed. '.$stmt->error);
+  }
+
+  $stmt->bind_result($pin);
+  $stmt->fetch();
+
+  if (strval($pin) == "1") {
+    return TRUE;
+  } elseif (strval($pin) == "0") {
+    return FALSE;
+  } else {
+    return "INVALID";
+  }
+
+  $stmt->free_result();
+  $stmt->close();
+
+}
+
 ?>
