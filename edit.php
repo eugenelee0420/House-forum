@@ -133,29 +133,15 @@ if (!isset($tId)) {
   $stmt->close();
 }
 
-// Get fId
-$stmt = $conn->prepare('SELECT fId FROM thread WHERE tId = ?');
+// Check forum type then check permission accordingly
+$stmt = $conn->prepare('SELECT f.hId, t.fId FROM forum f JOIN thread t ON f.fId = t.fId WHERE t.tId = ?');
 $stmt->bind_param("i",intval($tId));
 $result = $stmt->execute();
 if (!$result) {
-  die('Query failed. '.$stmt->error);
+	die('Query failed. '.$stmt->error);
 }
 
-$stmt->bind_result($fId);
-$stmt->fetch();
-
-$stmt->free_result();
-$stmt->close();
-
-// Get forum type and check permission accordingly
-$stmt = $conn->prepare('SELECT hId FROM forum WHERE fId = ?');
-$stmt->bind_param("s",$fId);
-$result = $stmt->execute();
-if (!$result) {
-  die('Query failed. '.$stmt->error);
-}
-
-$stmt->bind_result($hId);
+$stmt->bind_result($hId,$fId);
 $stmt->fetch();
 
 $stmt->free_result();

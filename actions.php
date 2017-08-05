@@ -71,29 +71,15 @@ if ($_GET['action'] == "reply") {
 	$stmt->free_result();
 	$stmt->close();
 
-	// Get the fId that this thread belongs to
-	$stmt = $conn->prepare('SELECT fId FROM thread WHERE tId = ?');
-	$stmt->bind_param("i",intval($_GET['tId']));
-	$result = $stmt->execute();
-	if (!$result) {
-		die('Query failed. '.$stmt->error);
-	}
-
-	$stmt->bind_result($fId);
-	$stmt->fetch();
-
-	$stmt->free_result();
-	$stmt->close();
-
 	// Check forum type then check permission accordingly
-	$stmt = $conn->prepare('SELECT hId FROM forum WHERE fId = ?');
-	$stmt->bind_param("s",$fId);
+	$stmt = $conn->prepare('SELECT f.hId, t.fId FROM forum f JOIN thread t ON f.fId = t.fId WHERE t.tId = ?');
+	$stmt->bind_param("i",intval($_GET['tId']));
 	$result = $stmt->execute();
 	if (!$result) {
 	  die('Query failed. '.$stmt->error);
 	}
 
-	$stmt->bind_result($hId);
+	$stmt->bind_result($hId,$fId);
 	$stmt->fetch();
 
 	$stmt->free_result();
@@ -193,29 +179,15 @@ if ($_GET['action'] == "delete") {
 	$stmt->free_result();
 	$stmt->close();
 
-	// Get the fId that this thread belongs to
-	$stmt = $conn->prepare('SELECT fId FROM thread WHERE tId = ?');
-	$stmt->bind_param("i",intval($_GET['tId']));
-	$result = $stmt->execute();
-	if (!$result) {
-		die('Query failed. '.$stmt->error);
-	}
-
-	$stmt->bind_result($fId);
-	$stmt->fetch();
-
-	$stmt->free_result();
-	$stmt->close();
-
 	// Check forum type then check permission accordingly
-	$stmt = $conn->prepare('SELECT hId FROM forum WHERE fId = ?');
-	$stmt->bind_param("s",$fId);
+	$stmt = $conn->prepare('SELECT f.hId, t.fId FROM forum f JOIN thread t ON f.fId = t.fId WHERE t.tId = ?');
+	$stmt->bind_param("i",intval($_GET['tId']));
 	$result = $stmt->execute();
 	if (!$result) {
 	  die('Query failed. '.$stmt->error);
 	}
 
-	$stmt->bind_result($hId);
+	$stmt->bind_result($hId,$fId);
 	$stmt->fetch();
 
 	$stmt->free_result();
@@ -305,28 +277,15 @@ if ($_GET['action'] == "rdelete") {
 
 	// Get fId
 	// Also get tId for redirect
-	$stmt = $conn->prepare('SELECT t.fId, r.tId FROM thread t JOIN reply r ON t.tId = r.tId WHERE r.rId = ?');
+	// Also get hId for checking permission
+	$stmt = $conn->prepare('SELECT t.fId, r.tId, f.hId FROM thread t JOIN reply r ON t.tId = r.tId JOIN forum f ON t.fId = f.fId WHERE r.rId = ?');
 	$stmt->bind_param("i",intval($_GET['rId']));
 	$result = $stmt->execute();
 	if (!$result) {
 		die('Query failed. '.$stmt->error);
 	}
 
-	$stmt->bind_result($fId,$tId);
-	$stmt->fetch();
-
-	$stmt->free_result();
-	$stmt->close();
-
-	// Check forum type then check permission accordingly
-	$stmt = $conn->prepare('SELECT hId FROM forum WHERE fId = ?');
-	$stmt->bind_param("s",$fId);
-	$result = $stmt->execute();
-	if (!$result) {
-		die('Query failed. '.$stmt->error);
-	}
-
-	$stmt->bind_result($hId);
+	$stmt->bind_result($fId,$tId,$hId);
 	$stmt->fetch();
 
 	$stmt->free_result();
@@ -403,29 +362,15 @@ if ($_GET['action'] == "pin") {
 	$stmt->free_result();
 	$stmt->close();
 
-	// Get the fId that this thread belongs to
-	$stmt = $conn->prepare('SELECT fId FROM thread WHERE tId = ?');
-	$stmt->bind_param("i",intval($_GET['tId']));
-	$result = $stmt->execute();
-	if (!$result) {
-		die('Query failed. '.$stmt->error);
-	}
-
-	$stmt->bind_result($fId);
-	$stmt->fetch();
-
-	$stmt->free_result();
-	$stmt->close();
-
 	// Check forum type then check permission accordingly
-	$stmt = $conn->prepare('SELECT hId FROM forum WHERE fId = ?');
-	$stmt->bind_param("s",$fId);
+	$stmt = $conn->prepare('SELECT f.hId, t.fId FROM forum f JOIN thread t ON f.fId = t.fId WHERE t.tId = ?');
+	$stmt->bind_param("i",intval($_GET['tId']));
 	$result = $stmt->execute();
 	if (!$result) {
 	  die('Query failed. '.$stmt->error);
 	}
 
-	$stmt->bind_result($hId);
+	$stmt->bind_result($hId,$fId);
 	$stmt->fetch();
 
 	$stmt->free_result();
@@ -501,29 +446,15 @@ if ($_GET['action'] == "unpin") {
 	$stmt->free_result();
 	$stmt->close();
 
-	// Get the fId that this thread belongs to
-	$stmt = $conn->prepare('SELECT fId FROM thread WHERE tId = ?');
-	$stmt->bind_param("i",intval($_GET['tId']));
-	$result = $stmt->execute();
-	if (!$result) {
-		die('Query failed. '.$stmt->error);
-	}
-
-	$stmt->bind_result($fId);
-	$stmt->fetch();
-
-	$stmt->free_result();
-	$stmt->close();
-
 	// Check forum type then check permission accordingly
-	$stmt = $conn->prepare('SELECT hId FROM forum WHERE fId = ?');
-	$stmt->bind_param("s",$fId);
+	$stmt = $conn->prepare('SELECT f.hId, t.fId FROM forum f JOIN thread t ON f.fId = t.fId WHERE t.tId = ?');
+	$stmt->bind_param("i",intval($_GET['tId']));
 	$result = $stmt->execute();
 	if (!$result) {
 	  die('Query failed. '.$stmt->error);
 	}
 
-	$stmt->bind_result($hId);
+	$stmt->bind_result($hId,$fId);
 	$stmt->fetch();
 
 	$stmt->free_result();

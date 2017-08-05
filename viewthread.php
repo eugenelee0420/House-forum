@@ -97,29 +97,15 @@ if ($tId !== intval($_GET['tId'])) {
 $stmt->free_result();
 $stmt->close();
 
-// Get the fId that this thread belongs to
-$stmt = $conn->prepare('SELECT fId FROM thread WHERE tId = ?');
+// Check forum type then check permission accordingly
+$stmt = $conn->prepare('SELECT f.hId, t.fId FROM forum f JOIN thread t ON f.fId = t.fId WHERE t.tId = ?');
 $stmt->bind_param("i",intval($_GET['tId']));
 $result = $stmt->execute();
 if (!$result) {
 	die('Query failed. '.$stmt->error);
 }
 
-$stmt->bind_result($fId);
-$stmt->fetch();
-
-$stmt->free_result();
-$stmt->close();
-
-// Check forum type then check permission accordingly
-$stmt = $conn->prepare('SELECT hId FROM forum WHERE fId = ?');
-$stmt->bind_param("s",$fId);
-$result = $stmt->execute();
-if (!$result) {
-  die('Query failed. '.$stmt->error);
-}
-
-$stmt->bind_result($hId);
+$stmt->bind_result($hId,$fId);
 $stmt->fetch();
 
 $stmt->free_result();
