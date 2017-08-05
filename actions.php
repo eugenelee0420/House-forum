@@ -168,7 +168,7 @@ if ($_GET['action'] == "reply") {
 // Delete thread
 if ($_GET['action'] == "delete") {
 
-	// Check if the user requested anything
+	// Check if the user specified a thread
 	// If not, redirect to index.php
 	if (!isset($_GET['tId'])) {
 		header('Location: index.php');
@@ -278,7 +278,7 @@ if ($_GET['action'] == "delete") {
 // Delete reply
 if ($_GET['action'] == "rdelete") {
 
-	// Check if the user requested anything
+	// Check if the user specified a reply
 	// If not, redirect to index.php
 	if (!isset($_GET['rId'])) {
 		header('Location: index.php');
