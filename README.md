@@ -163,3 +163,23 @@ rContent | text | `NOT NULL`
 rTime | int(10) | `NOT NULL`
 tId | int(10) | `NOT NULL`, `FOREIGN KEY REFERENCING thread(tId)`
 studentId | char(7) | `NOT NULL`, `FOREIGN KEY REFERENCING users(studentId)`
+
+### `globalSetting` table
+
+Used to store global settings
+
+Has a set of default data
+
+The `setting` field should not be changed, the `value` field can be customized within the "Global Settings" page
+
+Field Name | Data Type (Size) | Constraints
+----- | ----- | -----
+setting | varchar(30) | `NOT NULL`
+value | text | `NOT NULL`
+settingDescription | varchar(100) |
+
+#### Default data
+
+setting | value | settingDescription
+----- | ----- | -----
+welcomeMsg | Hi | A welcome message that will be displayed on index.php. HTML and markdown are supported.

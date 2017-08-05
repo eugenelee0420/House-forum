@@ -47,7 +47,7 @@ if (!$result) {
 <!--Let browser know website is optimized for mobile-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
-<body onload="showSideNav();">
+<body>
 <!--Import jQuery before materialize.js-->
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <!-- Compiled and minified JavaScript -->
@@ -66,5 +66,22 @@ function showSideNav() {
 <?php
 
 require "sidenav.php";
+
+// Get the welcome message
+$sql = 'SELECT value FROM globalSetting WHERE setting = "welcomeMsg"';
+$result = $conn->query($sql);
+if (!$result) {
+	die('Query failed. '.$conn->error);
+}
+
+$row = mysqli_fetch_assoc($result);
+$welcomeMsg = $row['value'];
+
+$mdWelcomeMsg = $parsedown->text($welcomeMsg);
+
+echo '<div class="row">';
+echo '<div class="col s12 flow-text">';
+echo $mdWelcomeMsg;
+echo '</div></div>';
 
 ?>
