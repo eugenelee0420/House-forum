@@ -17,7 +17,7 @@ ICT SBA Project
 - [x] Delete reply
 - [x] Pin thread
 - [x] Optimize queries
-- [ ] User settings
+- [x] User settings
 - [ ] Global settings
 - [ ] User group change
 - [ ] User group settings
