@@ -141,7 +141,7 @@ if ($_POST['submit'] == "submit") {
 
       <div class="row">
         <div class="col s12">
-          Avatar image (link to external image):
+          Avatar image (link to external image)(must be in 1:1 aspect ratio):
         </div>
       </div>
 
