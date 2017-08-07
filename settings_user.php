@@ -139,7 +139,6 @@ if ($_POST['submit'] == "submit") {
         </div>
       </div>
 
-      </div>
       <div class="row">
         <div class="col s12">
           Avatar image (link to external image):
@@ -153,7 +152,6 @@ if ($_POST['submit'] == "submit") {
         </div>
       </div>
 
-    </div>
     <div class="row">
       <div class="col s12">
         Background image (link to external image):
