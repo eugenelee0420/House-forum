@@ -88,6 +88,28 @@ if ($_POST['submit'] == "submit") {
     die('Please do not enter more than 200 characters for background image link!');
   }
 
+	// Check image
+	// Avatar
+	$avatarInfo = getimagesize($_POST['avatarPic']);
+
+	// If width or height < 1
+	if (($avatarInfo[0] < 1) OR ($avatarInfo[1] < 1)) {
+		die('Please input a valid image link for the avatar image!');
+	}
+
+	// Check profile ratio
+	if ($avatarInfo[0] !== $avatarInfo[1]) {
+		die('Please use an image with 1:1 aspect ratio for the avatar image!');
+	}
+
+	// Background image
+	$bgInfo = getimagesize($_POST['bgPic']);
+
+	// If width or height < 1
+	if(($bgInfo[0] < 1) OR ($bgInfo[1] < 1)) {
+		die('PLease input a valid image link for the background image!');
+	}
+
   // Update database
   $stmt = $conn->prepare('UPDATE userSetting SET rowsPerPage = ?, avatarPic = ?, bgPic = ? WHERE studentId = ?');
   $stmt->bind_param("isss",floor(intval($_POST['rowsPerPage'])),$_POST['avatarPic'],$_POST['bgPic'],$studentId);
