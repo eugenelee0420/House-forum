@@ -209,6 +209,7 @@ if ($_POST['submit'] == 'submit') {
 				<label for="tContent">Thread content</label>
 			</div>
 		</div>
+		<p>Formatting with Markdown is supported.</p>
 		<p>Posting in:<b><a href="viewforum.php?fId=<?php echo $_GET['fId']; ?>"> <?php echo $fName; ?></a></b></p>
 		<button class="btn waves-effect purple waves-light" type="submit" name="submit" value="submit">Post
 		<i class="material-icons right">send</i>

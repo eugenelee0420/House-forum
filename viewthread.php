@@ -284,6 +284,7 @@ function displayForm() {
 
 			<div class="row">
 				<div class="col s12">
+					<p>Formatting with Markdown is supported.</p>
 					<button class="btn waves-effect waves-light purple" type="submit" name="submit" value="submit">Post reply
 					<i class="material-icons right">send</i></button>
 				</div>
