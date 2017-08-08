@@ -121,6 +121,15 @@ if ($_POST['submit'] == "submit") {
   $stmt->free_result();
   $stmt->close();
 
+	// Display toast
+	?>
+
+	<script>
+	Materialize.toast('Changes saved.', 4000);
+	</script>
+
+	<?php
+
 }
 
   // Display form
