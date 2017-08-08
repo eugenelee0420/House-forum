@@ -18,7 +18,7 @@ ICT SBA Project
 - [x] Pin thread
 - [x] Optimize queries
 - [x] User settings
-- [ ] Global settings
+- [x] Global settings
 - [ ] User group change
 - [ ] User group settings
 - [ ] Scoreboard
