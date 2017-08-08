@@ -58,9 +58,6 @@ if (!$result) {
 $(document).ready(function() {
 		$(".button-collapse").sideNav();
   });
-function showSideNav() {
-	$('.button-collapse').sideNav('show');
-}
 </script>
 
 <?php
