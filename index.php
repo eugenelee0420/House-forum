@@ -68,14 +68,7 @@ function showSideNav() {
 require "sidenav.php";
 
 // Get the welcome message
-$sql = 'SELECT value FROM globalSetting WHERE setting = "welcomeMsg"';
-$result = $conn->query($sql);
-if (!$result) {
-	die('Query failed. '.$conn->error);
-}
-
-$row = mysqli_fetch_assoc($result);
-$welcomeMsg = $row['value'];
+$welcomeMsg = getGlobalSetting('welcomeMsg');
 
 // Parse markdown
 $mdWelcomeMsg = $parsedown->text($welcomeMsg);
