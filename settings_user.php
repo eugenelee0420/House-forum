@@ -123,7 +123,7 @@ if ($_POST['submit'] == "submit") {
 
 }
 
-  // Form not submitted, display form
+  // Display form
 
   // Get the settings
   $stmt = $conn->prepare('SELECT rowsPerPage, avatarPic, bgPic FROM userSetting WHERE studentId = ?');
