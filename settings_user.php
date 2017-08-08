@@ -129,80 +129,72 @@ if ($_POST['submit'] == "submit") {
 
 }
 
-  // Display form
+// Display form
 
-  // Get the settings
-  $stmt = $conn->prepare('SELECT rowsPerPage, avatarPic, bgPic FROM userSetting WHERE studentId = ?');
-  $stmt->bind_param("s",$studentId);
-  $result = $stmt->execute();
-  if (!$result) {
-    die('Query failed. '.$stmt->error);
-  }
+// Get the settings
+$stmt = $conn->prepare('SELECT rowsPerPage, avatarPic, bgPic FROM userSetting WHERE studentId = ?');
+$stmt->bind_param("s",$studentId);
+$result = $stmt->execute();
+if (!$result) {
+  die('Query failed. '.$stmt->error);
+}
 
-  $stmt->bind_result($rowsPerPage,$avatarPic,$bgPic);
-  $stmt->fetch();
+$stmt->bind_result($rowsPerPage,$avatarPic,$bgPic);
+$stmt->fetch();
 
-  $stmt->free_result();
-  $stmt->close();
+$stmt->free_result();
+$stmt->close();
 
-  ?>
+?>
 
-  <div class="row"><div class="col s12">
-    <h3>User settings</h3>
-  </div></div>
+<div class="row"><div class="col s12">
+  <h3>User settings</h3>
+</div></div>
 
-  <div class="row">
-    <form class="col s12 m12 l6" action="" method="post">
-
-      <div class="row">
-        <div class="col s12">
-          Number of threads displayed per page:
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="input-field col s12">
-          <input id="rowsPerPage" name="rowsPerPage" type="number" value="<?php echo $rowsPerPage; ?>">
-          <label for="rowsPerPage">Rows per page</label>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col s12">
-          Avatar image (link to external image)(must be in 1:1 aspect ratio):
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="input-field col s12">
-          <input id="avatarPic" name="avatarPic" type="text" data-length="200" value="<?php echo $avatarPic; ?>">
-          <label for="avatarPic">Avatar picture</label>
-        </div>
-      </div>
+<div class="row">
+  <form class="col s12 m12 l6" action="" method="post">
 
     <div class="row">
       <div class="col s12">
-        Background image (link to external image):
+        Number of threads displayed per page:
       </div>
     </div>
 
     <div class="row">
       <div class="input-field col s12">
-        <input id="bgPic" name="bgPic" type="text" data-length="200" value="<?php echo $bgPic; ?>">
-        <label for="bgPic">Background picture</label>
+        <input id="rowsPerPage" name="rowsPerPage" type="number" value="<?php echo $rowsPerPage; ?>">
+        <label for="rowsPerPage">Rows per page</label>
       </div>
     </div>
 
-    <button class="btn waves-effect purple waves-light" type="submit" name="submit" value="submit">Apply
-    <i class="material-icons right">send</i>
+    <div class="row">
+      <div class="col s12">
+        Avatar image (link to external image)(must be in 1:1 aspect ratio):
+      </div>
+    </div>
 
-    </form>
+    <div class="row">
+      <div class="input-field col s12">
+        <input id="avatarPic" name="avatarPic" type="text" data-length="200" value="<?php echo $avatarPic; ?>">
+        <label for="avatarPic">Avatar picture</label>
+      </div>
+    </div>
+
+  <div class="row">
+    <div class="col s12">
+      Background image (link to external image):
+    </div>
   </div>
 
-  <?php
+  <div class="row">
+    <div class="input-field col s12">
+      <input id="bgPic" name="bgPic" type="text" data-length="200" value="<?php echo $bgPic; ?>">
+      <label for="bgPic">Background picture</label>
+    </div>
+  </div>
 
+  <button class="btn waves-effect purple waves-light" type="submit" name="submit" value="submit">Apply
+  <i class="material-icons right">send</i>
 
-
-
-
-?>
+  </form>
+</div>
