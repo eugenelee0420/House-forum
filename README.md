@@ -19,7 +19,7 @@ ICT SBA Project
 - [x] Optimize queries
 - [x] User settings
 - [x] Global settings
-- [ ] Change username
+- [x] Change username
 - [ ] Change password
 - [ ] User group change
 - [ ] User group settings
