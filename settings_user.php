@@ -72,11 +72,15 @@ if ($_POST['submit'] == "submit") {
   // Form submitted, process data
 
   // Check all the fields are filled in
-  if ((strlen($_POST['rowsPerPage']) < 1) OR (strlen($_POST['avatarPic']) < 1) OR (strlen($_POST['bgPic']) < 1)) {
+  if ((strlen($_POST['rowsPerPage']) < 1) OR (strlen($_POST['avatarPic']) < 1) OR (strlen($_POST['bgPic']) < 1) OR (strlen($_POST['userName']) < 1)) {
     die('Please fill in all the fields!');
   }
 
   // Check field constraint
+	if (strlen($_POST['userName']) > 30) {
+		die('Please do not enter more than 30 characters for the userName!');
+	}
+
   if (strlen($_POST['avatarPic']) > 200) {
     die('Please do not enter more than 200 characters for avatar image link!');
   }
@@ -84,6 +88,47 @@ if ($_POST['submit'] == "submit") {
   if (strlen($_POST['bgPic']) > 200) {
     die('Please do not enter more than 200 characters for background image link!');
   }
+
+	// Check if userName is used
+	$stmt = $conn->prepare('SELECT studentId, userName FROM users WHERE userName = ?');
+	$stmt->bind_param("s",$_POST['userName']);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($qStudentId,$qUserName);
+	$stmt->fetch();
+
+	// If the query result returned the inputted userName, and the studentId did not match
+	// So that if the user's current userName is entered, error will not be triggered
+	if (($qUserName == $_POST['userName']) AND ($qStudentId !== $studentId)) {
+		die('The username '.$_POST['userName'].' has been used! Please choose another one.');
+	}
+
+	$stmt->free_result();
+	$stmt->close();
+
+	// Check if entered userName equal the user's password
+	// Do not allow this because of security reasons
+
+	// Get the user's password
+	$stmt = $conn->prepare('SELECT hash FROM users WHERE studentId = ?');
+	$stmt->bind_param("s",$studentId);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($qHash);
+	$stmt->fetch();
+
+	if (password_verify($_POST['userName'],$qHash)) {
+		die('Please do not use your password as your username!');
+	}
+
+	$stmt->free_result();
+	$stmt->close();
 
 	// Check image
 	// Avatar
@@ -117,6 +162,17 @@ if ($_POST['submit'] == "submit") {
 
   $stmt->free_result();
   $stmt->close();
+
+	// Update username
+	$stmt = $conn->prepare('UPDATE users SET userName = ? WHERE studentId = ?');
+	$stmt->bind_param("ss",$_POST['userName'],$studentId);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->free_result();
+	$stmt->close();
 
 	// Display toast
 	?>
@@ -153,6 +209,19 @@ $stmt->close();
 
 <div class="row">
   <form class="col s12 m12 l6" action="" method="post">
+
+		<div class="row">
+			<div class="col s12">
+				Username (must be unique):
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="input-field col s12">
+				<input id="userName" name="userName" type="text" data-length="30" value="<?php echoGetUserName(session_id()); ?>">
+				<label for="userName">Username</label>
+			</div>
+		</div>
 
     <div class="row">
       <div class="col s12">
