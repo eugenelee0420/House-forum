@@ -223,6 +223,12 @@ $stmt->close();
 			</div>
 		</div>
 
+		<div class="row">
+			<div class="col s12">
+				Change password: Click here --> <a class="btn waves-effect waves-light purple" href="password_change.php">Change password</a>
+			</div>
+		</div>
+
     <div class="row">
       <div class="col s12">
         Number of threads displayed per page:
