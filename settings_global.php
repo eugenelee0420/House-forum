@@ -76,9 +76,16 @@ if ($_POST['submit'] == "submit") {
   // Form submitted, process data
 
   // Check all the fields are filled in
-  if (strlen($_POST['welcomeMsg']) < 1) {
+  if ((strlen($_POST['welcomeMsg']) < 1) OR (strlen($_POST['userTimeout']) < 1) OR (strlen($_POST['timezoneOffset']) < 1)) {
     die('Please fill in all the fields!');
   }
+
+	// Check for invalid value
+	if (intval($_POST['userTimeout']) < 1) {
+		die('Please input an integer larger than 0 for userTimeout!');
+	}
+
+	// No need to check timezoneOffset, as it can be a negative value or zero, just need to be an integer
 
   // Check field constraint
   if (strlen($_POST['welcomeMsg']) > 65535) {
@@ -96,6 +103,20 @@ if ($_POST['submit'] == "submit") {
   if (!$result) {
     die('Query failed. '.$stmt->error);
   }
+
+	$setting = "userTimeout";
+	$stmt->bind_param("ss",strval(floor(intval($_POST['userTimeout']))),$setting);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$setting = "timezoneOffset";
+	$stmt->bind_param("ss",strval(floor(intval($_POST['timezoneOffset']))),$setting);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
 
   $stmt->free_result();
   $stmt->close();
@@ -122,6 +143,32 @@ if ($_POST['submit'] == "submit") {
 <div class="row">
   <form class="col s12 m12 l6" action="" method="post">
 
+		<div class="row">
+			<div class="col s12">
+				Idle time before user is logged out automatically (in seconds):
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="input-field col s12">
+				<input type="number" id="userTimeout" name="userTimeout" value="<?php echo getGlobalSetting('userTimeout'); ?>">
+				<label for="userTimeout">User Timeout</label>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col s12">
+				UNIX epoch timezone offset. Refer to <a href="https://www.epochconverter.com/timezones" target="_blank">this website</a> for more details.
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="input-field col s12">
+				<input type="number" id="timezoneOffset" name="timezoneOffset" value="<?php echo getGlobalSetting('timezoneOffset'); ?>">
+				<label for="timezoneOffset">Timezone Offset</label>
+			</div>
+		</div>
+
     <div class="row">
       <div class="col s12">
         Welcome message on landing page (index.php):
@@ -130,7 +177,7 @@ if ($_POST['submit'] == "submit") {
 
     <div class="row">
       <div class="input-field col s12">
-        <textarea id="welcomeMsg" name="welcomeMsg" class="materialize-textarea"><?php echo getGlobalSetting('welcomeMsg'); ?></textarea>
+        <textarea id="welcomeMsg" name="welcomeMsg" class="materialize-textarea" data-length="65535"><?php echo getGlobalSetting('welcomeMsg'); ?></textarea>
         <label for="welcomeMsg">Welcome message</label>
       </div>
     </div>
