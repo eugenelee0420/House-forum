@@ -190,3 +190,5 @@ settingDescription | varchar(100) |
 setting | value | settingDescription
 ----- | ----- | -----
 welcomeMsg | Hi | A welcome message that will be displayed on index.php. HTML and markdown are supported.
+userTimeout | 600 | Idle time before user is logged out automatically (seconds)
+timezoneOffset | 28800 | UNIX epoch timezone offset
