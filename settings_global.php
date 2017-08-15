@@ -151,7 +151,7 @@ if ($_POST['submit'] == "submit") {
 
 		<div class="row">
 			<div class="input-field col s12">
-				<input type="number" id="userTimeout" name="userTimeout" value="<?php echo getGlobalSetting('userTimeout'); ?>">
+				<input type="number" id="userTimeout" name="userTimeout" value="<?php echo $userTimeout; ?>">
 				<label for="userTimeout">User Timeout</label>
 			</div>
 		</div>
@@ -164,7 +164,7 @@ if ($_POST['submit'] == "submit") {
 
 		<div class="row">
 			<div class="input-field col s12">
-				<input type="number" id="timezoneOffset" name="timezoneOffset" value="<?php echo getGlobalSetting('timezoneOffset'); ?>">
+				<input type="number" id="timezoneOffset" name="timezoneOffset" value="<?php echo $timezoneOffset; ?>">
 				<label for="timezoneOffset">Timezone Offset</label>
 			</div>
 		</div>
@@ -177,7 +177,7 @@ if ($_POST['submit'] == "submit") {
 
     <div class="row">
       <div class="input-field col s12">
-        <textarea id="welcomeMsg" name="welcomeMsg" class="materialize-textarea" data-length="65535"><?php echo getGlobalSetting('welcomeMsg'); ?></textarea>
+        <textarea id="welcomeMsg" name="welcomeMsg" class="materialize-textarea" data-length="65535"><?php echo $welcomeMsg; ?></textarea>
         <label for="welcomeMsg">Welcome message</label>
       </div>
     </div>

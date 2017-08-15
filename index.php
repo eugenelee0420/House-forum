@@ -67,9 +67,6 @@ function showSideNav() {
 
 require "sidenav.php";
 
-// Get the welcome message
-$welcomeMsg = getGlobalSetting('welcomeMsg');
-
 // Parse markdown
 $mdWelcomeMsg = $parsedown->text($welcomeMsg);
 
