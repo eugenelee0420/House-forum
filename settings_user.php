@@ -76,6 +76,11 @@ if ($_POST['submit'] == "submit") {
     die('Please fill in all the fields!');
   }
 
+	// Check for invalid value
+	if (intval($_POST['rowsPerPage']) < 1) {
+		die('Please input an integer larger than 0 for rowsPerPage!');
+	}
+
   // Check field constraint
 	if (strlen($_POST['userName']) > 30) {
 		die('Please do not enter more than 30 characters for the userName!');
