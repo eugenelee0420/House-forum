@@ -288,26 +288,42 @@ function isPinned($tId) {
 
 }
 
-// Function to get global setting
-function getGlobalSetting($setting) {
+// Get global settings
+// Not a function, act like cfg.php
+// Gets settings from the database and put them into variable
+$stmt = $conn->prepare('SELECT value FROM globalSetting WHERE setting = ?');
 
-  global $conn;
-
-  $stmt = $conn->prepare('SELECT value FROM globalSetting WHERE setting = ?');
-  $stmt->bind_param("s",$setting);
-  $result = $stmt->execute();
-  if (!$result) {
-    die('Query failed. '.$stmt->error);
-  }
-
-  $stmt->bind_result($value);
-  $stmt->fetch();
-
-  return $value;
-
-  $stmt->free_result();
-  $stmt->close();
-
+$setting = "welcomeMsg";
+$stmt->bind_param("s",$setting);
+$result = $stmt->execute();
+if (!$result) {
+  die('Query failed. '.$stmt->error);
 }
+
+$stmt->bind_result($$setting);
+$stmt->fetch();
+
+$setting = "userTimeout";
+$stmt->bind_param("s",$setting);
+$result = $stmt->execute();
+if (!$result) {
+  die('Query failed. '.$stmt->error);
+}
+
+$stmt->bind_result($$setting);
+$stmt->fetch();
+
+$setting = "timezoneOffset";
+$stmt->bind_param("s",$setting);
+$result = $stmt->execute();
+if (!$result) {
+  die('Query failed. '.$stmt->error);
+}
+
+$stmt->bind_result($$setting);
+$stmt->fetch();
+
+$stmt->free_result();
+$stmt->close();
 
 ?>
