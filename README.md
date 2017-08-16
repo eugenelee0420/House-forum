@@ -20,7 +20,7 @@ ICT SBA Project
 - [x] User settings
 - [x] Global settings
 - [x] Change username
-- [ ] Change password
+- [x] Change password
 - [ ] User group change
 - [ ] User group settings
 - [ ] Scoreboard
