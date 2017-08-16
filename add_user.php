@@ -45,7 +45,7 @@ $result = $stmt->execute();
 // Check and echo query result
 if (!$result) {
 	echo "Add user query status: Failed<br>";
-	echo "Error: ".$conn->error;
+	echo "Error: ".$stmt->error;
 	$stmt->free_result();
 	die();
 } else {
@@ -62,7 +62,7 @@ $result = $stmt->execute();
 // Check and echo query result
 if (!$result) {
 	echo "Create setting record query status: Failed<br>";
-	echo "Error: ".$conn->error;
+	echo "Error: ".$stmt->error;
 	$stmt->free_result();
 	die();
 } else {
