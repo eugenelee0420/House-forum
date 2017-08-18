@@ -230,7 +230,7 @@ $stmt->close();
 
 		<div class="row">
 			<div class="col s12">
-				Change password: Click here --> <a class="btn waves-effect waves-light purple" href="password_change.php">Change password</a>
+				Change password: Click here --> <a class="btn waves-effect waves-light purple" href="change_password.php">Change password</a>
 			</div>
 		</div>
 
