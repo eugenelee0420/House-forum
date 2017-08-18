@@ -332,7 +332,7 @@ function displayFAB() {
 
 	// FAB to create new thread
 	echo '<div class="fixed-action-btn">';
-	echo '<a href="postthread.php?fId='.$_GET['fId'].'" class="btn-floating btn-large red waves-effect waves-light">';
+	echo '<a href="postthread.php?fId='.$_GET['fId'].'" class="btn-floating btn-large red waves-effect waves-light tooltipped" data-tooltip="Post new thread" data-position="left" data-delay="0">';
 	echo '<i class="large material-icons">add</i>';
 	echo '</a></div>';
 
