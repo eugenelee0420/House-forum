@@ -131,3 +131,17 @@ if ($_GET['studentId'] !== $studentId) {
     <img class="responsive-img" src="<?php echoGetUserSetting($studentId,'bgPic'); ?>">
   </div>
 </div>
+
+<?php
+
+// Check for userGroup editing permission then display FAB to edit userGroup
+if (havePermission(session_id(),"AUS")) {
+
+	echo '<div class="fixed-action-btn">';
+	echo '<a href="change_userGroup.php?studentId='.$studentId.'" class="btn-floating btn-large red waves-effect waves-light tooltipped" data-tooltip="Change user group" data-position="left" data-delay="0">';
+	echo '<i class="large material-icons">edit</i>';
+	echo '</a></div>';
+
+}
+
+?>
