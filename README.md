@@ -8,8 +8,8 @@ ICT SBA Project
 
 ## Other projects used
 
-* [materialize](https://github.com/dogfalo/materialize/)
-* [Parsedown](https://github.com/erusev/parsedown)
+* [materialize](https://github.com/dogfalo/materialize/) - A CSS framework based on Material Design
+* [Parsedown](https://github.com/erusev/parsedown) - Markdown parser in PHP
 
 ## To-do list
 
