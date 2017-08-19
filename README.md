@@ -21,7 +21,7 @@ ICT SBA Project
 - [x] Global settings
 - [x] Change username
 - [x] Change password
-- [ ] User group change
+- [x] User group change
 - [ ] User group settings
 - [ ] Scoreboard
 - [ ] Script to clean up session table
