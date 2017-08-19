@@ -114,14 +114,14 @@ if ($hId == NULL) {
 
 	// Check for PI permission
 	if (!havePermission(session_id(),"PI")) {
-		die('You do not have permission to post in this forum!');
+		die('You do not have permission to perform this action!');
 	}
 
 } else {
 
 	  // Check for PH or PAH permission
 	  if (!havePermission(session_id(),"PH") AND !havePermission(session_id(),"PAH")) {
-	    die('You do not have permission to post in this forum!');
+	    die('You do not have permission to perform this action!');
 	  }
 
 	  // If user only have VH permission
@@ -129,7 +129,7 @@ if ($hId == NULL) {
 
 	    // Check if the user's house and forum's house match
 	    if (getUserHId(session_id()) !== $hId) {
-	      die('You do not have permission to post in this forum!');
+	      die('You do not have permission to perform this action!');
 	    }
 
 	  }

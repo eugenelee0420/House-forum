@@ -89,14 +89,14 @@ if ($_GET['action'] == "reply") {
 
 	  // Check for RI permission
 	  if (!havePermission(session_id(),"RI")) {
-	    die('You do not have permission to reply to this thread');
+	    die('You do not have permission to perform this action!');
 	  }
 
 	} else {
 
 	  // Check for RH or RAH permission
 	  if (!havePermission(session_id(),"RH") AND !havePermission(session_id(),"RAH")) {
-	    die('You do not have permission to reply to this thread');
+	    die('You do not have permission to perform this action!');
 	  }
 
 	  // If user only have RH permission
@@ -104,7 +104,7 @@ if ($_GET['action'] == "reply") {
 
 	    // Check if the user's house and forum's house match
 	    if (getUserHId(session_id()) !== $hId) {
-	      die('You do not have permission to reply to this thread');
+	      die('You do not have permission to perform this action!');
 	    }
 
 	  }
@@ -197,14 +197,14 @@ if ($_GET['action'] == "delete") {
 
 		// Check for DI permission
 		if (!havePermission(session_id(),"DI")) {
-			die('You do not have permission to delete this thread!');
+			die('You do not have permission to perform this action!');
 		}
 
 	} else {
 
 		// Check for DH or DAH permission
 		if (!havePermission(session_id(),"DH") AND !havePermission(session_id(),"DAH")) {
-			die('You do not have permission to delete this thread!');
+			die('You do not have permission to perform this action!');
 		}
 
 		// If user only have DH permission
@@ -212,7 +212,7 @@ if ($_GET['action'] == "delete") {
 
 			// Check if the user's house and forum's house match
 			if (getUserHId(session_id()) !== $hId) {
-				die('You do not have permission to delete this thread!');
+				die('You do not have permission to perform this action!');
 			}
 
 		}
@@ -295,14 +295,14 @@ if ($_GET['action'] == "rdelete") {
 
 		// Check for DI permission
 		if (!havePermission(session_id(),"DI")) {
-			die('You do not have permission to delete this reply!');
+			die('You do not have permission to perform this action!');
 		}
 
 	} else {
 
 		// Check for DH or DAH permission
 		if (!havePermission(session_id(),"DH") AND !havePermission(session_id(),"DAH")) {
-			die('You do not have permission to delete this reply!');
+			die('You do not have permission to perform this action!');
 		}
 
 		// If user only have DH permission
@@ -310,7 +310,7 @@ if ($_GET['action'] == "rdelete") {
 
 			// Check if the user's house and forum's house match
 			if (getUserHId(session_id()) !== $hId) {
-				die('You do not have permission to delete this reply!');
+				die('You do not have permission to perform this action!');
 			}
 
 		}
@@ -380,14 +380,14 @@ if ($_GET['action'] == "pin") {
 
 		// Check for EI permission
 		if (!havePermission(session_id(),"EI")) {
-			die('You do not have permission to pin/unpin this thread!');
+			die('You do not have permission to perform this action!');
 		}
 
 	} else {
 
 		// Check for EH or EAH permission
 		if (!havePermission(session_id(),"EH") AND !havePermission(session_id(),"EAH")) {
-			die('You do not have permission to pin/unpin this thread!');
+			die('You do not have permission to perform this action!');
 		}
 
 		// If user only have EH permission
@@ -395,7 +395,7 @@ if ($_GET['action'] == "pin") {
 
 			// Check if the user's house and forum's house match
 			if (getUserHId(session_id()) !== $hId) {
-				die('You do not have permission to pin/unpin this thread!');
+				die('You do not have permission to perform this action!');
 			}
 
 		}
@@ -464,14 +464,14 @@ if ($_GET['action'] == "unpin") {
 
 		// Check for EI permission
 		if (!havePermission(session_id(),"EI")) {
-			die('You do not have permission to pin/unpin this thread!');
+			die('You do not have permission to perform this action!');
 		}
 
 	} else {
 
 		// Check for EH or EAH permission
 		if (!havePermission(session_id(),"EH") AND !havePermission(session_id(),"EAH")) {
-			die('You do not have permission to pin/unpin this thread!');
+			die('You do not have permission to perform this action!');
 		}
 
 		// If user only have EH permission
@@ -479,7 +479,7 @@ if ($_GET['action'] == "unpin") {
 
 			// Check if the user's house and forum's house match
 			if (getUserHId(session_id()) !== $hId) {
-				die('You do not have permission to pin/unpin this thread!');
+				die('You do not have permission to perform this action!');
 			}
 
 		}

@@ -68,7 +68,7 @@ require "sidenav.php";
 
 // Check permission
 if (!havePermission(session_id(),"AGS")) {
-  die('You do not have permission to access global settings!');
+  die('You do not have permission to perform this action!');
 }
 
 if ($_POST['submit'] == "submit") {

@@ -151,14 +151,14 @@ if ($hId === NULL) {
 
   // Check for EI permission
   if (!havePermission(session_id(),"EI")) {
-    die('You do not have permission to edit this thread/reply');
+    die('You do not have permission to perform this action!');
   }
 
 } else {
 
   // Check for EH or EAH permission
   if (!havePermission(session_id(),"EH") AND !havePermission(session_id(),"EAH")) {
-    die('You do not have permission to edit this thread/reply');
+    die('You do not have permission to perform this action!');
   }
 
   // If user only have EH permission
@@ -166,7 +166,7 @@ if ($hId === NULL) {
 
     // Check if the user's house and forum's house match
     if (getUserHId(session_id()) !== $hId) {
-      die('You do not have permission to edit this thread/reply');
+      die('You do not have permission to perform this action!');
     }
 
   }
