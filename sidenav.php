@@ -85,7 +85,7 @@
           }
 
 					// Divider
-					if (havePermission(session_id(),"AGS") OR havePermission(session_id(),"AUS")) {
+					if (havePermission(session_id(),"AGS") OR havePermission(session_id(),"AUG")) {
 						echo '<li><div class="divider"></div></li>';
 					}
 
@@ -96,7 +96,7 @@
 					}
 
 					// userGroup settings
-					if (havePermission(session_id(),"AUS")) {
+					if (havePermission(session_id(),"AUG")) {
 						echo '<li><a href="settings_userGroup.php"><i class="material-icons">settings</i>User Group Settings</a></li>';
 					}
 
