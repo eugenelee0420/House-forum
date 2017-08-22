@@ -139,14 +139,12 @@ if ($_POST['submit'] == "submit") {
   $stmt->free_result();
   $stmt->close();
 
-  // Display toast
-	?>
-
-	<script>
-	Materialize.toast('Changes saved.', 4000);
-	</script>
-
-	<?php
+  // Redirect to user's profile page
+  // Cannot use header because some html have already been sent
+  echo '<script type="text/javascript">';
+  echo 'window.location = "profile.php?studentId='.$_GET['studentId'].'";';
+  echo '</script>';
+  die();
 
 }
 
