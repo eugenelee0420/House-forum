@@ -121,7 +121,7 @@ userGroup | char(3) | `PRIMARY KEY`
 userGroupName | varchar(50) | `NOT NULL`
 userGroupDescription | varchar(100) |
 
-### `userPermisison` table
+### `userPermission` table
 
 Used to store information of permissions of each user groups
 
