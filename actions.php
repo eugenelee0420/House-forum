@@ -502,6 +502,142 @@ if ($_GET['action'] == "unpin") {
 
 }
 
+// Allow a permission for a userGroup
+if ($_GET['action'] == "perm_allow") {
+
+	// Check parameters
+	// If not complete, redirect to index.php
+	if (!isset($_GET['userGroup']) OR !isset($_GET['permission'])) {
+		header('Location: index.php');
+		die();
+	}
+
+	// Check if userGroup exist
+	$stmt = $conn->prepare('SELECT userGroup FROM userGroup WHERE userGroup = ?');
+	$stmt->bind_param("s",$_GET['userGroup']);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($userGroup);
+	$stmt->fetch();
+
+	if ($userGroup !== $_GET['userGroup']) {
+		die('The requested userGroup does not exist!');
+	}
+
+	$stmt->free_result();
+	$stmt->close();
+
+	// Check if permission exists
+	$stmt = $conn->prepare('SELECT permission FROM permission WHERE permission = ?');
+	$stmt->bind_param("s",$_GET['permission']);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($permission);
+	$stmt->fetch();
+
+	if ($permission !== $_GET['permission']) {
+		die('The requested permission does not exist!');
+	}
+
+	$stmt->free_result();
+	$stmt->close();
+
+	// Check permission
+	if (!havePermission(session_id(),"AUG")) {
+		die('You do not have permission to perform this action!');
+	}
+
+	// Add db record
+	$stmt = $conn->prepare('INSERT INTO userPermission (userGroup, permission) VALUES (?,?)');
+	$stmt->bind_param("ss",$_GET['userGroup'],$_GET['permission']);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->free_result();
+	$stmt->close();
+
+	// Redirect to userGroup edit page
+	header('Location: settings_userGroup_edit.php?userGroup='.$_GET['userGroup']);
+	die();
+
+}
+
+// Disallow a permission for a userGroup
+if ($_GET['action'] == "perm_disallow") {
+
+	// Check parameters
+	// If not complete, redirect to index.php
+	if (!isset($_GET['userGroup']) OR !isset($_GET['permission'])) {
+		header('Location: index.php');
+		die();
+	}
+
+	// Check if userGroup exist
+	$stmt = $conn->prepare('SELECT userGroup FROM userGroup WHERE userGroup = ?');
+	$stmt->bind_param("s",$_GET['userGroup']);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($userGroup);
+	$stmt->fetch();
+
+	if ($userGroup !== $_GET['userGroup']) {
+		die('The requested userGroup does not exist!');
+	}
+
+	$stmt->free_result();
+	$stmt->close();
+
+	// Check if permission exists
+	$stmt = $conn->prepare('SELECT permission FROM permission WHERE permission = ?');
+	$stmt->bind_param("s",$_GET['permission']);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($permission);
+	$stmt->fetch();
+
+	if ($permission !== $_GET['permission']) {
+		die('The requested permission does not exist!');
+	}
+
+	$stmt->free_result();
+	$stmt->close();
+
+	// Check permission
+	if (!havePermission(session_id(),"AUG")) {
+		die('You do not have permission to perform this action!');
+	}
+
+	// Remove from db
+	$stmt = $conn->prepare('DELETE FROM userPermission WHERE userGroup = ? AND permission = ?');
+	$stmt->bind_param("ss",$_GET['userGroup'],$_GET['permission']);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->free_result();
+	$stmt->close();
+
+	// Redirect to userGroup edit page
+	header('Location: settings_userGroup_edit.php?userGroup='.$_GET['userGroup']);
+	die();
+
+}
+
 // No action was performed, redirect to index.php
 header('Location: login.php');
 die();
