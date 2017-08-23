@@ -119,3 +119,8 @@ mysqli_free_result($result);
 </tbody>
 </table>
 </div></div>
+
+<div class="fixed-action-btn">
+<a href="settings_userGroup_add.php" class="btn-floating btn-large red waves-effect waves-light tooltipped" data-tooltip="New user group" data-position="left" data-delay="0">
+<i class="large material-icons">add</i>
+</a></div>
