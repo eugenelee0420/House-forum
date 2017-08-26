@@ -177,7 +177,7 @@ while ($stmt->fetch()) {
 	echo '</a></td>';
 
 	echo '<td class="hide-on-small-only">';
-	echo date('j/n/Y G:i',$tTime + $timezoneOffset);
+	echo gmdate('j/n/Y G:i',$tTime + $timezoneOffset);
 	echo '</td>';
 
 	echo '<td class="hide-on-small-only">';
@@ -308,7 +308,7 @@ while ($stmt->fetch()) {
 	echo '</a></td>';
 
 	echo '<td class="hide-on-small-only">';
-	echo date('j/n/Y G:i',$tTime + $timezoneOffset);
+	echo gmdate('j/n/Y G:i',$tTime + $timezoneOffset);
 	echo '</td>';
 
 	echo '<td class="hide-on-small-only">';
