@@ -71,6 +71,7 @@ permission | permissionDescription
 AGS | Access global settings
 AUG | Access userGroup settings
 AUS | Access user settings (change his/her userGroup)(accessible within profile page)
+ASB | Access the scoreboard (add/edit/delete events, add/edit/delete scorebaord entries)
 DAH | Delete posts and replies in all house forums
 DH | Delete posts and replies within their respective house-specific forum
 DI | Delete posts and replies within inter-house forum
@@ -86,6 +87,7 @@ RI | Reply to posts within inter-house forum
 VAH | View all house-specific forums
 VH | View house-specific forum for user's house
 VI | View inter-house forums
+VSB | View the scoreboard
 
 ### `session` table
 
@@ -192,3 +194,23 @@ setting | value | settingDescription
 welcomeMsg | Hi | A welcome message that will be displayed on index.php. HTML and markdown are supported.
 userTimeout | 600 | Idle time before user is logged out automatically (seconds)
 timezoneOffset | 28800 | UNIX epoch timezone offset
+
+### `event` table
+
+Used to store inter-house events
+
+Field Name | Data Type (Size) | Constraints
+----- | ----- | -----
+eId | int(10) | `PRIMARY KEY`
+eventName | varchar(40) | `NOT NULL`
+eventDate | char(10) | `NOT NULL`
+
+### `scoreboard` table
+
+Used to store scores of houses in events
+
+Field Name | Data Type (Size) | Constraints
+----- | ----- | -----
+hId | char(3) | `PRIMARY KEY`, `FOREIGN KEY REFERENCING house(hId)`
+eId | int(10) | `PRIMARY KEY`, `FOREIGN KEY REFERENCING event(eId)`
+score | int(3) | `NOT NULL`
