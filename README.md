@@ -44,6 +44,12 @@ fName | varchar(30) | `NOT NULL`
 fDescription | varchar(100) |
 hId | char(3) | `UNIQUE`, `FOREIGN KEY REFERENCING house(hId)`
 
+SQL to create the table:
+
+```sql
+CREATE TABLE forum (fId char(3) PRIMARY KEY, fName varchar(30) NOT NULL, fDescription varchar(30), hId CHAR(3) UNIQUE, FOREIGN KEY (hId) REFERENCING house(hId));
+```
+
 ### `house` table
 
 Used to store information of the houses
@@ -52,6 +58,12 @@ Field Name | Data Type (Size) | Constraints
 ----- | ----- | -----
 hId | char(3) | `PRIMARY KEY`
 houseName | varchar(20) | `NOT NULL`
+
+SQL to create the table:
+
+```sql
+CREATE TABLE house (hId CHAR(3) PRIMARY KEY, houseName varchar(20) NOT NULL);
+```
 
 ### `permission` table
 
@@ -63,6 +75,12 @@ Field Name | Data Type (Size) | Constraints
 ----- | ----- | -----
 permisison | char(3) | `PRIMARY KEY`
 permissionDescription | varchar(100) | `NOT NULL`
+
+SQL to create the table:
+
+```sql
+CREATE TABLE permission (permission CHAR(3) PRIMARY KEY, permissionDescription VARCHAR(100) NOT NULL);
+```
 
 #### Default data
 
@@ -99,6 +117,12 @@ sessionId | char(40) | `PRIMARY KEY`
 studentId | char(7) | `NOT NULL`, `FOREIGN KEY REFERENCING users(studentId)`
 lastActivity | int(10) | `NOT NULL`
 
+SQL to create the table:
+
+```sql
+CREATE TABLE session (sessionId CHAR(40) PRIMARY KEY, studentId CHAR(7) NOT NULL, lastActivity INT(10) NOT NULL, FOREIGN KEY (studentId) REFERENCING users(studentId));
+```
+
 ### `thread` table
 
 Used to store information of threads
@@ -108,10 +132,16 @@ Field Name | Data Type (Size) | Constraints
 tId | int(10) | `PRIMARY KEY`
 tTitle | varchar(40) | `NOT NULL`
 tContent | text | `NOT NULL`
-tTime | char(10) | `NOT NULL`
+tTime | int(10) | `NOT NULL`
 fId | char(3) | `NOT NULL`, `FOREIGN KEY REFERENCING forum(fId)`
 studentId | char(7)| `NOT NULL`, `FOREIGN KEY REFERENCING users(studentId)`
 pin | char(1) | `DEFAULT '0'`
+
+SQL to create the table:
+
+```sql
+CREATE TABLE thread (tId INT(10) PRIMARY KEY, tTitle VARCHAR(40) NOT NULL, tContent TEXT NOT NULL, tTime INT(10) NOT NULL, fId CHAR(3) NOT NULL, studentId CHAR(7) NOT NULL, pin CHAR(1) DEFAULT '0', FOREIGN KEY (fId) REFERENCING forum(fId), FOREIGN KEY (studentId) REFERENCING users(studentId));
+```
 
 ### `userGroup` table
 
@@ -123,14 +153,26 @@ userGroup | char(3) | `PRIMARY KEY`
 userGroupName | varchar(50) | `NOT NULL`
 userGroupDescription | varchar(100) |
 
+SQL to create the table:
+
+```sql
+CREATE TABLE userGroup (userGroup CHAR(3) PRIMARY KEY, userGroupName varchar(50) NOT NULL, userGroupDescription VARCHAR(100));
+```
+
 ### `userPermission` table
 
 Used to store information of permissions of each user groups
 
 Field Name | Data Type (Size) | Constraints
 ----- | ----- | -----
-userGroup | char(3) | `PRIMARY KEY`
+userGroup | char(3) | `PRIMARY KEY`, `FOREIGN KEY REFERENCING userGroup(userGroup)`
 permission | char(3) | `PRIMARY KEY`, `FOREIGN KEY REFERENCING permission(permission)`
+
+SQL to create the table:
+
+```sql
+CREATE TABLE userPermission (userGroup CHAR(3) NOT NULL, permission CHAR(3) NOT NULL, PRIMARY KEY (userGroup, permission), FOREIGN KEY (userGroup) REFERENCING userGroup(userGroup), FOREIGN KEY (permission) REFERENCING permission(permission));
+```
 
 ### `users` table
 
@@ -145,6 +187,12 @@ userName | varchar(30) | `NOT NULL`, `UNIQUE`
 hId | char(3) | `NOT NULL`, `FOREIGN KEY REFERENCING house(hId)`
 userGroup | char(3) | `NOT NULL`, `FOREIGN KEY REFERENCING userGroup(userGroup)`
 hash | varchar(100) | `NOT NULL`
+
+SQL to create the table:
+
+```sql
+CREATE TABLE users (studentId CHAR(7) PRIMARY KEY, userName VARCHAR(30) NOT NULL UNIQUE, hId CHAR(3) NOT NULL, userGroup CHAR(3) NOT NULL, hash VARCHAR(100) NOT NULL, FOREIGN KEY (hId) REFERENCING house(hId), FOREIGN KEY userGroup REFERENCING userGroup(userGroup));
+```
 
 ### `userSetting` table
 
@@ -161,6 +209,12 @@ rowsPerPage | int(5) | `NOT NULL`, `DEFAULT 10`
 avatarPic | varchar(200) | `NOT NULL`, `DEFAULT 'https://upload.wikimedia.org/wikipedia/commons/1/1e/Default-avatar.jpg'`
 bgPic | varchar(200) | `NOT NULL`, `DEFAULT 'http://puu.sh/wZnZr.jpg'`
 
+SQL to create the table:
+
+```sql
+CREATE TABLE userSetting (studentId CHAR(7) PRIMARY KEY, rowsPerPage INT(5) NOT NULL DEFAULT 10, avatarPic VARCHAR(200) NOT NULL DEFAULT 'https://upload.wikimedia.org/wikipedia/commons/1/1e/Default-avatar.jpg', bgPic VARCHAR(200) NOT NULL DEFAULT 'http://puu.sh/wZnZr.jpg', FOREIGN KEY (studentId) REFERENCING users(studentId));
+```
+
 ### `reply` table
 
 Used to store replies to threads
@@ -172,6 +226,12 @@ rContent | text | `NOT NULL`
 rTime | int(10) | `NOT NULL`
 tId | int(10) | `NOT NULL`, `FOREIGN KEY REFERENCING thread(tId)`
 studentId | char(7) | `NOT NULL`, `FOREIGN KEY REFERENCING users(studentId)`
+
+SQL to create the table:
+
+```sql
+CREATE TABLE reply (rId INT(10) PRIMARY KEY, rContent TEXT NOT NULL, rTime INT(10) NOT NULL, tId INT(10) NOT NULL, studentId CHAR(7) NOT NULL, FOREIGN KEY (tId) REFERENCING thread(tId), FOREIGN KEY (studentId) REFERENCING users(studentId));
+```
 
 ### `globalSetting` table
 
@@ -186,6 +246,12 @@ Field Name | Data Type (Size) | Constraints
 setting | varchar(30) | `NOT NULL`
 value | text | `NOT NULL`
 settingDescription | varchar(100) |
+
+SQL to create the table:
+
+```sql
+CREATE TABLE globalSetting (setting VARCHAR(30) NOT NULL, value TEXT NOT NULL, settingDescription VARCHAR(100));
+```
 
 #### Default data
 
@@ -203,7 +269,13 @@ Field Name | Data Type (Size) | Constraints
 ----- | ----- | -----
 eId | int(10) | `PRIMARY KEY`
 eventName | varchar(40) | `NOT NULL`
-eventDate | char(10) | `NOT NULL`
+eventDate | int(10) | `NOT NULL`
+
+SQL to create the table:
+
+```sql
+CREATE TABLE event (eId INT(10) PRIMARY KEY, eventName VARCHAR(40) NOT NULL, eventDate INT(10) NOT NULL);
+```
 
 ### `scoreboard` table
 
@@ -214,3 +286,9 @@ Field Name | Data Type (Size) | Constraints
 hId | char(3) | `PRIMARY KEY`, `FOREIGN KEY REFERENCING house(hId)`
 eId | int(10) | `PRIMARY KEY`, `FOREIGN KEY REFERENCING event(eId)`
 score | int(3) | `NOT NULL`
+
+SQL to create the table:
+
+```sql
+CREATE TABLE scoreboard (hId CHAR(3) NOT NULL, eId INT(10) NOT NULL, score INT(3) NOT NULL, PRIMARY KEY (hId, eId), FOREIGN KEY (hId) REFERENCING house(hId), FOREIGN KEY (eId) event(eId));
+```
