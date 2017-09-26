@@ -84,24 +84,6 @@
 
           }
 
-          // Scoreboard
-          if (havePermission(session_id(),"ASB") OR havePermission(session_id(),"VSB")) {
-
-            // Divider
-            echo '<li><div class="divider"></div></li>';
-
-            // View scoreboard
-            if (havePermission(session_id(),"VSB")) {
-              echo '<li><a href="scoreboard.php"><i class="material-icons">list</i>Scoreboard</a></li>';
-            }
-
-            // Edit events
-            if (havePermission(session_id(),"ASB")) {
-              echo '<li><a href="scoreboard_event.php"><i class="material-icons">event</i>Edit events</a></li>';
-            }
-
-          }
-
 					// Divider
 					if (havePermission(session_id(),"AGS") OR havePermission(session_id(),"AUG")) {
 						echo '<li><div class="divider"></div></li>';
