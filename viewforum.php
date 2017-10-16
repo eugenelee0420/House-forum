@@ -196,7 +196,7 @@ echo '</tbody></table>';
 echo '</div></div>';
 
 // Count the number of threads
-$stmt = $conn->prepare('SELECT COUNT(*) AS numT FROM thread WHERE fId = ?');
+$stmt = $conn->prepare('SELECT COUNT(*) AS numT FROM thread WHERE fId = ? AND pin = "0"');
 $stmt->bind_param("s",$_GET['fId']);
 $result = $stmt->execute();
 if (!$result) {
