@@ -323,7 +323,7 @@ if ($_POST['submit'] == 'submit') {
 
         <div class="row">
           <div class="col s12">
-            <button class="btn waves-effect waves-light" type="submit" name="submit" value="submit">Apply
+            <button class="btn waves-effect waves-light purple" type="submit" name="submit" value="submit">Apply
             <i class="material-icons right">send</i></button>
           </div>
         </div>
