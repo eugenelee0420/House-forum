@@ -154,7 +154,7 @@ if ($_POST['submit'] == "submit") {
 
 	// If width or height < 1
 	if(($bgInfo[0] < 1) OR ($bgInfo[1] < 1)) {
-		die('PLease input a valid image link for the background image!');
+		die('Please input a valid image link for the background image!');
 	}
 
   // Update database
