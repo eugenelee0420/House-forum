@@ -239,11 +239,23 @@ while ($stmt->fetch()) {
 
 	} else {
 
-		if (havePermission(session_id(),"EH") OR havePermission(session_id(),"EAH")) {
+		// Only have EH
+		if (havePermission(session_id(),"EH") AND !havePermission(session_id(),"EAH") AND (getUserHId(session_id()) == $hId)) {
 			displayBtnEdit($rId);
 		}
 
-		if (havePermission(session_id(),"DH") OR havePermission(session_id(),"DAH")) {
+		// Have EAH
+		if (havePermission(session_id(),"EAH")) {
+			displayBtnEdit($rId);
+		}
+
+		// Only have DH
+		if (havePermission(session_id(),"DH") AND !havePermission(session_id(),"DAH") AND (getUserHId(session_id()) == $hId)) {
+			displayBtnDelete($rId);
+		}
+
+		// Have DAH
+		if (havePermission(session_id(),"DAH")) {
 			displayBtnDelete($rId);
 		}
 
@@ -303,7 +315,13 @@ if ($hId == NULL) {
 
 } else {
 
-	if (havePermission(session_id(),"RH") OR havePermission(session_id(),"RAH")) {
+	// Only have RH
+	if (havePermission(session_id(),"RH") AND !havePermission(session_id(),"RAH") AND (getUserHId(session_id()) == $hId)) {
+		displayForm();
+	}
+
+	// Have RAH
+	if (havePermission(session_id(),"RAH")) {
 		displayForm();
 	}
 
@@ -326,7 +344,7 @@ function displayFABUnpin() {
 // If user have either one permission to delete or edit
 // If hId is null, either EI or DI must be true
 // If hId is not null, either EAH or EH or DAH or DH must be true
-if (( ($hId == NULL) AND (havePermission(session_id(),"EI") OR havePermission(session_id(),"DI")) ) OR ( ($hId !== NULL) AND (havePermission(session_id(),"EAH") OR havePermission(session_id(),"EH") OR havePermission(session_id(),"DAH") OR havePermission(session_id(),"DH") ))) {
+if (( ($hId == NULL) AND (havePermission(session_id(),"EI") OR havePermission(session_id(),"DI")) ) OR ( ($hId !== NULL) AND (havePermission(session_id(),"EAH") OR (havePermission(session_id(),"EH") AND (getUserHId(session_id()) == $hId)) OR havePermission(session_id(),"DAH") OR (havePermission(session_id(),"DH") AND (getUserHId(session_id()) == $hId)) ))) {
 
 	// Display the "more" icon/FAB
 	echo '<div class="fixed-action-btn">';
@@ -355,7 +373,8 @@ if (( ($hId == NULL) AND (havePermission(session_id(),"EI") OR havePermission(se
 
 	} else {
 
-		if (havePermission(session_id(),"EH") OR havePermission(session_id(),"EAH")) {
+		// Only have EH
+		if (havePermission(session_id(),"EH") AND !havePermission(session_id(),"EAH") AND (getUserHId(session_id()) == $hId)) {
 			displayFABEdit();
 
 			if (!isPinned($_GET['tId'])) {
@@ -366,7 +385,25 @@ if (( ($hId == NULL) AND (havePermission(session_id(),"EI") OR havePermission(se
 
 		}
 
-		if (havePermission(session_id(),"DH") OR havePermission(session_id(),"DAH")) {
+		// Have EAH
+		if (havePermission(session_id(),"EAH")) {
+			displayFABEdit();
+
+			if (!isPinned($_GET['tId'])) {
+				displayFABPin();
+			} elseif (isPinned($_GET['tId'])) {
+				displayFABUnpin();
+			}
+
+		}
+
+		// Only have DH
+		if (havePermission(session_id(),"DH") AND !havePermission(session_id(),"DAH") AND (getUserHId(session_id()) == $hId)) {
+			displayFABDelete();
+		}
+
+		// Have DAH
+		if (havePermission(session_id(),"DAH")) {
 			displayFABDelete();
 		}
 
