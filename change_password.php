@@ -105,6 +105,11 @@ if ($_POST['submit'] == "submit") {
 		die('Please do not use your userName as your password!');
 	}
 
+  // Also not allow password equal to studentId
+	if ($_POST['newPassword'] == $studentId) {
+		die('Please do not use your studentId as your password!');
+	}
+
 	// Update database
 	$stmt = $conn->prepare('UPDATE users SET hash = ? WHERE studentId = ?');
 	$stmt->bind_param("ss",password_hash($_POST['newPassword'], PASSWORD_DEFAULT),$studentId);
