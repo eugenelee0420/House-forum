@@ -268,11 +268,9 @@ Field Name | Data Type (Size) | Constraints
 time | int(10) | `PRIMARY KEY`, `AUTO_INCREMENT`
 studentId | char(7) | `NOT NULL`, `FOREIGN KEY REFERENCES users(studentId)`
 ip | char(45) | `NOT NULL`
-browser | varchar(30) | `NOT NULL`
-platform | varchar(30) | `NOT NULL`
 
 SQL to create the table:
 
 ```sql
-CREATE TABLE loginRecord (time int(10) PRIMARY KEY AUTO_INCREMENT, studentId char(7) NOT NULL, ip char(45) NOT NULL, browser varchar(30) NOT NULL, platform varchar(30) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId));
+CREATE TABLE loginRecord (time int(10) PRIMARY KEY AUTO_INCREMENT, studentId char(7) NOT NULL, ip char(45) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId));
 ```
