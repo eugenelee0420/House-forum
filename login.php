@@ -65,6 +65,8 @@ if ($_POST['submit'] == "submit") {
     // Set session variable to indicate logged in
     $_SESSION['logged_in'] = 1;
 
+    // Add login record
+
 		header('Location: index.php');
 		die();
 
