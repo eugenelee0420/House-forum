@@ -325,7 +325,7 @@ function getIp() {
 function getCountry($ip) {
 
   $ipapi = file_get_contents('http://ip-api.com/json/'.$ip);
-  $json = json($ipapi,TRUE);
+  $json = json_decode($ipapi,TRUE);
   $country = $json['country'];
 
   return $country;
