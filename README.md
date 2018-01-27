@@ -258,3 +258,21 @@ setting | value | settingDescription
 welcomeMsg | Hi | A welcome message that will be displayed on index.php. HTML and markdown are supported.
 userTimeout | 600 | Idle time before user is logged out automatically (seconds)
 timezoneOffset | 28800 | UNIX epoch timezone offset
+
+### `loginRecord` table
+
+Used to store login records
+
+Field Name | Data Type (Size) | Constraints
+----- | ----- | -----
+time | int(10) | `PRIMARY KEY`, `AUTO_INCREMENT`
+studentId | char(7) | `NOT NULL`, `FOREIGN KEY REFERENCING users(studentId)`
+ip | char(45) | `NOT NULL`
+browser | varchar(30) | `NOT NULL`
+country | varchar(30) | `NOT NULL`
+
+SQL to create the table:
+
+```sql
+CREATE TABLE loginRecord (time int(10) PRIMARY KEY AUTO_INCREMENT, studentId char(7) NOT NULL, ip char(45) NOT NULL, browser varchar(30) NOT NULL, country varchar(30) NOT NULL, FOREIGN KEY (studentId) REFERENCING users(studentId));
+```
