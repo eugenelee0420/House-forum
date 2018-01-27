@@ -321,6 +321,17 @@ function getIp() {
     return $ipaddress;
 }
 
+// Function to get country from IP address
+function getCountry($ip) {
+
+  $ipapi = file_get_contents('http://ip-api.com/json/'.$ip);
+  $json = json($ipapi,TRUE);
+  $country = $json['country'];
+
+  return $country;
+
+}
+
 // Get global settings
 // Not a function, act like cfg.php
 // Gets settings from the database and put them into variable
