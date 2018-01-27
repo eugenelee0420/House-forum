@@ -288,6 +288,39 @@ function isPinned($tId) {
 
 }
 
+// Function to get user's ip address
+function getIp() {
+    $ipaddress = '';
+    if (getenv('HTTP_CLIENT_IP')) {
+        $ipaddress = getenv('HTTP_CLIENT_IP');
+        $method = "HTTP_CLIENT_IP";
+    }
+    else if(getenv('HTTP_X_FORWARDED_FOR')) {
+        $ipaddress = getenv('HTTP_X_FORWARDED_FOR');
+        $method = "HTTP_X_FORWARDED_FOR";
+    }
+    else if(getenv('HTTP_X_FORWARDED')) {
+        $ipaddress = getenv('HTTP_X_FORWARDED');
+        $method = "HTTP_X_FORWARDED";
+    }
+    else if(getenv('HTTP_FORWARDED_FOR')) {
+        $ipaddress = getenv('HTTP_FORWARDED_FOR');
+        $method = "HTTP_FORWARDED_FOR";
+    }
+    else if(getenv('HTTP_FORWARDED')) {
+       $ipaddress = getenv('HTTP_FORWARDED');
+        $method = "HTTP_FORWARDED";
+    }
+    else if(getenv('REMOTE_ADDR')) {
+        $ipaddress = getenv('REMOTE_ADDR');
+        $method = "REMOTE_ADDR";
+    }
+    else {
+        $ipaddress = 'UNKNOWN';
+    }
+    return $ipaddress;
+}
+
 // Get global settings
 // Not a function, act like cfg.php
 // Gets settings from the database and put them into variable
