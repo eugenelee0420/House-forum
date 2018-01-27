@@ -66,6 +66,12 @@ if ($_POST['submit'] == "submit") {
     $_SESSION['logged_in'] = 1;
 
     // Add login record
+    $stmt = $conn->prepare('INSERT INTO loginRecord VALUES ('.time().',?,"'.getIp().'")');
+    $stmt->bind_param("s",$qStudentId);
+    $result = $stmt->execute();
+    if (!$result) {
+      die('Query failed. '.$stmt->error);
+    }
 
 		header('Location: index.php');
 		die();
@@ -79,7 +85,6 @@ if ($_POST['submit'] == "submit") {
 // If form was not submitted, display the form (html)
 
 } else {
-
 ?>
 
 <!DOCTYPE html>
