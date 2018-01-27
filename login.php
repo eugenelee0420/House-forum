@@ -73,6 +73,9 @@ if ($_POST['submit'] == "submit") {
       die('Query failed. '.$stmt->error);
     }
 
+    $stmt->free_result();
+    $stmt->close();
+
 		header('Location: index.php');
 		die();
 
