@@ -273,6 +273,12 @@ $stmt->close();
     </div>
   </div>
 
+	<div class="row">
+		<div class="col s12">
+			<a class="btn waves-effect waves-light purple" href="view_login_record.php">View login records</a>
+		</div>
+	</div>
+
   <button class="btn waves-effect purple waves-light" type="submit" name="submit" value="submit">Apply
   <i class="material-icons right">send</i>
 
