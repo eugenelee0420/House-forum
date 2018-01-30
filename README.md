@@ -189,7 +189,7 @@ hash | varchar(100) | `NOT NULL`
 SQL to create the table:
 
 ```sql
-CREATE TABLE users (studentId CHAR(7) PRIMARY KEY, userName VARCHAR(30) NOT NULL UNIQUE, hId CHAR(3) NOT NULL, userGroup CHAR(3) NOT NULL, hash VARCHAR(100) NOT NULL, FOREIGN KEY (hId) REFERENCES house(hId), FOREIGN KEY userGroup REFERENCES userGroup(userGroup));
+CREATE TABLE users (studentId CHAR(7) PRIMARY KEY, userName VARCHAR(30) NOT NULL UNIQUE, hId CHAR(3) NOT NULL, userGroup CHAR(3) NOT NULL, hash VARCHAR(100) NOT NULL, FOREIGN KEY (hId) REFERENCES house(hId), FOREIGN KEY (userGroup) REFERENCES userGroup(userGroup));
 ```
 
 ### `userSetting` table
