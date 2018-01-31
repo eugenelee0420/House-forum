@@ -275,5 +275,3 @@ SQL to create the table:
 ```sql
 CREATE TABLE loginRecord (time int(10) PRIMARY KEY AUTO_INCREMENT, studentId char(7) NOT NULL, ip char(45) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId));
 ```
-
-Signed commit test
