@@ -1,13 +1,14 @@
 <?php
 // Functions to be included in other pages
 
-require "cfg.php";
+$cfgJson = file_get_contents("cfg.json");
+$cfg = json_decode($cfgJson, TRUE);
 
 require "Parsedown.php";
 $parsedown = new Parsedown();
 
 // Connect to database
-$conn = new mysqli($dbHost,$dbUser,$dbPass,$dbName);
+$conn = new mysqli($cfg['dbHost'],$cfg['dbUser'],$cfg['dbPass'],$cfg['dbName']);
 if ($conn->connect_error) {
   die('<font color="red">Connection failed: '.$conn->connect_error.'</font>');
 }
