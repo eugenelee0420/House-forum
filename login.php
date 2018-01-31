@@ -1,6 +1,6 @@
 <?php
 // login page
-require "cfg.php";
+
 require "functions.php";
 
 session_start();

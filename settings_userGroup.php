@@ -1,7 +1,7 @@
 <?php
 // User group settings page, require login and sufficient permission
 
-require "cfg.php";
+
 require "functions.php";
 
 session_start();

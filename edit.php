@@ -4,7 +4,7 @@
 // Self-submitting forms
 // Because editing thread and replies require the same permission, by combining the two, permission check can be performed once only
 
-require "cfg.php";
+
 require "functions.php";
 
 session_start();

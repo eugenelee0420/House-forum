@@ -28,7 +28,7 @@ Sample JSON data:
 
 */
 
-require "cfg.php";
+
 require "functions.php";
 
 if (!file_exists("users.json")) {

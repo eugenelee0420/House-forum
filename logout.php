@@ -1,7 +1,7 @@
 <?php
 // Page the logs user out
 
-require "cfg.php";
+
 require "functions.php";
 
 session_start();

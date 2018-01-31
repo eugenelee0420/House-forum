@@ -3,7 +3,7 @@
 // Redirect after the action have been performed
 // No html, just php
 
-require "cfg.php";
+
 require "functions.php";
 
 session_start();

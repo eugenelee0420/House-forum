@@ -2,7 +2,7 @@
 // Profile page, display information about the requested user, and links to admin actions (change user group etc.)
 // Require login
 
-require "cfg.php";
+
 require "functions.php";
 
 session_start();

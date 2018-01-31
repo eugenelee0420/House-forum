@@ -1,6 +1,6 @@
 <?php
 
-require "cfg.php";
+
 require "functions.php";
 
 echo 'userTimeout: '.$userTimeout;

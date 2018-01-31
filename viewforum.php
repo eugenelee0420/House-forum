@@ -2,7 +2,7 @@
 // Lists the requested forum
 // Require login and sufficient permission (varies with forums)
 
-require "cfg.php";
+
 require "functions.php";
 
 session_start();

@@ -1,7 +1,7 @@
 <?php
 // Index page, require login
 
-require "cfg.php";
+
 require "functions.php";
 
 session_start();

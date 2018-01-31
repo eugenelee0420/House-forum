@@ -1,7 +1,7 @@
 <?php
 // Page to change one user's userGroup, require login and sufficient permission
 
-require "cfg.php";
+
 require "functions.php";
 
 session_start();

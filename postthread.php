@@ -2,7 +2,7 @@
 // Page to post new thread (requires login and sufficient permission)
 // Self-submitting form
 
-require "cfg.php";
+
 require "functions.php";
 
 session_start();
