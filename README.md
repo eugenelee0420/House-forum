@@ -10,6 +10,7 @@ ICT SBA Project
 
 * [materialize](https://github.com/dogfalo/materialize/) - A CSS framework based on Material Design
 * [Parsedown](https://github.com/erusev/parsedown) - Markdown parser in PHP
+* [Highlight.js](https://github.com/isagalaev/highlight.js) - Javascript syntax highlighter
 
 ## To-do list
 
