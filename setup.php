@@ -3,13 +3,80 @@
 if ($_POST['submit'] == "submit") {
   // Form submitted
 
-  echo 'Submitted data (PHP array):<br>';
+  // Echo submitted data
+  echo 'Submitted data (PHP array):';
   echo '<pre>';
   var_dump($_POST);
   echo '</pre><br>';
 
-  
+  // Check if all fields are filled in
+  echo 'Checking if all the fields are filled in...<br>';
 
+  if (strlen($_POST['dbHost']) < 1) {
+    die('Error: Database hostname field is empty!');
+  }
+
+  if (strlen($_POST['dbUser']) < 1) {
+    die('Error: Database user field is empty!');
+  }
+
+  if (strlen($_POST['dbPass']) < 1) {
+    die('Error: Database password field is empty!');
+  }
+
+  if (strlen($_POST['dbName']) < 1) {
+    die('Error: Database name field is empty!');
+  }
+
+  if (strlen($_POST['rowsPerPage']) < 1) {
+    die('Error: Rows per page field is empty!');
+  }
+
+  if (strlen($_POST['avatarPic']) < 1) {
+    die('Error: Avatar picture field is empty!');
+  }
+
+  if (strlen($_POST['bgPic']) < 1) {
+    die('Error: Background picture field is empty!');
+  }
+
+  if (strlen($_POST['userTimeout']) < 1) {
+    die('Error: User timeout field is empty!');
+  }
+
+  if (strlen($_POST['timezoneOffset']) < 1) {
+    die('Error: Timezone offset field is empty!');
+  }
+
+  if (strlen($_POST['welcomeMsg']) < 1) {
+    die('Error: Welcome message field is empty!');
+  }
+
+  if (strlen($_POST['house']) < 1) {
+    die('Error: House field is empty!');
+  }
+
+  if (strlen($_POST['userGroup']) < 1) {
+    die('Error: User group field is empty!');
+  }
+
+  if (strlen($_POST['userGroupName']) < 1) {
+    die('Error: User group name field is empty!');
+  }
+
+  if (strlen($_POST['studentId']) < 1) {
+    die('Error: Student ID field is empty!');
+  }
+
+  if (strlen($_POST['pass']) < 1) {
+    die('Error: User password field is empty!');
+  }
+
+  if (strlen($_POST['userHId']) < 1) {
+    die('Error: User house ID field is empty!');
+  }
+
+  echo 'No error was found<br><br>';
 
 } else {
 
