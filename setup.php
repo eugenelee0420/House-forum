@@ -57,7 +57,7 @@ if ($_POST['submit'] == "submit") {
   }
 
   if (strlen($_POST['userGroup']) < 1) {
-    die('Error: User group field is empty!');
+    die('Error: User group ID field is empty!');
   }
 
   if (strlen($_POST['userGroupName']) < 1) {
@@ -77,6 +77,91 @@ if ($_POST['submit'] == "submit") {
   }
 
   echo 'No error was found<br><br>';
+
+  // Check JSON
+  echo 'Decoding and validating JSON...<br>';
+
+  $json = json_decode($_POST['house'], true);
+  if ($json == NULL) {
+    die('Error: Invalid JSON');
+  } else {
+    echo 'No error was found<br>';
+  }
+
+  echo 'Decoded JSON (PHP array):<br><pre>';
+  var_dump($json);
+  echo '</pre><br><br>';
+
+  // Check field constraints
+  echo 'Checking field constraints...<br>';
+
+  if (intval($_POST['rowsPerPage']) < 1) {
+    die('Error: Invalid value for rows per page!');
+  }
+
+  if (strlen($_POST['avatarPic']) > 200) {
+    die('Error: Avatar picture field exceeds field limit of 200 characters!');
+  }
+
+  if (strlen($_POST['bgPic']) > 200) {
+    die('Error: Background picture field exceeds field limit of 200 characters!');
+  }
+
+  if (intval($_POST['userTimeout']) < 1) {
+    die('Error: Invalid value for user timeout!');
+  }
+
+  if (strlen($_POST['welcomeMsg']) > 65535) {
+    die('Error: Welcome message field exceeds field limit of 65535 characters!');
+  }
+
+  if (strlen($_POST['userGroup']) > 3) {
+    die('Error: User group ID field exceeds field limit of 3 characters!');
+  }
+
+  if (strlen($_POST['userGroupName']) > 50) {
+    die('Error: User group name field exceeds field limit of 50 characters!');
+  }
+
+  if (strlen($_POST['studentId']) > 7) {
+    die('Error: Student ID field exceeds field limit of 7 characters!');
+  }
+
+  if (strlen($_POST['userHId']) > 3) {
+    die('User house ID field exceeds field limit of 3 characters!');
+  }
+
+  // Prepare empty array for checking for duplicate value within input data
+  $hIdArray = array();
+
+  // Check field constraints within JSON array
+  foreach($json as $key => $row) {
+
+    // Append hId to array
+    array_push($hIdArray,$row['hId']);
+
+    if (strlen($row['hId']) < 1) {
+      die('Error: House ID parameter is empty or not correctly specified for entry number '.$key);
+    }
+
+    if (strlen($row['houseName']) < 1) {
+      die('Error: House name parameter is empty or not correctly specified for entry number '.$key.' (house ID: '.$row['hId'].')');
+    }
+
+    if (strlen($row['hId']) > 3) {
+      die('Error: House ID parameter exceeds field limit of 3 characters for entry number '.$key.' (house ID: '.$row['hId'].')');
+    }
+
+    if (strlen($row['houseName']) > 20) {
+      die('Error: House name parameter exceeds field limit of 20 characters for entry number '.$key.' (house ID: '.$row['hId'].')');
+    }
+
+  }
+
+  echo 'No error was found<br><br>';
+
+  var_dump($hIdArray);
+
 
 } else {
 
