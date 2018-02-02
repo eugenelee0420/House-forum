@@ -102,7 +102,7 @@ if ($_POST['submit'] == "submit") {
 
       <div class="row">
         <div class="input-field col s12">
-          <input id="rowsPerPage" name="rowsPerpage" type="text">
+          <input id="rowsPerPage" name="rowsPerPage" type="number">
           <label for="rowsPerPage">Rows per page</label>
         </div>
       </div>
