@@ -162,6 +162,21 @@ if ($_POST['submit'] == "submit") {
 
   var_dump($hIdArray);
 
+  echo 'Checking for duplicate house ID within the input houses...<br>';
+
+  if (count($hIdArray) !== count(array_unique($hIdArray))) {
+    die('Error: Duplicate house ID found within the input data!');
+  } else {
+    echo 'No error was found<br><br>';
+  }
+
+  echo 'Checking if the house of the new user is valid...<br>';
+
+  if (!in_array(strval($_POST['userHId']),$hIdArray)) {
+    die('Error: Invalid house inputted for the new user!');
+  } else {
+    echo 'No error was found<br><br>';
+  }
 
 } else {
 
