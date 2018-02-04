@@ -178,6 +178,29 @@ if ($_POST['submit'] == "submit") {
     echo 'No error was found<br><br>';
   }
 
+  echo 'Checking database connection...<br>';
+
+  $conn = new mysqli($_POST['dbHost'],$_POST['dbUser'],$_POST['dbPass'],$_POST['dbName']);
+  if ($conn->connect_error) {
+    die('Error: Connection failed: '.$conn->connect_error);
+  } else {
+    echo 'Successfully conencted to the database<br><br>';
+  }
+
+  echo 'Checking if the specified database already exists...<br>';
+
+  // Query the current selected database
+  $result = $conn->query('SELECT DATABASE()');
+  $row = mysqli_fetch_assoc($result);
+
+  if ($row['DATABASE()'] !== $_POST['dbName']) {
+    die('Error: Specified database does not exist!');
+  } else {
+    echo 'The specified database exists. No error was found<br><br>';
+  }
+
+
+
 } else {
 
   // Form not submitted, display form (html)
