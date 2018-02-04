@@ -232,7 +232,7 @@ if ($_POST['submit'] == "submit") {
 
       <div class="row">
         <div class="col s12">
-          <p>Input a database name that does not already exist. A new database will be created.</p>
+          <p>Input a database name that already exist. The database should be empty to avoid conflicting table names.</p>
         </div>
       </div>
 
