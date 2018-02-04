@@ -199,6 +199,59 @@ if ($_POST['submit'] == "submit") {
     echo 'The specified database exists. No error was found<br><br>';
   }
 
+  echo 'Creating database tables...<br>';
+
+  $dbCreated = array();
+
+  // Function for rolling back changes (deleting tables created successfully)
+  function rollback($array) {
+
+    global $conn;
+
+    $stmt = $conn->prepare('DROP TABLE ?');
+
+    foreach ($array as $row) {
+
+      $result = $conn->query('DROP TABLE '.$row.';');
+
+      if (!$result) {
+        echo 'Error: Query failed when dropping '.$row.' table: '.$conn->error.'<br>';
+      } else {
+        echo 'Rolling back changes: Dropped '.$row.' table<br>';
+      }
+
+      mysqli_free_result($result);
+
+    }
+
+  }
+
+  $result = $conn->query('CREATE TABLE permission (permission CHAR(3) PRIMARY KEY, permissionDescription VARCHAR(100) NOT NULL) ENGINE=InnoDB;');
+  if (!$result) {
+    echo 'Error: Query failed: '.$conn->error.'<br>';
+    // No changes to rollback
+    die();
+  } else {
+    echo 'Table "permission" created<br>';
+  }
+
+  mysqli_free_result($result);
+
+  // Add the table name to an array for rolling back changes
+  array_push($dbCreated,"permission");
+
+  $result = $conn->query('CREATE TABLE house (hId CHAR(3) PRIMARY KEY, houseName varchar(20) NOT NULL) ENGINE=InnoDB;');
+  if (!$result) {
+    echo 'Error: Query failed: '.$conn->error.'<br>';
+    echo 'Rolling back changes...<br>';
+    rollback($dbCreated);
+  } else {
+    echo 'Table "house" created<br>';
+  }
+
+  mysqli_free_result($result);
+
+  array_push($dbCreated,"house");
 
 
 } else {
