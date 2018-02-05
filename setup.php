@@ -160,6 +160,22 @@ if ($_POST['submit'] == "submit") {
 
   echo 'No error was found<br><br>';
 
+  echo 'Checking for duplicate house ID within the input houses...<br>';
+
+  if (count($hIdArray) !== count(array_unique($hIdArray))) {
+    die('Error: Duplicate house ID found within the input data!');
+  } else {
+    echo 'No error was found<br><br>';
+  }
+
+  echo 'Checking if the house of the new user is valid...<br>';
+
+  if (!in_array(strval($_POST['userHId']),$hIdArray)) {
+    die('Error: Invalid house inputted for the new user!');
+  } else {
+    echo 'No error was found<br><br>';
+  }
+
   echo 'Checking images...<br>';
 
   // Check image
@@ -185,22 +201,6 @@ if ($_POST['submit'] == "submit") {
   }
 
   echo 'No error was found<br><br>';
-
-  echo 'Checking for duplicate house ID within the input houses...<br>';
-
-  if (count($hIdArray) !== count(array_unique($hIdArray))) {
-    die('Error: Duplicate house ID found within the input data!');
-  } else {
-    echo 'No error was found<br><br>';
-  }
-
-  echo 'Checking if the house of the new user is valid...<br>';
-
-  if (!in_array(strval($_POST['userHId']),$hIdArray)) {
-    die('Error: Invalid house inputted for the new user!');
-  } else {
-    echo 'No error was found<br><br>';
-  }
 
   echo 'Checking database connection...<br>';
 
@@ -260,7 +260,7 @@ if ($_POST['submit'] == "submit") {
   $tableJson = json_decode(file_get_contents("tables.json"), TRUE);
 
   // Loop to create tables
-  foreach ($tableJson as $key => $row) {
+  foreach ($tableJson[0] as $key => $row) {
 
     echo 'Creating '.$key.' table with SQL command: '.$row.'<br>';
 
@@ -278,6 +278,128 @@ if ($_POST['submit'] == "submit") {
     // Append the table name to an array for rolling back changes
     array_push($dbCreated,$key);
 
+  }
+
+  echo '<br>';
+
+  // Insert default data
+  echo 'Inserting default data into database...<br>';
+
+  $stmt = $conn->prepare('INSERT INTO permission VALUES (?,?)');
+
+  // Loop to insert into permission table
+  foreach ($tableJson[1] as $key => $row) {
+
+    $stmt->bind_param("ss",$key,$row);
+
+    $result = $stmt->execute();
+    if (!$result) {
+      echo 'Error: Query failed: '.$stmt->error.'<br>';
+      echo 'Rolling back changes...<br>';
+      rollback($dbCreated);
+      die();
+    }
+
+    $stmt->free_result();
+
+  }
+
+  echo 'Inserted data into permission table<br>';
+
+  // Insert into globalSetting
+
+  $stmt = $conn->prepare('INSERT INTO globalSetting (setting, value) VALUES (?,?)');
+
+  $setting = "welcomeMsg";
+
+  $bind = $stmt->bind_param("ss",$setting,$_POST['welcomeMsg']);
+
+  $result = $stmt->execute();
+  if (!$result) {
+    echo 'Error: Query failed: '.$stmt->error.'<br>';
+    echo 'Rolling back changes...<br>';
+    rollback($dbCreated);
+    die();
+  }
+  echo $stmt->error;
+
+  $stmt->free_result();
+
+  $setting = "userTimeout";
+
+  $stmt->bind_param("ss",$setting,strval(floor(intval($_POST['userTimeout']))));
+
+  $result = $stmt->execute();
+  if (!$result) {
+    echo 'Error: Query failed: '.$stmt->error.'<br>';
+    echo 'Rolling back changes...<br>';
+    rollback($dbCreated);
+    die();
+  }
+
+  $stmt->free_result();
+
+  $setting = "timezoneOffset";
+
+  $bind = $stmt->bind_param("ss",$setting,strval(floor(intval($_POST['timezoneOffset']))));
+
+  $result = $stmt->execute();
+  if (!$result) {
+    echo 'Error: Query failed: '.$stmt->error.'<br>';
+    echo 'Rolling back changes...<br>';
+    rollback($dbCreated);
+    die();
+  }
+
+  $stmt->free_result();
+
+  echo 'Inserted data into globalSetting table<br>';
+
+  // Set field default in userSetting table
+
+  // Escape string, because prepared statement cannot be used for DDL
+
+  $avatarPic = $conn->real_escape_string($_POST['avatarPic']);
+  $bgPic = $conn->real_escape_string($_POST['bgPic']);
+
+  $result = $conn->query('ALTER TABLE userSetting ALTER rowsPerPage SET DEFAULT '.floor(intval($_POST['rowsPerPage'])));
+  if (!$result) {
+    echo 'Error: Query failed: '.$conn->error.'<br>';
+    echo 'Rolling back changes...<br>';
+    rollback($dbCreated);
+    die();
+  }
+
+  mysqli_free_result($result);
+
+  $result = $conn->query('ALTER TABLE userSetting ALTER avatarPic SET DEFAULT "'.$avatarPic.'"');
+  if (!$result) {
+    echo 'Error: Query failed: '.$conn->error.'<br>';
+    echo 'Rolling back changes...<br>';
+    rollback($dbCreated);
+    die();
+  }
+
+  mysqli_free_result($result);
+
+  $result = $conn->query('ALTER TABLE userSetting ALTER bgPic SET DEFAULT "'.$bgPic.'"');
+  if (!$result) {
+    echo 'Error: Query failed: '.$conn->error.'<br>';
+    echo 'Rolling back changes...<br>';
+    rollback($dbCreated);
+    die();
+  }
+
+  mysqli_free_result($result);
+
+  echo 'Set defaults in userSetting table<br>';
+
+  // Add houses
+
+  $stmt = $conn->prepare('INSERT INTO house VALUES (?,?)');
+
+  foreach ($houseJson as $row) {
+    
   }
 
 } else {
@@ -420,7 +542,7 @@ if ($_POST['submit'] == "submit") {
 
       <div class="row">
         <div class="col s12">
-          <p>UNIX epoch timezome offset. Refer to <a href="https://www.epochconverter.com/timezones" target="_blank">this website</a> for more details.</p>
+          <p>UNIX epoch timezone offset. Refer to <a href="https://www.epochconverter.com/timezones" target="_blank">this website</a> for more details.</p>
         </div>
       </div>
 
