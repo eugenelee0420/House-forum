@@ -186,8 +186,6 @@ if ($_POST['submit'] == "submit") {
 
   echo 'No error was found<br><br>';
 
-  var_dump($hIdArray);
-
   echo 'Checking for duplicate house ID within the input houses...<br>';
 
   if (count($hIdArray) !== count(array_unique($hIdArray))) {
@@ -234,51 +232,53 @@ if ($_POST['submit'] == "submit") {
 
     global $conn;
 
-    $stmt = $conn->prepare('DROP TABLE ?');
+    // Disable foreign key check
+    $conn->query('SET FOREIGN_KEY_CHECKS=0;');
 
-    foreach ($array as $row) {
+    $reverse = array_reverse($array);
+
+    foreach ($reverse as $row) {
 
       $result = $conn->query('DROP TABLE '.$row.';');
 
       if (!$result) {
         echo 'Error: Query failed when dropping '.$row.' table: '.$conn->error.'<br>';
       } else {
-        echo 'Rolling back changes: Dropped '.$row.' table<br>';
+        echo 'Dropped '.$row.' table<br>';
       }
 
       mysqli_free_result($result);
 
     }
 
+    // Re-enable foreign key check
+    $conn->query('SET FOREIGN_KEY_CHECKS=1;');
+
   }
 
-  $result = $conn->query('CREATE TABLE permission (permission CHAR(3) PRIMARY KEY, permissionDescription VARCHAR(100) NOT NULL) ENGINE=InnoDB;');
-  if (!$result) {
-    echo 'Error: Query failed: '.$conn->error.'<br>';
-    // No changes to rollback
-    die();
-  } else {
-    echo 'Table "permission" created<br>';
+  // Parse tables.json
+  $tableJson = json_decode(file_get_contents("tables.json"), TRUE);
+
+  // Loop to create tables
+  foreach ($tableJson as $key => $row) {
+
+    echo 'Creating '.$key.' table with SQL command: '.$row.'<br>';
+
+    $result = $conn->query($row);
+
+    if (!$result) {
+      echo 'Error: Query failed: '.$conn->error.'<br>';
+      echo 'Rolling back changes...<br>';
+      rollback($dbCreated);
+      die();
+    } else {
+      echo 'Table '.$key.' created<br>';
+    }
+
+    // Append the table name to an array for rolling back changes
+    array_push($dbCreated,$key);
+
   }
-
-  mysqli_free_result($result);
-
-  // Add the table name to an array for rolling back changes
-  array_push($dbCreated,"permission");
-
-  $result = $conn->query('CREATE TABLE house (hId CHAR(3) PRIMARY KEY, houseName varchar(20) NOT NULL) ENGINE=InnoDB;');
-  if (!$result) {
-    echo 'Error: Query failed: '.$conn->error.'<br>';
-    echo 'Rolling back changes...<br>';
-    rollback($dbCreated);
-  } else {
-    echo 'Table "house" created<br>';
-  }
-
-  mysqli_free_result($result);
-
-  array_push($dbCreated,"house");
-
 
 } else {
 
