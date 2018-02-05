@@ -81,15 +81,15 @@ if ($_POST['submit'] == "submit") {
   // Check JSON
   echo 'Decoding and validating JSON...<br>';
 
-  $json = json_decode($_POST['house'], true);
-  if ($json == NULL) {
+  $houseJson = json_decode($_POST['house'], true);
+  if ($houseJson == NULL) {
     die('Error: Invalid JSON');
   } else {
     echo 'No error was found<br>';
   }
 
   echo 'Decoded JSON (PHP array):<br><pre>';
-  var_dump($json);
+  var_dump($houseJson);
   echo '</pre><br><br>';
 
   // Check field constraints
@@ -135,7 +135,7 @@ if ($_POST['submit'] == "submit") {
   $hIdArray = array();
 
   // Check field constraints within JSON array
-  foreach($json as $key => $row) {
+  foreach($houseJson as $key => $row) {
 
     // Append hId to array
     array_push($hIdArray,$row['hId']);
