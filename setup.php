@@ -160,6 +160,32 @@ if ($_POST['submit'] == "submit") {
 
   echo 'No error was found<br><br>';
 
+  echo 'Checking images...<br>';
+
+  // Check image
+  // Avatar
+  $avatarInfo = getimagesize($_POST['avatarPic']);
+
+  // If width or height < 1
+  if (($avatarInfo[0] < 1) OR ($avatarInfo[1] < 1)) {
+    die('Error: Invalid image link for avatar image!');
+  }
+
+  // Check profile ratio
+  if ($avatarInfo[0] !== $avatarInfo[1]) {
+    die('Error: Avatar image is not in 1:1 aspect ratio!');
+  }
+
+  // Background image
+  $bgInfo = getimagesize($_POST['bgPic']);
+
+  // If width or height < 1
+  if(($bgInfo[0] < 1) OR ($bgInfo[1] < 1)) {
+    die('Error: Invalid image link for background image!');
+  }
+
+  echo 'No error was found<br><br>';
+
   var_dump($hIdArray);
 
   echo 'Checking for duplicate house ID within the input houses...<br>';
