@@ -50,7 +50,7 @@ hId | char(3) | `UNIQUE`, `FOREIGN KEY REFERENCES house(hId)`
 SQL to create the table:
 
 ```sql
-CREATE TABLE forum (fId char(3) PRIMARY KEY, fName varchar(30) NOT NULL, fDescription varchar(30), hId CHAR(3) UNIQUE, FOREIGN KEY (hId) REFERENCES house(hId));
+CREATE TABLE forum (fId char(3) PRIMARY KEY, fName varchar(30) NOT NULL, fDescription varchar(30), hId CHAR(3) UNIQUE, FOREIGN KEY (hId) REFERENCES house(hId)) ENGINE=InnoDB;
 ```
 
 ### `house` table
@@ -65,7 +65,7 @@ houseName | varchar(20) | `NOT NULL`
 SQL to create the table:
 
 ```sql
-CREATE TABLE house (hId CHAR(3) PRIMARY KEY, houseName varchar(20) NOT NULL);
+CREATE TABLE house (hId CHAR(3) PRIMARY KEY, houseName varchar(20) NOT NULL) ENGINE=InnoDB;
 ```
 
 ### `permission` table
@@ -82,7 +82,7 @@ permissionDescription | varchar(100) | `NOT NULL`
 SQL to create the table:
 
 ```sql
-CREATE TABLE permission (permission CHAR(3) PRIMARY KEY, permissionDescription VARCHAR(100) NOT NULL);
+CREATE TABLE permission (permission CHAR(3) PRIMARY KEY, permissionDescription VARCHAR(100) NOT NULL) ENGINE=InnoDB;
 ```
 
 #### Default data
@@ -121,7 +121,7 @@ lastActivity | int(10) | `NOT NULL`
 SQL to create the table:
 
 ```sql
-CREATE TABLE session (sessionId CHAR(40) PRIMARY KEY, studentId CHAR(7) NOT NULL, lastActivity INT(10) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId));
+CREATE TABLE session (sessionId CHAR(40) PRIMARY KEY, studentId CHAR(7) NOT NULL, lastActivity INT(10) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;
 ```
 
 ### `thread` table
@@ -141,7 +141,7 @@ pin | char(1) | `DEFAULT '0'`
 SQL to create the table:
 
 ```sql
-CREATE TABLE thread (tId INT(10) PRIMARY KEY, tTitle VARCHAR(40) NOT NULL, tContent TEXT NOT NULL, tTime INT(10) NOT NULL, fId CHAR(3) NOT NULL, studentId CHAR(7) NOT NULL, pin CHAR(1) DEFAULT '0', FOREIGN KEY (fId) REFERENCES forum(fId), FOREIGN KEY (studentId) REFERENCES users(studentId));
+CREATE TABLE thread (tId INT(10) PRIMARY KEY, tTitle VARCHAR(40) NOT NULL, tContent TEXT NOT NULL, tTime INT(10) NOT NULL, fId CHAR(3) NOT NULL, studentId CHAR(7) NOT NULL, pin CHAR(1) DEFAULT '0', FOREIGN KEY (fId) REFERENCES forum(fId), FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;
 ```
 
 ### `userGroup` table
@@ -157,7 +157,7 @@ userGroupDescription | varchar(100) |
 SQL to create the table:
 
 ```sql
-CREATE TABLE userGroup (userGroup CHAR(3) PRIMARY KEY, userGroupName varchar(50) NOT NULL, userGroupDescription VARCHAR(100));
+CREATE TABLE userGroup (userGroup CHAR(3) PRIMARY KEY, userGroupName varchar(50) NOT NULL, userGroupDescription VARCHAR(100)) ENGINE=InnoDB;
 ```
 
 ### `userPermission` table
@@ -172,7 +172,7 @@ permission | char(3) | `PRIMARY KEY`, `FOREIGN KEY REFERENCES permission(permiss
 SQL to create the table:
 
 ```sql
-CREATE TABLE userPermission (userGroup CHAR(3) NOT NULL, permission CHAR(3) NOT NULL, PRIMARY KEY (userGroup, permission), FOREIGN KEY (userGroup) REFERENCES userGroup(userGroup), FOREIGN KEY (permission) REFERENCES permission(permission));
+CREATE TABLE userPermission (userGroup CHAR(3) NOT NULL, permission CHAR(3) NOT NULL, PRIMARY KEY (userGroup, permission), FOREIGN KEY (userGroup) REFERENCES userGroup(userGroup), FOREIGN KEY (permission) REFERENCES permission(permission)) ENGINE=InnoDB;
 ```
 
 ### `users` table
@@ -192,7 +192,7 @@ hash | varchar(100) | `NOT NULL`
 SQL to create the table:
 
 ```sql
-CREATE TABLE users (studentId CHAR(7) PRIMARY KEY, userName VARCHAR(30) NOT NULL UNIQUE, hId CHAR(3) NOT NULL, userGroup CHAR(3) NOT NULL, hash VARCHAR(100) NOT NULL, FOREIGN KEY (hId) REFERENCES house(hId), FOREIGN KEY (userGroup) REFERENCES userGroup(userGroup));
+CREATE TABLE users (studentId CHAR(7) PRIMARY KEY, userName VARCHAR(30) NOT NULL UNIQUE, hId CHAR(3) NOT NULL, userGroup CHAR(3) NOT NULL, hash VARCHAR(100) NOT NULL, FOREIGN KEY (hId) REFERENCES house(hId), FOREIGN KEY (userGroup) REFERENCES userGroup(userGroup)) ENGINE=InnoDB;
 ```
 
 ### `userSetting` table
@@ -213,7 +213,7 @@ bgPic | varchar(200) | `NOT NULL`, `DEFAULT 'http://puu.sh/wZnZr.jpg'`
 SQL to create the table:
 
 ```sql
-CREATE TABLE userSetting (studentId CHAR(7) PRIMARY KEY, rowsPerPage INT(5) NOT NULL DEFAULT 10, avatarPic VARCHAR(200) NOT NULL DEFAULT 'https://upload.wikimedia.org/wikipedia/commons/1/1e/Default-avatar.jpg', bgPic VARCHAR(200) NOT NULL DEFAULT 'http://puu.sh/wZnZr.jpg', FOREIGN KEY (studentId) REFERENCES users(studentId));
+CREATE TABLE userSetting (studentId CHAR(7) PRIMARY KEY, rowsPerPage INT(5) NOT NULL DEFAULT 10, avatarPic VARCHAR(200) NOT NULL DEFAULT 'https://upload.wikimedia.org/wikipedia/commons/1/1e/Default-avatar.jpg', bgPic VARCHAR(200) NOT NULL DEFAULT 'http://puu.sh/wZnZr.jpg', FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;
 ```
 
 ### `reply` table
@@ -231,7 +231,7 @@ studentId | char(7) | `NOT NULL`, `FOREIGN KEY REFERENCES users(studentId)`
 SQL to create the table:
 
 ```sql
-CREATE TABLE reply (rId INT(10) PRIMARY KEY, rContent TEXT NOT NULL, rTime INT(10) NOT NULL, tId INT(10) NOT NULL, studentId CHAR(7) NOT NULL, FOREIGN KEY (tId) REFERENCES thread(tId), FOREIGN KEY (studentId) REFERENCES users(studentId));
+CREATE TABLE reply (rId INT(10) PRIMARY KEY, rContent TEXT NOT NULL, rTime INT(10) NOT NULL, tId INT(10) NOT NULL, studentId CHAR(7) NOT NULL, FOREIGN KEY (tId) REFERENCES thread(tId), FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;
 ```
 
 ### `globalSetting` table
@@ -251,7 +251,7 @@ settingDescription | varchar(100) |
 SQL to create the table:
 
 ```sql
-CREATE TABLE globalSetting (setting VARCHAR(30) NOT NULL, value TEXT NOT NULL, settingDescription VARCHAR(100));
+CREATE TABLE globalSetting (setting VARCHAR(30) NOT NULL, value TEXT NOT NULL, settingDescription VARCHAR(100)) ENGINE=InnoDB;
 ```
 
 #### Default data
@@ -275,5 +275,5 @@ ip | char(45) | `NOT NULL`
 SQL to create the table:
 
 ```sql
-CREATE TABLE loginRecord (time int(10) PRIMARY KEY AUTO_INCREMENT, studentId char(7) NOT NULL, ip char(45) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId));
+CREATE TABLE loginRecord (time int(10) PRIMARY KEY AUTO_INCREMENT, studentId char(7) NOT NULL, ip char(45) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;
 ```
