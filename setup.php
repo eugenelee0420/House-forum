@@ -418,15 +418,49 @@ if ($_POST['submit'] == "submit") {
   mysqli_free_result($result);
 
   echo 'Set defaults in userSetting table<br>';
+  echo '<br>';
 
   // Add houses
+
+  echo 'Adding houses to the database...<br>';
 
   $stmt = $conn->prepare('INSERT INTO house VALUES (?,?)');
 
   foreach ($houseJson as $row) {
-    
+
+    $stmt->bind_param("ss",$row['hId'],$row['houseName']);
+
+    $result = $stmt->execute();
+    if (!$result) {
+      echo 'Error: Query failed: '.$stmt->error.'<br>';
+      echo 'Rolling back changes...<br>';
+      rollback($dbCreated);
+      die();
+    }
+
+    $stmt->free_result();
+
   }
 
+  echo 'Houses added to the database<br><br>';
+
+  echo 'Adding user group to the database...<br>';
+
+  $stmt = $conn->prepare('INSERT INTO userGroup (userGroup, userGroupName) VALUES (?,?)');
+
+  $stmt->bind_param("ss",$_POST['userGroup'],$_POST['userGroupName']);
+
+  $result = $stmt->execute();
+  if (!$result) {
+    echo 'Error: Query failed: '.$stmt->error.'<br>';
+    echo 'Rolling back changes...<br>';
+    rollback($dbCreated);
+    die();
+  }
+
+  $stmt->free_result();
+
+  echo 'User group added to the database<br><br>';
 } else {
 
   // Form not submitted, display form (html)
