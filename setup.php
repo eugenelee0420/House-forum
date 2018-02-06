@@ -461,6 +461,52 @@ if ($_POST['submit'] == "submit") {
   $stmt->free_result();
 
   echo 'User group added to the database<br><br>';
+
+  echo 'Granting permission to the user group...<br>';
+
+  // Turn keys of the array containing permissions (assoc array) to numbered array
+  $permissionArray = array();
+  foreach ($tableJson[1] as $key => $row) {
+    // $row is ignored
+    array_push($permissionArray,$key);
+  }
+
+  // Search for *H permissions and remove them
+  $key = array_search("DH",$permissionArray);
+  unset($permissionArray[$key]);
+
+  $key = array_search("EH",$permissionArray);
+  unset($permissionArray[$key]);
+
+  $key = array_search("PH",$permissionArray);
+  unset($permissionArray[$key]);
+
+  $key = array_search("RH",$permissionArray);
+  unset($permissionArray[$key]);
+
+  $key = array_search("VH",$permissionArray);
+  unset($permissionArray[$key]);
+
+  $stmt = $conn->prepare('INSERT INTO userPermission (userGroup,permission) VALUES (?,?)');
+
+  foreach ($permissionArray as $row) {
+
+    $stmt->bind_param("ss",$_POST['userGroup'],$row);
+
+    $result = $stmt->execute();
+    if (!$result) {
+      echo 'Error: Query failed: '.$stmt->error.'<br>';
+      echo 'Rolling back changes...<br>';
+      rollback($dbCreated);
+      die();
+    }
+
+    $stmt->free_result();
+
+  }
+
+  echo 'Granted permissions to the user group<br><br>';
+
 } else {
 
   // Form not submitted, display form (html)
