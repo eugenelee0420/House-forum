@@ -27,7 +27,7 @@ ICT SBA Project
 - [ ] ~~Scoreboard~~
 - [x] Script to clean up session table
 - [ ] ~~Clean up unused functions and variables~~
-- [ ] Setup script
+- [x] Setup script
 - [ ] Upgrade to Materialize 1.0
 
 ## Database tables
