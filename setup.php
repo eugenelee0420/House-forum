@@ -507,6 +507,39 @@ if ($_POST['submit'] == "submit") {
 
   echo 'Granted permissions to the user group<br><br>';
 
+  echo 'Adding new user to the database...<br>';
+
+  $stmt = $conn->prepare('INSERT INTO users VALUES (?,?,?,?,?)');
+
+  $stmt->bind_param("sssss",$_POST['studentId'],$_POST['studentId'],$_POST['userHId'],$_POST['userGroup'],password_hash($_POST['pass'], PASSWORD_DEFAULT));
+
+  $result = $stmt->execute();
+  if (!$result) {
+    echo 'Error: Query failed: '.$stmt->error.'<br>';
+    echo 'Rolling back changes...<br>';
+    rollback($dbCreated);
+    die();
+  }
+
+  $stmt->free_result();
+
+  // Insert blank row in userSetting
+  $stmt = $conn->prepare('INSERT INTO userSetting (studentId) VALUES (?)');
+  $stmt->bind_param("s",$_POST['studentId']);
+
+  $result = $stmt->execute();
+  if (!$result) {
+    echo 'Error: Query failed: '.$stmt->error.'<br>';
+    echo 'Rolling back changes...<br>';
+    rollback($dbCreated);
+    die();
+  }
+
+  echo 'User added to database<br><br>';
+
+  echo 'Initial setup have been completed. Please login to the forums to continue setup<br>';
+  echo 'You may login <a href="login.php">here</a>.';
+
 } else {
 
   // Form not submitted, display form (html)
