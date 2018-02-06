@@ -223,6 +223,31 @@ if ($_POST['submit'] == "submit") {
     echo 'The specified database exists. No error was found<br><br>';
   }
 
+  mysqli_free_result($result);
+
+  // Write data into config file
+  echo 'Writing credentials into config file...<br>';
+
+  $cfgArray = array(
+    "dbHost" => $_POST['dbHost'],
+    "dbUser" => $_POST['dbUser'],
+    "dbPass" => $_POST['dbPass'],
+    "dbName" => $_POST['dbName']
+  );
+
+  $cfgJson = json_encode($cfgArray, JSON_FORCE_OBJECT);
+
+  $result = file_put_contents("cfg.json",$cfgJson);
+
+  if ($result === FALSE) {
+    die('Error: Write to file failed');
+  } else {
+
+    echo 'Wrote '.$result.' bytes to cfg.json:<br>';
+    echo '<pre>'.$cfgJson.'</pre><br><br>';
+
+  }
+
   echo 'Creating database tables...<br>';
 
   $dbCreated = array();
