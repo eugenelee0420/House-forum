@@ -1,5 +1,13 @@
 <?php
 // Setup script for first time use
+
+// Die if cfg.json exists
+if (file_exists("cfg.json")) {
+  echo 'cfg.json exists. Script will not execute.<br>';
+  echo 'To run this script, delete cfg.json.';
+  die();
+}
+
 if ($_POST['submit'] == "submit") {
   // Form submitted
 
