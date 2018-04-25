@@ -17,6 +17,10 @@ if ($conn->affected_rows > 0) {
 
 if ($_POST['submit'] == "submit") {
 
+  echo '<pre>';
+  print_r($_POST);
+  echo '</pre>';
+
 } else {
 
   // Display form
@@ -88,8 +92,40 @@ if ($_POST['submit'] == "submit") {
 
       }
 
+      mysqli_free_result($result);
+
       ?>
 
+      <div class="row">
+        <div class="col s12">
+          <p>Create an inter-house forum</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="ihf_id" name="ihf_id" type="text" data-length="3">
+          <label for="ihf_id">Inter-house forum ID</label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="ihf_name" name="ihf_name" type="text" data-length="3">
+          <label for="ihf_des">Inter-house forum Name</label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="input-field col s12">
+          <textarea id="ihf_des" name="ihf_des" data-length="3" class="materialize-textarea"></textarea>
+          <label for="ihf_des">Inter-house forum Description (Can be left blank)</label>
+        </div>
+      </div>
+
+
+      <button class="btn waves-effect purple waves-light" type="submit" name="submit" value="submit">Submit
+      <i class="material-icons right">send</i>
     </form>
   </div>
 
