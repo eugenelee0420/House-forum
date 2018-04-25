@@ -19,7 +19,78 @@ if ($_POST['submit'] == "submit") {
 
   echo '<pre>';
   print_r($_POST);
-  echo '</pre>';
+  echo '</pre><br>';
+
+  // Get the houses
+  $sql = 'SELECT * FROM house';
+  $result = $conn->query($sql);
+  if (!$result) {
+    die('Query failed. '.$conn->error);
+  }
+
+  // Convert query result into array
+  $houses = array();
+  $count = 0;
+  while ($row = mysqli_fetch_assoc($result)) {
+
+    $houses[$count]['id'] = $row['hId'];
+    $houses[$count]['name'] = $row['houseName'];
+
+    $count++;
+
+  }
+
+  echo '<pre>';
+  print_r($houses);
+  echo '</pre><br>';
+
+  // Check if all required fields are filled in
+  $errormsg = 'Please fill in all the required fields!';
+  foreach ($houses as $row) {
+
+    if (strlen($_POST['hf_id_'.$row['id']]) < 1) {
+      die($errormsg);
+    }
+
+    if (strlen($_POST['hf_name_'.$row['id']]) < 1) {
+      die($errormsg);
+    }
+
+  }
+
+  if ((strlen($_POST['ihf_id']) < 1) OR (strlen($_POST['ihf_name']) < 1)) {
+    die($errormsg);
+  }
+
+  // Check field constraints
+  foreach ($houses as $row) {
+
+    if (strlen($_POST['hf_id_'.$row['id']]) > 3) {
+      die('Please do not input more than 3 characters for the forum ID! ('.$row['name'].')');
+    }
+
+    if (strlen($_POST['hf_name_'.$row['id']]) > 30) {
+      die('Please do not input more than 30 characters for the forum name! ('.$row['name'].')');
+    }
+
+    if (strlen($_POST['hf_des_'.$row['id']]) > 100) {
+      die('Please do not input more than 100 characters for the forum description! ('.$row['name'].')');
+    }
+
+  }
+
+  if (strlen($_POST['ihf_id']) > 3) {
+    die('Please do not input more than 3 characters for the forum ID! (Inter-house forum)');
+  }
+
+  if (strlen($_POST['ihf_name']) > 30) {
+    die('Please do not input more than 30 characters for the forum name! (Inter-house forum)');
+  }
+
+  if (strlen($_POST['ihf_des']) > 100) {
+    die('Please do not input more than 100 characters for the forum description! (Inter-house forum)');
+  }
+
 
 } else {
 
@@ -111,14 +182,14 @@ if ($_POST['submit'] == "submit") {
 
       <div class="row">
         <div class="input-field col s12">
-          <input id="ihf_name" name="ihf_name" type="text" data-length="3">
+          <input id="ihf_name" name="ihf_name" type="text" data-length="30">
           <label for="ihf_des">Inter-house forum Name</label>
         </div>
       </div>
 
       <div class="row">
         <div class="input-field col s12">
-          <textarea id="ihf_des" name="ihf_des" data-length="3" class="materialize-textarea"></textarea>
+          <textarea id="ihf_des" name="ihf_des" data-length="100" class="materialize-textarea"></textarea>
           <label for="ihf_des">Inter-house forum Description (Can be left blank)</label>
         </div>
       </div>
