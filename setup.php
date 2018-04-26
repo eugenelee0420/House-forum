@@ -545,8 +545,7 @@ if ($_POST['submit'] == "submit") {
 
   echo 'User added to database<br><br>';
 
-  echo 'Initial setup have been completed. Please login to the forums to continue setup<br>';
-  echo 'You may login <a href="login.php">here</a>.';
+  echo 'Initial setup have been completed. Please proceed to <a href="setup_forum.php">this page</a> to set up the forums.';
 
 } else {
 
