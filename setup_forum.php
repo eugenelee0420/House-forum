@@ -17,10 +17,6 @@ if ($conn->affected_rows > 0) {
 
 if ($_POST['submit'] == "submit") {
 
-  echo '<pre>';
-  print_r($_POST);
-  echo '</pre><br>';
-
   // Get the houses
   $sql = 'SELECT * FROM house';
   $result = $conn->query($sql);
@@ -39,10 +35,6 @@ if ($_POST['submit'] == "submit") {
     $count++;
 
   }
-
-  echo '<pre>';
-  print_r($houses);
-  echo '</pre><br>';
 
   // Check if all required fields are filled in
   $errormsg = 'Please fill in all the required fields!';
@@ -91,6 +83,31 @@ if ($_POST['submit'] == "submit") {
     die('Please do not input more than 100 characters for the forum description! (Inter-house forum)');
   }
 
+  // Insert records
+  $stmt = $conn->prepare('INSERT INTO forum VALUES (?,?,?,?)');
+
+  foreach ($houses as $row) {
+
+    $stmt->bind_param("ssss",$_POST['hf_id_'.$row['id']],$_POST['hf_name_'.$row['id']],$_POST['hf_des_'.$row['id']],$row['id']);
+    $result = $stmt->execute();
+    if (!$result) {
+      die('Query failed. '.$stmt->error);
+    }
+
+    $stmt->free_result();
+
+  }
+
+  $stmt = $conn->prepare('INSERT INTO forum VALUES (?,?,?,NULL)');
+  $stmt->bind_param("sss",$_POST['ihf_id'],$_POST['ihf_name'],$_POST['ihf_des']);
+  $result = $stmt->execute();
+  if (!$result) {
+    die('Query failed. '.$stmt->error);
+  }
+
+  $stmt->free_result();
+
+  echo 'The forums are set up. You can view them <a href="index.php">here.</a>';
 
 } else {
 
