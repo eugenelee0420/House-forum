@@ -4,7 +4,7 @@
 $cfgJson = file_get_contents("cfg.json");
 $cfg = json_decode($cfgJson, TRUE);
 
-require "Parsedown/Parsedown.php";
+require "vendor/autoload.php";
 $parsedown = new Parsedown();
 
 // Connect to database
