@@ -24,28 +24,46 @@ ICT SBA Project
 * mysqli 5.0.0
 * pcre 4.3.0
 * session 4.3.2
+* curl
 
 ## Installation
 
 1. Clone the repository
 
 ```bash
-git clone --recurse-submodules https://github.com/eugenelee0420/House-forum.git forums
+git clone https://github.com/eugenelee0420/House-forum.git forums
+cd forums
 ```
 
-2. Give permission to www-data user
+2. Install composer
+
+If you want to verify the hash of the installer, use the instruction on [this page](https://getcomposer.org/download/) instead.
+
+```bash
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
+```
+
+3. Install the dependencies
+
+```bash
+php composer.phar install
+```
+
+4. Give permission to www-data user
 
 ```bash
 cd ..
 chown -R www-data:www-data forums
 ```
 
-3. Create a new empty database for the forums
+5. Create a new empty database for the forums
 ```sql
 CREATE DATABASE forums;
 ```
 
-4. Use a web browser to navigate to setup.php and follow the instructions
+6. Use a web browser to navigate to setup.php and follow the instructions
 
 ## Database tables
 
