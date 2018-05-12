@@ -4,31 +4,48 @@
 
 ICT SBA Project
 
-[Live website](https://heteropterous-recei.000webhostapp.com/sba/login.php)
-
 ## Other projects used
 
 * [materialize](https://github.com/dogfalo/materialize/) - A CSS framework based on Material Design
 * [Parsedown](https://github.com/erusev/parsedown) - Markdown parser in PHP
 * [Highlight.js](https://github.com/isagalaev/highlight.js) - Javascript syntax highlighter
 
-## To-do list
+## Minimum requirement
 
-- [x] Change queries to prepared statement
-- [x] Delete reply
-- [x] Pin thread
-- [x] Optimize queries
-- [x] User settings
-- [x] Global settings
-- [x] Change username
-- [x] Change password
-- [x] User group change
-- [x] User group settings
-- [ ] ~~Scoreboard~~
-- [x] Script to clean up session table
-- [ ] ~~Clean up unused functions and variables~~
-- [x] Setup script
-- [ ] Upgrade to Materialize 1.0
+* PHP 5.5.0
+* MySQL 4.1.13
+* Apache 2
+
+### PHP modules
+
+* date 4.0.0
+* json 5.3.0
+* mbstring 4.0.6
+* mysqli 5.0.0
+* pcre 4.3.0
+* session 4.3.2
+
+## Installation
+
+1. Clone the repository
+
+```
+git clone --recurse-submodules https://github.com/eugenelee0420/House-forum.git forums
+```
+
+2. Give permission to www-data user
+
+```
+cd ..
+chown -R www-data:www-data forums
+```
+
+3. Create a new empty database for the forums
+```
+CREATE DATABASE forums;
+```
+
+4. Use a web browser to navigate to setup.php and follow the instructions
 
 ## Database tables
 
