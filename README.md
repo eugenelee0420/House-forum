@@ -312,3 +312,18 @@ SQL to create the table:
 ```sql
 CREATE TABLE loginRecord (time int(10) PRIMARY KEY AUTO_INCREMENT, studentId char(7) NOT NULL, ip char(45) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;
 ```
+
+### `tfa` table
+
+Used to store 2-factor authentication shared secret
+
+Field Name | Data Type (Size) | Constraints
+----- | ----- | -----
+studentId | char(7) | `PRIMARY KEY`, `FOREIGN KEY REFERENCES users(studentId)`
+tfaSecret | varchar(100) | `NOT NULL`
+
+SQL to create the table:
+
+```sql
+CREATE TABLE tfa (studentId CHAR(7) PRIMARY KEY, tfaSecret VARCHAR(100) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;
+```

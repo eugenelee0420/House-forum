@@ -11,7 +11,8 @@
   "forum": "CREATE TABLE forum (fId char(3) PRIMARY KEY, fName varchar(30) NOT NULL, fDescription varchar(30), hId CHAR(3) UNIQUE, FOREIGN KEY (hId) REFERENCES house(hId)) ENGINE=InnoDB;",
   "thread": "CREATE TABLE thread (tId INT(10) PRIMARY KEY, tTitle VARCHAR(40) NOT NULL, tContent TEXT NOT NULL, tTime INT(10) NOT NULL, fId CHAR(3) NOT NULL, studentId CHAR(7) NOT NULL, pin CHAR(1) DEFAULT '0', FOREIGN KEY (fId) REFERENCES forum(fId), FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;",
   "reply": "CREATE TABLE reply (rId INT(10) PRIMARY KEY, rContent TEXT NOT NULL, rTime INT(10) NOT NULL, tId INT(10) NOT NULL, studentId CHAR(7) NOT NULL, FOREIGN KEY (tId) REFERENCES thread(tId), FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;",
-  "session": "CREATE TABLE session (sessionId CHAR(40) PRIMARY KEY, studentId CHAR(7) NOT NULL, lastActivity INT(10) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;"
+  "session": "CREATE TABLE session (sessionId CHAR(40) PRIMARY KEY, studentId CHAR(7) NOT NULL, lastActivity INT(10) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;",
+  "tfa":"CREATE TABLE tfa (studentId CHAR(7) PRIMARY KEY, tfaSecret VARCHAR(100) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;"
   },
   {
     "AGS": "Access global settings",
