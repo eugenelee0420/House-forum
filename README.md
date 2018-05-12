@@ -29,19 +29,19 @@ ICT SBA Project
 
 1. Clone the repository
 
-```
+```bash
 git clone --recurse-submodules https://github.com/eugenelee0420/House-forum.git forums
 ```
 
 2. Give permission to www-data user
 
-```
+```bash
 cd ..
 chown -R www-data:www-data forums
 ```
 
 3. Create a new empty database for the forums
-```
+```sql
 CREATE DATABASE forums;
 ```
 
