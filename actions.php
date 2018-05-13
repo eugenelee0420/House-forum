@@ -638,6 +638,65 @@ if ($_GET['action'] == "perm_disallow") {
 
 }
 
+// Enable two-factor auth
+if ($_GET['action'] == "tfa_enable") {
+
+	// print_r($_GET);
+	// echo '<br>';
+	// print_r($_POST);
+	// echo '<br>';
+	// print_r($_SESSION['tfa_secret']);
+
+	$studentId = getStudentId(session_id());
+
+	// Check if all parameters are set
+	if ((strlen($_POST['password']) < 1) or (strlen($_POST['otp']) < 1) or ($_POST['submit'] !== "submit")) {
+		die('Please fill in all the fields!');
+	}
+
+	if (strlen($_SESSION['tfa_secret']) < 1) {
+		die('Tfa secret not set!');
+	}
+
+	// Verify passowrd
+	$stmt = $conn->prepare('SELECT hash FROM users WHERE studentId = ?');
+	$stmt->bind_param("s",$studentId);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($qHash);
+	$stmt->fetch();
+	$stmt->free_result();
+
+	if (!password_verify($_POST['password'],$qHash)) {
+		die('Password incorrect!');
+	}
+
+	// Verify otp
+	$result = $tfa->verifyCode($_SESSION['tfa_secret'],$_POST['otp']);
+	if (!$result) {
+		die('OTP verification failed!');
+	}
+
+	// Verified, store secret
+	$stmt = $conn->prepare('INSERT INTO tfa (studentId,tfaSecret) VALUES (?,?)');
+	$stmt->bind_param("ss",$studentId,$_SESSION['tfa_secret']);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	// Unset session variable
+	unset($_SESSION['tfa_secret']);
+
+	// Redirect to tfa settings page
+	header('Location: settings_user_tfa.php');
+	die();
+
+}
+
 // No action was performed, redirect to index.php
 header('Location: login.php');
 die();

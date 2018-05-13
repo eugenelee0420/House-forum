@@ -67,7 +67,7 @@ $studentId = getStudentId(session_id());
 
 // Check if user have enabled tfa
 $stmt = $conn->prepare('SELECT studentId FROM tfa WHERE studentId = ?');
-$stmt->bind_param("s",getStudentId(session_id()));
+$stmt->bind_param("s",$studentId);
 $result = $stmt->execute();
 if (!$result) {
   die('Query failed. '.$stmt->error);
@@ -75,10 +75,12 @@ if (!$result) {
 
 $stmt->bind_result($qStudentId);
 $stmt->fetch();
+$stmt->free_result();
 
 if ($qStudentId == $studentId) {
 
   // tfa have been enabled, verify password to disable
+	
 
 } else {
 
@@ -103,6 +105,36 @@ if ($qStudentId == $studentId) {
   echo '<div class="row"><div class="col s12">';
   echo '<p>Manual input: '.chunk_split($secret, 4, ' ').'</p>';
   echo '</div></div>';
+
+	// Set session variable
+	$_SESSION['tfa_secret'] = $secret;
+
+	?>
+
+<div class="row">
+	<form class="col s12 m12 l6" action="actions.php?action=tfa_enable" method="post">
+
+		<div class="row">
+			<div class="input-field col s12">
+				<input id="password" name="password" type="password">
+				<label for="password">Verify password</label>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="input-field col s12">
+				<input id="otp" name="otp" type="text" data-length="6">
+				<label for="otp">One-time password</label>
+			</div>
+		</div>
+
+		<button class="btn waves-effect purple waves-light" type="submit" name="submit" value="submit">Enable
+		<i class="material-icons right">send</i>
+
+	</form>
+</div>
+
+	<?php
 
 }
 
