@@ -18,34 +18,58 @@ ICT SBA Project
 
 ### PHP modules
 
-* date 4.0.0
-* json 5.3.0
-* mbstring 4.0.6
-* mysqli 5.0.0
-* pcre 4.3.0
-* session 4.3.2
+* apcu
+* curl
+* date
+* hash
+* json
+* mbstring
+* mcrypt
+* mysqli
+* openssl
+* pcre
+* session
+
+Please also make sure you meet the minimum requirement of composer.
 
 ## Installation
 
 1. Clone the repository
 
 ```bash
-git clone --recurse-submodules https://github.com/eugenelee0420/House-forum.git forums
+git clone https://github.com/eugenelee0420/House-forum.git forums
+cd forums
 ```
 
-2. Give permission to www-data user
+2. Install composer
+
+If you want to verify the hash of the installer, use the instruction on [this page](https://getcomposer.org/download/) instead.
+
+```bash
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
+```
+
+3. Install the dependencies
+
+```bash
+php composer.phar install
+```
+
+4. Give permission to www-data user
 
 ```bash
 cd ..
 chown -R www-data:www-data forums
 ```
 
-3. Create a new empty database for the forums
+5. Create a new empty database for the forums
 ```sql
 CREATE DATABASE forums;
 ```
 
-4. Use a web browser to navigate to setup.php and follow the instructions
+6. Use a web browser to navigate to setup.php and follow the instructions
 
 ## Database tables
 
@@ -293,4 +317,19 @@ SQL to create the table:
 
 ```sql
 CREATE TABLE loginRecord (time int(10) PRIMARY KEY AUTO_INCREMENT, studentId char(7) NOT NULL, ip char(45) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;
+```
+
+### `tfa` table
+
+Used to store 2-factor authentication shared secret
+
+Field Name | Data Type (Size) | Constraints
+----- | ----- | -----
+studentId | char(7) | `PRIMARY KEY`, `FOREIGN KEY REFERENCES users(studentId)`
+tfaSecret | varchar(100) | `NOT NULL`
+
+SQL to create the table:
+
+```sql
+CREATE TABLE tfa (studentId CHAR(7) PRIMARY KEY, tfaSecret VARCHAR(100) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;
 ```

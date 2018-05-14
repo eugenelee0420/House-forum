@@ -49,41 +49,66 @@ if ($_POST['submit'] == "submit") {
   }
 
   // Check password
-  if (password_verify($_POST['pass'],$qHash)) {
-
-    // Login success
-    // regenerate session id on Login
-    session_regenerate_id();
-
-    // Update database (update before setting variable. If update failed (maybe duplicate session id), user need to retry and generate new session id)
-    $stmt = $conn->prepare('INSERT INTO session VALUES ("'.session_id().'", ?, '.time().');');
-    $stmt->bind_param("s",$qStudentId);
-    $result = $stmt->execute();
-    if (!$result) {
-      die('Query failed! Please retry');
-    }
-    // Set session variable to indicate logged in
-    $_SESSION['logged_in'] = 1;
-
-    // Add login record
-    $stmt = $conn->prepare('INSERT INTO loginRecord VALUES ('.time().',?,"'.getIp().'")');
-    $stmt->bind_param("s",$qStudentId);
-    $result = $stmt->execute();
-    if (!$result) {
-      die('Query failed. '.$stmt->error);
-    }
-
-    $stmt->free_result();
-    $stmt->close();
-
-		header('Location: index.php');
-		die();
-
-
-  } else {
-    // Login failed
+  if (!password_verify($_POST['pass'],$qHash)) {
     die('Student ID or password is incorrect!');
   }
+
+  // Check if user is using tfa
+  $stmt = $conn->prepare('SELECT studentId, tfaSecret FROM tfa WHERE studentId = ?');
+  $stmt->bind_param("s",$_POST['studentId']);
+  $result = $stmt->execute();
+  if (!$result) {
+    die('Query failed. '.$stmt->error);
+  }
+
+  $stmt->bind_result($qStudentId,$tfaSecret);
+  $stmt->fetch();
+  $stmt->free_result();
+  $stmt->close();
+
+  if ($qStudentId == $_POST['studentId']) {
+
+    // Using tfa
+    // Check if otp field is filled
+    if (strlen($_POST['otp'] < 1)) {
+      die('2-factor authentication is enabled, please provide one time token to login.');
+    }
+
+    // Verify code
+    $result = $tfa->verifyCode($tfaSecret,$_POST['otp']);
+    if (!$result) {
+      die('OTP verification failed');
+    }
+
+  }
+
+  // Login success
+  // regenerate session id on Login
+  session_regenerate_id();
+
+  // Update database (update before setting variable. If update failed (maybe duplicate session id), user need to retry and generate new session id)
+  $stmt = $conn->prepare('INSERT INTO session VALUES ("'.session_id().'", ?, '.time().');');
+  $stmt->bind_param("s",$_POST['studentId']);
+  $result = $stmt->execute();
+  if (!$result) {
+    die('Query failed! Please retry. '.$stmt->error);
+  }
+  // Set session variable to indicate logged in
+  $_SESSION['logged_in'] = 1;
+
+  // Add login record
+  $stmt = $conn->prepare('INSERT INTO loginRecord VALUES ('.time().',?,"'.getIp().'")');
+  $stmt->bind_param("s",$_POST['studentId']);
+  $result = $stmt->execute();
+  if (!$result) {
+    die('Query failed. '.$stmt->error);
+  }
+
+  $stmt->free_result();
+  $stmt->close();
+
+	header('Location: index.php');
+	die();
 
 // If form was not submitted, display the form (html)
 
@@ -120,21 +145,32 @@ if ($_POST['submit'] == "submit") {
 <!-- Login form -->
 <div class="row">
   <form class="col s12 m12 l6" method="post" action="">
+
     <div class="row">
       <div class="input-field col s12">
         <input id="studentId" name="studentId" type="text">
         <label for="studentId">Student ID</label>
       </div>
     </div>
+
     <div class="row">
       <div class="input-field col s12">
         <input id="pass" name="pass" type="password">
         <label for="pass">Password</label>
       </div>
     </div>
+
+    <div class="row">
+      <div class="input-field col s12">
+        <input id="otp" name="otp" type="password" data-length="6">
+        <label for="otp">One time password (enter if enabled)</label>
+      </div>
+    </div>
+
     <button class="btn waves-effect purple waves-light" type="submit" name="submit" value="submit">Submit
     <i class="material-icons right">send</i>
     </button>
+
   </form>
 </div>
 

@@ -638,6 +638,140 @@ if ($_GET['action'] == "perm_disallow") {
 
 }
 
+// Enable two-factor auth
+if ($_GET['action'] == "tfa_enable") {
+
+	$studentId = getStudentId(session_id());
+
+	// Check if all parameters are set
+	if ((strlen($_POST['password']) < 1) or (strlen($_POST['otp']) < 1) or ($_POST['submit'] !== "submit")) {
+		die('Please fill in all the fields!');
+	}
+
+	if (strlen($_SESSION['tfa_secret']) < 1) {
+		die('Tfa secret not set!');
+	}
+
+	// Check if tfa is disabled
+	$stmt = $conn->prepare('SELECT studentId FROM tfa WHERE studentId = ?');
+	$stmt->bind_param("s",$studentId);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($qStudentId);
+	$stmt->fetch();
+	$stmt->free_result();
+	$stmt->close();
+
+	if ($qStudentId == $studentId) {
+		die('You have already enabled tfa!');
+	}
+
+	// Verify passowrd
+	$stmt = $conn->prepare('SELECT hash FROM users WHERE studentId = ?');
+	$stmt->bind_param("s",$studentId);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($qHash);
+	$stmt->fetch();
+	$stmt->free_result();
+	$stmt->close();
+
+	if (!password_verify($_POST['password'],$qHash)) {
+		die('Password incorrect!');
+	}
+
+	// Verify otp
+	$result = $tfa->verifyCode($_SESSION['tfa_secret'],$_POST['otp']);
+	if (!$result) {
+		die('OTP verification failed!');
+	}
+
+	// Verified, store secret
+	$stmt = $conn->prepare('INSERT INTO tfa (studentId,tfaSecret) VALUES (?,?)');
+	$stmt->bind_param("ss",$studentId,$_SESSION['tfa_secret']);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	// Unset session variable
+	unset($_SESSION['tfa_secret']);
+
+	// Redirect to tfa settings page
+	header('Location: settings_user_tfa.php');
+	die();
+
+}
+
+if ($_GET['action'] == "tfa_disable") {
+
+	$studentId = getStudentId(session_id());
+
+	// Check if all parameters are set
+	if ((strlen($_POST['pass']) < 1) or (strlen($_POST['otp']) < 1) or ($_POST['submit'] !== "submit")) {
+		die('Please fill in all the fields!');
+	}
+
+	// Check if tfa is enabled
+	$stmt = $conn->prepare('SELECT studentId, tfaSecret FROM tfa WHERE studentId = ?');
+	$stmt->bind_param("s",$studentId);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($qStudentId,$tfaSecret);
+	$stmt->fetch();
+	$stmt->free_result();
+	$stmt->close();
+
+	if ($qStudentId !== $studentId) {
+		die('You have not enabled tfa yet!');
+	}
+
+	// Verify passowrd
+	$stmt = $conn->prepare('SELECT hash FROM users WHERE studentId = ?');
+	$stmt->bind_param("s",$studentId);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($qHash);
+	$stmt->fetch();
+	$stmt->free_result();
+	$stmt->close();
+
+	if (!password_verify($_POST['pass'],$qHash)) {
+		die('Password incorrect!');
+	}
+
+	// Verify otp
+	$result = $tfa->verifyCode($tfaSecret,$_POST['otp']);
+	if (!$result) {
+		die('OTP verification failed!');
+	}
+
+	// Verified, disable tfa
+	$stmt = $conn->prepare('DELETE FROM tfa WHERE studentId = ?');
+	$stmt->bind_param("s",$studentId);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	// Redirect to tfa settings page
+	header('Location: settings_user_tfa.php');
+	die();
+
+}
+
 // No action was performed, redirect to index.php
 header('Location: login.php');
 die();
