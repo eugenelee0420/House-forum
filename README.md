@@ -18,13 +18,19 @@ ICT SBA Project
 
 ### PHP modules
 
-* date 4.0.0
-* json 5.3.0
-* mbstring 4.0.6
-* mysqli 5.0.0
-* pcre 4.3.0
-* session 4.3.2
+* apcu
 * curl
+* date
+* hash
+* json
+* mbstring
+* mcrypt
+* mysqli
+* openssl
+* pcre
+* session
+
+Please also make sure you meet the minimum requirement of composer.
 
 ## Installation
 
