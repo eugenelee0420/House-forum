@@ -63,7 +63,6 @@ if ($_POST['submit'] == "submit") {
 
   $stmt->bind_result($qStudentId,$tfaSecret);
   $stmt->fetch();
-
   $stmt->free_result();
   $stmt->close();
 
@@ -89,17 +88,17 @@ if ($_POST['submit'] == "submit") {
 
   // Update database (update before setting variable. If update failed (maybe duplicate session id), user need to retry and generate new session id)
   $stmt = $conn->prepare('INSERT INTO session VALUES ("'.session_id().'", ?, '.time().');');
-  $stmt->bind_param("s",$qStudentId);
+  $stmt->bind_param("s",$_POST['studentId']);
   $result = $stmt->execute();
   if (!$result) {
-    die('Query failed! Please retry');
+    die('Query failed! Please retry. '.$stmt->error);
   }
   // Set session variable to indicate logged in
   $_SESSION['logged_in'] = 1;
 
   // Add login record
   $stmt = $conn->prepare('INSERT INTO loginRecord VALUES ('.time().',?,"'.getIp().'")');
-  $stmt->bind_param("s",$qStudentId);
+  $stmt->bind_param("s",$_POST['studentId']);
   $result = $stmt->execute();
   if (!$result) {
     die('Query failed. '.$stmt->error);

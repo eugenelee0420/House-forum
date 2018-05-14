@@ -111,7 +111,6 @@ if ($qStudentId == $studentId) {
 		<button class="btn waves-effect purple waves-light" type="submit" name="submit" value="submit">Disable
 		<i class="material-icons right">send</i></button>
 
-
 	</form>
 </div>
 
