@@ -80,7 +80,42 @@ $stmt->free_result();
 if ($qStudentId == $studentId) {
 
   // tfa have been enabled, verify password to disable
-	
+
+	echo '<div class="row"><div class="col s12">';
+  echo '<h3>Disable 2-factor authentication</h3>';
+  echo '</div></div>';
+
+	echo '<div class="row"><div class="col s12">';
+	echo '<p>2-factor authentication have been enabled. If you wish to disable it, confirm your password and one-time token below.</p>';
+	echo '</div></div>';
+
+	?>
+
+<div class="row">
+	<form class="col s12 m12 l6" method="post" action="actions.php?action=tfa_disable">
+
+		<div class="row">
+			<div class="input-field col s12">
+				<input name="pass" id="pass" type="password">
+				<label for="pass">Confirm password</label>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="input-field col s12">
+				<input name="otp" id="otp" type="text" data-length="6">
+				<label for="otp">One-time password</label>
+			</div>
+		</div>
+
+		<button class="btn waves-effect purple waves-light" type="submit" name="submit" value="submit">Disable
+		<i class="material-icons right">send</i></button>
+
+
+	</form>
+</div>
+
+	<?php
 
 } else {
 
@@ -95,7 +130,7 @@ if ($qStudentId == $studentId) {
 
   echo '<div class="row"><div class="col s12">';
   echo '<p>Scan the following QR code with the Google Authenticator app or manually input the secret.</p>';
-  echo '<p>Then verify your password and one time token to enable 2-factor authentication.</p>';
+  echo '<p>Then confirm your password and one time token to enable 2-factor authentication.</p>';
   echo '</div></div>';
 
   echo '<div class="row"><div class="col s10 m4 l2">';
@@ -117,7 +152,7 @@ if ($qStudentId == $studentId) {
 		<div class="row">
 			<div class="input-field col s12">
 				<input id="password" name="password" type="password">
-				<label for="password">Verify password</label>
+				<label for="password">Confirm password</label>
 			</div>
 		</div>
 
@@ -129,7 +164,7 @@ if ($qStudentId == $studentId) {
 		</div>
 
 		<button class="btn waves-effect purple waves-light" type="submit" name="submit" value="submit">Enable
-		<i class="material-icons right">send</i>
+		<i class="material-icons right">send</i></button>
 
 	</form>
 </div>
