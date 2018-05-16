@@ -1,6 +1,7 @@
 {
     "require": {
         "erusev/parsedown": "^1.7",
-        "robthree/twofactorauth": "^1.6"
+        "robthree/twofactorauth": "^1.6",
+        "phpmailer/phpmailer": "^6.0"
     }
 }
