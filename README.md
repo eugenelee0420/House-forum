@@ -346,3 +346,9 @@ Field Name | Data Type (Size) | Constraints
 token | varchar(100) | `PRIMARY KEY`
 action | varchar(20) | `NOT NULL`, `CHECK (IN ('verify'))`
 studentId | char(7) | `NOT NULL`, `FOREIGN KEY REFERENCES users(studentId)`
+
+SQL to create the table:
+
+```sql
+CREATE TABLE mailToken (token VARCHAR(100) PRIMARY KEY, action VARCHAR(20) NOT NULL, studentId CHAR(7) NOT NULL, CONSTRAINT chk_action CHECK (action IN ('verify')), FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;
+```
