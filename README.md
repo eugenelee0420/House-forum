@@ -231,6 +231,7 @@ userName | varchar(30) | `NOT NULL`, `UNIQUE`
 hId | char(3) | `NOT NULL`, `FOREIGN KEY REFERENCES house(hId)`
 userGroup | char(3) | `NOT NULL`, `FOREIGN KEY REFERENCES userGroup(userGroup)`
 hash | varchar(255) | `NOT NULL`
+email | varchar(100) | `UNIQUE`
 
 SQL to create the table:
 
