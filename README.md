@@ -12,7 +12,7 @@ ICT SBA Project
 
 ## Minimum requirement
 
-* PHP 5.5.0
+* PHP 7.0.2
 * MySQL 4.1.13
 * Apache 2
 * OpenSSL
