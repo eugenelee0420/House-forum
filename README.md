@@ -15,6 +15,8 @@ ICT SBA Project
 * PHP 5.5.0
 * MySQL 4.1.13
 * Apache 2
+* OpenSSL
+* Sendmail (Follow [this guide](https://gist.github.com/adamstac/7462202) to install and configure Sendmail on Ubuntu)
 
 ### PHP modules
 
