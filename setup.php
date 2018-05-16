@@ -318,7 +318,7 @@ if ($_POST['submit'] == "submit") {
   // Insert default data
   echo 'Inserting default data into database...<br>';
 
-  $stmt = $conn->prepare('INSERT INTO permission VALUES (?,?)');
+  $stmt = $conn->prepare('INSERT INTO permission (permission, permissionDescription) VALUES (?,?)');
 
   // Loop to insert into permission table
   foreach ($tableJson[1] as $key => $row) {
@@ -432,7 +432,7 @@ if ($_POST['submit'] == "submit") {
 
   echo 'Adding houses to the database...<br>';
 
-  $stmt = $conn->prepare('INSERT INTO house VALUES (?,?)');
+  $stmt = $conn->prepare('INSERT INTO house (hId, houseName) VALUES (?,?)');
 
   foreach ($houseJson as $row) {
 
@@ -517,7 +517,7 @@ if ($_POST['submit'] == "submit") {
 
   echo 'Adding new user to the database...<br>';
 
-  $stmt = $conn->prepare('INSERT INTO users VALUES (?,?,?,?,?)');
+  $stmt = $conn->prepare('INSERT INTO users (studentId, userName, hId, userGroup, hash) VALUES (?,?,?,?,?)');
 
   $stmt->bind_param("sssss",$_POST['studentId'],$_POST['studentId'],$_POST['userHId'],$_POST['userGroup'],password_hash($_POST['pass'], PASSWORD_DEFAULT));
 

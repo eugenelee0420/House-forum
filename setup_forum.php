@@ -84,7 +84,7 @@ if ($_POST['submit'] == "submit") {
   }
 
   // Insert records
-  $stmt = $conn->prepare('INSERT INTO forum VALUES (?,?,?,?)');
+  $stmt = $conn->prepare('INSERT INTO forum (fId, fName, fDescription, hId) VALUES (?,?,?,?)');
 
   foreach ($houses as $row) {
 
@@ -98,7 +98,7 @@ if ($_POST['submit'] == "submit") {
 
   }
 
-  $stmt = $conn->prepare('INSERT INTO forum VALUES (?,?,?,NULL)');
+  $stmt = $conn->prepare('INSERT INTO forum (fId, fName, fDescription, hId) VALUES (?,?,?,NULL)');
   $stmt->bind_param("sss",$_POST['ihf_id'],$_POST['ihf_name'],$_POST['ihf_des']);
   $result = $stmt->execute();
   if (!$result) {

@@ -87,7 +87,7 @@ if ($_POST['submit'] == "submit") {
   session_regenerate_id();
 
   // Update database (update before setting variable. If update failed (maybe duplicate session id), user need to retry and generate new session id)
-  $stmt = $conn->prepare('INSERT INTO session VALUES ("'.session_id().'", ?, '.time().');');
+  $stmt = $conn->prepare('INSERT INTO session (sessionId, studentId, lastActivity) VALUES ("'.session_id().'", ?, '.time().');');
   $stmt->bind_param("s",$_POST['studentId']);
   $result = $stmt->execute();
   if (!$result) {
@@ -97,7 +97,7 @@ if ($_POST['submit'] == "submit") {
   $_SESSION['logged_in'] = 1;
 
   // Add login record
-  $stmt = $conn->prepare('INSERT INTO loginRecord VALUES ('.time().',?,"'.getIp().'")');
+  $stmt = $conn->prepare('INSERT INTO loginRecord (time, studentId, ip) VALUES ('.time().',?,"'.getIp().'")');
   $stmt->bind_param("s",$_POST['studentId']);
   $result = $stmt->execute();
   if (!$result) {
