@@ -336,3 +336,13 @@ SQL to create the table:
 ```sql
 CREATE TABLE tfa (studentId CHAR(7) PRIMARY KEY, tfaSecret VARCHAR(100) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;
 ```
+
+### `mailToken` table
+
+Used to store tokens for sent emails
+
+Field Name | Data Type (Size) | Constraints
+----- | ----- | -----
+token | varchar(100) | `PRIMARY KEY`
+action | varchar(20) | `NOT NULL`, `CHECK (IN ('verify'))`
+studentId | char(7) | `NOT NULL`, `FOREIGN KEY REFERENCES users(studentId)`
