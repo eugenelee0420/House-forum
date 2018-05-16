@@ -281,6 +281,20 @@ $stmt->close();
 
 	<div class="row">
 		<div class="col s12">
+			<p>Email address:</p>
+			<p>(If you change this, page may freeze for few minutes after clicking "Apply". Please do not close the tab until the page finished loading.)</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="input-field col s12">
+			<input id="email" name="email" type="email" value="<?php echoGetUserEmail(session_id()); ?>">
+			<label for="email">Email address</label>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s12">
 			<a class="btn waves-effect waves-light purple" href="view_login_record.php">View login records</a>
 		</div>
 	</div>

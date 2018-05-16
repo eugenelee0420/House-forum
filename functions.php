@@ -6,8 +6,11 @@ $cfg = json_decode($cfgJson, TRUE);
 
 require "vendor/autoload.php";
 
+use PHPMailer\PHPMailer\PHPMailer;
+
 $parsedown = new Parsedown();
 $tfa = new RobThree\Auth\TwoFactorAuth();
+$mail = new PHPMailer();
 
 // Connect to database
 $conn = new mysqli($cfg['dbHost'],$cfg['dbUser'],$cfg['dbPass'],$cfg['dbName']);
@@ -232,6 +235,38 @@ function getUserGroupName($sessId) {
 function echoGetUserGroupName($sessId) {
 
   $return = getUserGroupName($sessId);
+  echo $return;
+
+}
+
+// Function to get user's email address
+function getUserEmail($sessId) {
+
+  global $conn;
+
+  $studentId = getStudentId($sessId);
+
+  $stmt = $conn->prepare('SELECT email FROM users WHERE studentId = ?');
+  $stmt->bind_param("s",$studentId);
+  $result = $stmt->execute();
+  if (!$result) {
+    die('Query failed. '.$stmt->error);
+  }
+
+  $stmt->bind_result($email);
+  $stmt->fetch();
+
+  return $email;
+
+  $stmt->free_result();
+  $stmt->close();
+
+}
+
+// Wrapper function to echo getUserEmail
+function echoGetUserEmail($sessId) {
+
+  $return = getUserEmail($sessId);
   echo $return;
 
 }
