@@ -772,6 +772,76 @@ if ($_GET['action'] == "tfa_disable") {
 
 }
 
+if ($_GET['action'] == "email_verify") {
+
+	// Check parameters
+	if ((strlen($_GET['token']) < 1) OR (strlen($_GET['email']) < 1)) {
+		header('Location: index.php');
+		die();
+	}
+
+	// Get studentId
+	$studentId = getStudentId(session_id());
+
+	// Get info from db
+	$stmt = $conn->prepare('SELECT token, action, studentId FROM mailToken WHERE token = ?');
+	$stmt->bind_param("s",$_GET['token']);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->bind_result($token,$action,$qStudentId);
+	$stmt->fetch();
+	$stmt->free_result();
+	$stmt->close();
+
+	// Validate token
+	if ($token !== $_GET['token']) {
+		die('Invalid token!');
+	}
+
+	// Check action
+	if ($action !== 'verify') {
+		die('Wrong action!');
+	}
+
+	// Check studentId
+	if ($studentId !== $qStudentId) {
+		die('Wrong studentId!');
+	}
+
+	// Check email
+	if ($_GET['email'] !== getUserEmail(session_id())) {
+		die('Wrong email!');
+	}
+
+	// Verified, update database
+	$stmt = $conn->prepare('UPDATE users SET emailVerified = 1 WHERE studentId = ?');
+	$stmt->bind_param("s",$studentId);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->free_result();
+	$stmt->close();
+
+	// Delete token
+	$stmt = $conn->prepare('DELETE FROM mailToken WHERE token = ?');
+	$stmt->bind_param("s",$_GET['token']);
+	$result = $stmt->execute();
+	if (!$result) {
+		die('Query failed. '.$stmt->error);
+	}
+
+	$stmt->free_result();
+	$stmt->close();
+
+	die('Email verified');
+
+}
+
 // No action was performed, redirect to index.php
 header('Location: login.php');
 die();

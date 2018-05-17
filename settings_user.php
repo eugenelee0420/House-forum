@@ -202,13 +202,11 @@ if ($_POST['submit'] == "submit") {
 		$mail->Body =
 		'
 		<p>Dear '.$userName.' ('.$studentId.'),</p>
-		<br>
 		<p>You have recently updated your email address on House forum ('.$_SERVER['HTTP_HOST'].'), please verify your email addres by clicking the link below.</p>
-		<p><a href="http://'.$url.'actions.php?action=email_verify&token='.$token.'">Verify Email</a></p>
-		<br>
+		<p><a href="http://'.$url.'actions.php?action=email_verify&token='.$token.'&email='.$_POST['email'].'">Verify Email</a></p>
 		<p>This email is generated automatically by the system. Please do not reply to this email.</p>
 		';
-		$mail->AltBody = 'Please verify your email by following this link: http://'.$url.'actions.php?action=email_verify&token='.$token;
+		$mail->AltBody = 'Please verify your email by following this link: http://'.$url.'actions.php?action=email_verify&token='.$token.'&email='.$_POST['email'];
 
 		$result = $mail->send();
 		if (!$result) {
@@ -218,6 +216,17 @@ if ($_POST['submit'] == "submit") {
 		// Store token
 		$stmt = $conn->prepare('INSERT INTO mailToken (token, action, studentId) VALUES (?,"verify",?)');
 		$stmt->bind_param("ss",$token,$studentId);
+		$result = $stmt->execute();
+		if (!$result) {
+			die('Query failed. '.$stmt->error);
+		}
+
+		$stmt->free_result();
+		$stmt->close();
+
+		// Set emailVerified to 0
+		$stmt = $conn->prepare('UPDATE users SET emailVerified = 0 WHERE studentId = ?');
+		$stmt->bind_param("s",$studentId);
 		$result = $stmt->execute();
 		if (!$result) {
 			die('Query failed. '.$stmt->error);
