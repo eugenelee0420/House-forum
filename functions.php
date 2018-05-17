@@ -278,7 +278,7 @@ function havePermission($sessId,$perm) {
 
   $userGroup = getUserGroup($sessId);
 
-  $stmt = $conn->prepare('SELECT * FROM userPermission WHERE userGroup = ? AND permission = ?');
+  $stmt = $conn->prepare('SELECT userGroup, permission FROM userPermission WHERE userGroup = ? AND permission = ?');
   $stmt->bind_param("ss",$userGroup,$perm);
   $result = $stmt->execute();
   if (!$result) {

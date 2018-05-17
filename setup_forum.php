@@ -18,7 +18,7 @@ if ($conn->affected_rows > 0) {
 if ($_POST['submit'] == "submit") {
 
   // Get the houses
-  $sql = 'SELECT * FROM house';
+  $sql = 'SELECT hId, houseName FROM house';
   $result = $conn->query($sql);
   if (!$result) {
     die('Query failed. '.$conn->error);
@@ -148,7 +148,7 @@ if ($_POST['submit'] == "submit") {
       <?php
 
       // Grab house ID and names
-      $sql = 'SELECT * FROM house';
+      $sql = 'SELECT hId, houseName FROM house';
       $result = $conn->query($sql);
       if (!$result) {
         die('Query failed. '.$conn->error);
