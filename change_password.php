@@ -1,8 +1,7 @@
 <?php
 // Password change page, require login
 
-
-require "functions.php";
+require 'functions.php';
 
 session_start();
 
@@ -12,18 +11,18 @@ $result = $conn->query($sql);
 // No need to check query result. If query failed, the user is not logged in
 $row = mysqli_fetch_assoc($result);
 if ((($row['lastActivity'] + $userTimeout) < time())) {
-  // Logout the user
-	mysqli_free_result($result);
-  $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
-  $conn->query($sql);
-  // No need to check result here as well
-  session_unset();
+    // Logout the user
+    mysqli_free_result($result);
+    $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
+    $conn->query($sql);
+    // No need to check result here as well
+    session_unset();
 }
 
 // Check if user is logged in
 if ($_SESSION['logged_in'] !== 1) {
-	header('Location: login.php');
-	die();
+    header('Location: login.php');
+    die();
 }
 
 // Update last activity
@@ -31,7 +30,7 @@ mysqli_free_result($result);
 $sql = 'UPDATE session SET lastActivity = '.time().' WHERE sessionId = "'.session_id().'"';
 $result = $conn->query($sql);
 if (!$result) {
-  die('Query failed. '.$conn->error);
+    die('Query failed. '.$conn->error);
 }
 
 ?>
@@ -62,74 +61,73 @@ $(document).ready(function() {
 
 <?php
 
-require "sidenav.php";
+require 'sidenav.php';
 
-if ($_POST['submit'] == "submit") {
+if ($_POST['submit'] == 'submit') {
 
-	// Check all fields are filled in
-	if ((strlen($_POST['currentPassword']) < 1) OR (strlen($_POST['newPassword']) < 1) OR (strlen($_POST['confirmPassword']) < 1)) {
-		die('Please fill in all the fields!');
-	}
+    // Check all fields are filled in
+    if ((strlen($_POST['currentPassword']) < 1) or (strlen($_POST['newPassword']) < 1) or (strlen($_POST['confirmPassword']) < 1)) {
+        die('Please fill in all the fields!');
+    }
 
-	// Get the studentId
-	$studentId = getStudentId(session_id());
+    // Get the studentId
+    $studentId = getStudentId(session_id());
 
-	// Get the password and userName
-	$stmt = $conn->prepare('SELECT hash, userName FROM users WHERE studentId = ?');
-	$stmt->bind_param("s",$studentId);
-	$result = $stmt->execute();
-	if (!$result) {
-		die('Query failed. '.$stmt->error);
-	}
+    // Get the password and userName
+    $stmt = $conn->prepare('SELECT hash, userName FROM users WHERE studentId = ?');
+    $stmt->bind_param('s', $studentId);
+    $result = $stmt->execute();
+    if (!$result) {
+        die('Query failed. '.$stmt->error);
+    }
 
-	$stmt->bind_result($qHash,$qUserName);
-	$stmt->fetch();
+    $stmt->bind_result($qHash, $qUserName);
+    $stmt->fetch();
 
-	$stmt->free_result();
-	$stmt->close();
+    $stmt->free_result();
+    $stmt->close();
 
-	// Check current password
-	if (!password_verify($_POST['currentPassword'],$qHash)) {
-		die('The current password is incorrect!');
-	}
+    // Check current password
+    if (!password_verify($_POST['currentPassword'], $qHash)) {
+        die('The current password is incorrect!');
+    }
 
-	// Check if newPassword and confirmPassword match
-	if ($_POST['newPassword'] !== $_POST['confirmPassword']) {
-		die('The new password and confirm password do not match!');
-	}
+    // Check if newPassword and confirmPassword match
+    if ($_POST['newPassword'] !== $_POST['confirmPassword']) {
+        die('The new password and confirm password do not match!');
+    }
 
-	// Check if new password is equal the user's userName
-	// Do not allow this because of security reasons
+    // Check if new password is equal the user's userName
+    // Do not allow this because of security reasons
 
-	if ($_POST['newPassword'] == $qUserName) {
-		die('Please do not use your userName as your password!');
-	}
+    if ($_POST['newPassword'] == $qUserName) {
+        die('Please do not use your userName as your password!');
+    }
 
-  // Also not allow password equal to studentId
-	if ($_POST['newPassword'] == $studentId) {
-		die('Please do not use your studentId as your password!');
-	}
+    // Also not allow password equal to studentId
+    if ($_POST['newPassword'] == $studentId) {
+        die('Please do not use your studentId as your password!');
+    }
 
-	// Update database
-	$stmt = $conn->prepare('UPDATE users SET hash = ? WHERE studentId = ?');
-	$stmt->bind_param("ss",password_hash($_POST['newPassword'], PASSWORD_DEFAULT),$studentId);
-	$result = $stmt->execute();
-	if (!$result) {
-		die('Query failed. '.$stmt->error);
-	}
+    // Update database
+    $stmt = $conn->prepare('UPDATE users SET hash = ? WHERE studentId = ?');
+    $stmt->bind_param('ss', password_hash($_POST['newPassword'], PASSWORD_DEFAULT), $studentId);
+    $result = $stmt->execute();
+    if (!$result) {
+        die('Query failed. '.$stmt->error);
+    }
 
-	$stmt->free_result();
-	$stmt->close();
+    $stmt->free_result();
+    $stmt->close();
 
-	// Display toast
-	?>
+    // Display toast
+    ?>
 
 	<script>
 	Materialize.toast('Changes saved.', 4000);
 	</script>
 
 	<?php
-
 }
 
 // Display form
