@@ -8,6 +8,85 @@ require 'functions.php';
 
 session_start();
 
+// Verify email, no need to login
+if ($_GET['action'] == 'email_verify') {
+
+    // Check parameters
+    if ((strlen($_GET['token']) < 1) or (strlen($_GET['email']) < 1)) {
+        header('Location: index.php');
+        die();
+    }
+
+    // Get studentId
+    $studentId = getStudentId(session_id());
+
+    // Get info from db
+    $stmt = $conn->prepare('SELECT token, action, studentId FROM mailToken WHERE token = ?');
+    $stmt->bind_param('s', $_GET['token']);
+    $result = $stmt->execute();
+    if (!$result) {
+      die('Query failed. '.$stmt->error);
+    }
+
+    $stmt->bind_result($token, $action, $qStudentId);
+    $stmt->fetch();
+    $stmt->free_result();
+    $stmt->close();
+
+    // Get email address
+    // Cannot use function as user may not be logged in
+    $stmt = $conn->prepare('SELECT email FROM users WHERE studentId = ?');
+    $stmt->bind_param('s', $qStudentId);
+    $result = $stmt->execute();
+    if (!$result) {
+      die('Query failed. '.$stmt->error);
+    }
+
+    $stmt->bind_result($email);
+    $stmt->fetch();
+    $stmt->free_result();
+    $stmt->close();
+
+    // Validate token
+    if ($token !== $_GET['token']) {
+        die('Invalid token!');
+    }
+
+    // Check action
+    if ($action !== 'verify') {
+        die('Wrong action!');
+    }
+
+    // Check email
+    if ($_GET['email'] !== $email) {
+        die('Wrong email!');
+    }
+
+    // Verified, update database
+    $stmt = $conn->prepare('UPDATE users SET emailVerified = 1 WHERE studentId = ?');
+    $stmt->bind_param('s', $qStudentId);
+    $result = $stmt->execute();
+    if (!$result) {
+        die('Query failed. '.$stmt->error);
+    }
+
+    $stmt->free_result();
+    $stmt->close();
+
+    // Delete token
+    $stmt = $conn->prepare('DELETE FROM mailToken WHERE token = ?');
+    $stmt->bind_param('s', $_GET['token']);
+    $result = $stmt->execute();
+    if (!$result) {
+        die('Query failed. '.$stmt->error);
+    }
+
+    $stmt->free_result();
+    $stmt->close();
+
+    die('Email verified');
+}
+
 // Check if user timed out
 $sql = 'SELECT lastActivity FROM session WHERE sessionId = "'.session_id().'";';
 $result = $conn->query($sql);
@@ -742,75 +821,6 @@ if ($_GET['action'] == 'tfa_disable') {
     // Redirect to tfa settings page
     header('Location: settings_user_tfa.php');
     die();
-}
-
-if ($_GET['action'] == 'email_verify') {
-
-    // Check parameters
-    if ((strlen($_GET['token']) < 1) or (strlen($_GET['email']) < 1)) {
-        header('Location: index.php');
-        die();
-    }
-
-    // Get studentId
-    $studentId = getStudentId(session_id());
-
-    // Get info from db
-    $stmt = $conn->prepare('SELECT token, action, studentId FROM mailToken WHERE token = ?');
-    $stmt->bind_param('s', $_GET['token']);
-    $result = $stmt->execute();
-    if (!$result) {
-        die('Query failed. '.$stmt->error);
-    }
-
-    $stmt->bind_result($token, $action, $qStudentId);
-    $stmt->fetch();
-    $stmt->free_result();
-    $stmt->close();
-
-    // Validate token
-    if ($token !== $_GET['token']) {
-        die('Invalid token!');
-    }
-
-    // Check action
-    if ($action !== 'verify') {
-        die('Wrong action!');
-    }
-
-    // Check studentId
-    if ($studentId !== $qStudentId) {
-        die('Wrong studentId!');
-    }
-
-    // Check email
-    if ($_GET['email'] !== getUserEmail(session_id())) {
-        die('Wrong email!');
-    }
-
-    // Verified, update database
-    $stmt = $conn->prepare('UPDATE users SET emailVerified = 1 WHERE studentId = ?');
-    $stmt->bind_param('s', $studentId);
-    $result = $stmt->execute();
-    if (!$result) {
-        die('Query failed. '.$stmt->error);
-    }
-
-    $stmt->free_result();
-    $stmt->close();
-
-    // Delete token
-    $stmt = $conn->prepare('DELETE FROM mailToken WHERE token = ?');
-    $stmt->bind_param('s', $_GET['token']);
-    $result = $stmt->execute();
-    if (!$result) {
-        die('Query failed. '.$stmt->error);
-    }
-
-    $stmt->free_result();
-    $stmt->close();
-
-    die('Email verified');
 }
 
 // No action was performed, redirect to index.php
