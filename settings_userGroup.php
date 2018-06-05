@@ -1,8 +1,7 @@
 <?php
 // User group settings page, require login and sufficient permission
 
-
-require "functions.php";
+require 'functions.php';
 
 session_start();
 
@@ -12,18 +11,18 @@ $result = $conn->query($sql);
 // No need to check query result. If query failed, the user is not logged in
 $row = mysqli_fetch_assoc($result);
 if ((($row['lastActivity'] + $userTimeout) < time())) {
-  // Logout the user
-	mysqli_free_result($result);
-  $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
-  $conn->query($sql);
-  // No need to check result here as well
-  session_unset();
+    // Logout the user
+    mysqli_free_result($result);
+    $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
+    $conn->query($sql);
+    // No need to check result here as well
+    session_unset();
 }
 
 // Check if user is logged in
 if ($_SESSION['logged_in'] !== 1) {
-	header('Location: login.php');
-	die();
+    header('Location: login.php');
+    die();
 }
 
 // Update last activity
@@ -31,7 +30,7 @@ mysqli_free_result($result);
 $sql = 'UPDATE session SET lastActivity = '.time().' WHERE sessionId = "'.session_id().'"';
 $result = $conn->query($sql);
 if (!$result) {
-  die('Query failed. '.$conn->error);
+    die('Query failed. '.$conn->error);
 }
 
 ?>
@@ -62,18 +61,18 @@ $(document).ready(function() {
 
 <?php
 
-require "sidenav.php";
+require 'sidenav.php';
 
 // Check permission
-if (!havePermission(session_id(),"AUG")) {
-  die('You do not have permission to perform this action!');
+if (!havePermission(session_id(), 'AUG')) {
+    die('You do not have permission to perform this action!');
 }
 
 // Get the user groups
 $sql = 'SELECT userGroup, userGroupName FROM userGroup';
 $result = $conn->query($sql);
 if (!$result) {
-  die('Query failed. '.$conn->error);
+    die('Query failed. '.$conn->error);
 }
 
 ?>
@@ -96,20 +95,18 @@ if (!$result) {
 <?php
 
 while ($row = mysqli_fetch_assoc($result)) {
+    echo '<tr>';
 
-  echo '<tr>';
+    echo '<td>'.$row['userGroup'].'</td>';
+    echo '<td>'.$row['userGroupName'].'</td>';
 
-  echo '<td>'.$row['userGroup'].'</td>';
-  echo '<td>'.$row['userGroupName'].'</td>';
+    echo '<td>';
+    echo '<a class="btn waves-effect waves-light yellow darken-1" href="settings_userGroup_edit.php?userGroup='.$row['userGroup'].'"><i class="material-icons">edit</i>Edit</a>';
+    echo ' ';
+    echo '<a class="btn waves-effect waves-light red" href="settings_userGroup_delete.php?userGroup='.$row['userGroup'].'"><i class="material-icons">delete</i>Delete</a>';
+    echo '</td>';
 
-  echo '<td>';
-  echo '<a class="btn waves-effect waves-light yellow darken-1" href="settings_userGroup_edit.php?userGroup='.$row['userGroup'].'"><i class="material-icons">edit</i>Edit</a>';
-  echo ' ';
-  echo '<a class="btn waves-effect waves-light red" href="settings_userGroup_delete.php?userGroup='.$row['userGroup'].'"><i class="material-icons">delete</i>Delete</a>';
-  echo '</td>';
-
-  echo '</tr>';
-
+    echo '</tr>';
 }
 
 mysqli_free_result($result);

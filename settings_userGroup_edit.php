@@ -1,8 +1,7 @@
 <?php
 // User group settings page, require login and sufficient permission
 
-
-require "functions.php";
+require 'functions.php';
 
 session_start();
 
@@ -12,18 +11,18 @@ $result = $conn->query($sql);
 // No need to check query result. If query failed, the user is not logged in
 $row = mysqli_fetch_assoc($result);
 if ((($row['lastActivity'] + $userTimeout) < time())) {
-  // Logout the user
-	mysqli_free_result($result);
-  $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
-  $conn->query($sql);
-  // No need to check result here as well
-  session_unset();
+    // Logout the user
+    mysqli_free_result($result);
+    $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
+    $conn->query($sql);
+    // No need to check result here as well
+    session_unset();
 }
 
 // Check if user is logged in
 if ($_SESSION['logged_in'] !== 1) {
-	header('Location: login.php');
-	die();
+    header('Location: login.php');
+    die();
 }
 
 // Update last activity
@@ -31,7 +30,7 @@ mysqli_free_result($result);
 $sql = 'UPDATE session SET lastActivity = '.time().' WHERE sessionId = "'.session_id().'"';
 $result = $conn->query($sql);
 if (!$result) {
-  die('Query failed. '.$conn->error);
+    die('Query failed. '.$conn->error);
 }
 
 ?>
@@ -62,13 +61,12 @@ $(document).ready(function() {
 
 <?php
 
-require "sidenav.php";
+require 'sidenav.php';
 
 // Check if user requested anything
 // If not, redirect to index.php
 if (!isset($_GET['userGroup'])) {
-  // Cannot use header because some html have already been sent
-  ?>
+    // Cannot use header because some html have already been sent ?>
   <script type="text/javascript">
     window.location = "index.php";
   </script>
@@ -79,84 +77,81 @@ if (!isset($_GET['userGroup'])) {
 // Check if the requested userGroup exists
 // Also get userGroupName for later use
 $stmt = $conn->prepare('SELECT userGroup, userGroupName FROM userGroup WHERE userGroup = ?');
-$stmt->bind_param("s",$_GET['userGroup']);
+$stmt->bind_param('s', $_GET['userGroup']);
 $result = $stmt->execute();
 if (!$result) {
-  die('Query failed. '.$stmt->error);
+    die('Query failed. '.$stmt->error);
 }
 
-$stmt->bind_result($userGroup,$userGroupName);
+$stmt->bind_result($userGroup, $userGroupName);
 $stmt->fetch();
 
 if ($userGroup !== $_GET['userGroup']) {
-  die('The requested userGroup does not exist!');
+    die('The requested userGroup does not exist!');
 }
 
 $stmt->free_result();
 $stmt->close();
 
 // Check permission
-if (!havePermission(session_id(),"AUG")) {
-  die('You do not have permission to perform this action!');
+if (!havePermission(session_id(), 'AUG')) {
+    die('You do not have permission to perform this action!');
 }
 
 // Get the permissions of the requested userGroup
 $stmt = $conn->prepare('SELECT permission FROM userPermission WHERE userGroup = ?');
-$stmt->bind_param("s",$_GET['userGroup']);
+$stmt->bind_param('s', $_GET['userGroup']);
 $result = $stmt->execute();
 if (!$result) {
-  die('Query failed. '.$stmt->error);
+    die('Query failed. '.$stmt->error);
 }
 
 $stmt->bind_result($permission);
 
-$permArray = array();
+$permArray = [];
 
 while ($stmt->fetch()) {
 
   // Append the permission to array
-  array_push($permArray,$permission);
-
+    array_push($permArray, $permission);
 }
 
 $stmt->free_result();
 $stmt->close();
 
 // Function to search the array and return TRUE or FALSE
-function groupHavePermission($perm) {
+function groupHavePermission($perm)
+{
+    global $permArray;
 
-  global $permArray;
+    $result = array_search($perm, $permArray);
 
-  $result = array_search($perm,$permArray);
-
-  // array_search returns the array key of the result
-  // Cannot compare with if (!$result) because return value of 0 will be interpreted as FALSE
-  if ($result === FALSE) {
-    return FALSE;
-  } else {
-    return TRUE;
-  }
-
+    // array_search returns the array key of the result
+    // Cannot compare with if (!$result) because return value of 0 will be interpreted as FALSE
+    if ($result === false) {
+        return false;
+    } else {
+        return true;
+    }
 }
 
 // Wrapper function to echo result of groupHavePermission, but in english
-function echoGroupHavePermission($perm) {
+function echoGroupHavePermission($perm)
+{
+    $return = groupHavePermission($perm);
 
-  $return = groupHavePermission($perm);
-
-  if ($return) {
-    return '<span class="green-text">Allow</span>';
-  } else {
-    return '<span class="red-text">Disallow</span>';
-  }
-
+    if ($return) {
+        return '<span class="green-text">Allow</span>';
+    } else {
+        return '<span class="red-text">Disallow</span>';
+    }
 }
 
 // Get the permissions
 $sql = 'SELECT permission, permissionDescription FROM permission';
 $result = $conn->query($sql);
 if (!$result) {
-  die('Query failed. '.$conn->error);
+    die('Query failed. '.$conn->error);
 }
 
 ?>
@@ -192,22 +187,20 @@ if (!$result) {
 <?php
 
 while ($row = mysqli_fetch_assoc($result)) {
+    echo '<tr>';
 
-  echo '<tr>';
+    echo '<td>'.$row['permission'].'</td>';
+    echo '<td>'.$row['permissionDescription'].'</td>';
+    echo '<td>'.echoGroupHavePermission($row['permission']).'</td>';
 
-  echo '<td>'.$row['permission'].'</td>';
-  echo '<td>'.$row['permissionDescription'].'</td>';
-  echo '<td>'.echoGroupHavePermission($row['permission']).'</td>';
+    // Allow or disallow button
+    if (groupHavePermission($row['permission'])) {
+        echo '<td><a class="btn waves-effect waves-light red lighten-2" href="actions.php?action=perm_disallow&userGroup='.$_GET['userGroup'].'&permission='.$row['permission'].'"><i class="material-icons">clear</i><span class="hide-on-small-only">Disallow</span></a></td>';
+    } else {
+        echo '<td><a class="btn waves-effect waves-light green lighten-2" href="actions.php?action=perm_allow&userGroup='.$_GET['userGroup'].'&permission='.$row['permission'].'"><i class="material-icons">done</i><span class="hide-on-small-only">Allow</span></a></td>';
+    }
 
-  // Allow or disallow button
-  if (groupHavePermission($row['permission'])) {
-    echo '<td><a class="btn waves-effect waves-light red lighten-2" href="actions.php?action=perm_disallow&userGroup='.$_GET['userGroup'].'&permission='.$row['permission'].'"><i class="material-icons">clear</i><span class="hide-on-small-only">Disallow</span></a></td>';
-  } else {
-    echo '<td><a class="btn waves-effect waves-light green lighten-2" href="actions.php?action=perm_allow&userGroup='.$_GET['userGroup'].'&permission='.$row['permission'].'"><i class="material-icons">done</i><span class="hide-on-small-only">Allow</span></a></td>';
-  }
-
-  echo '</tr>';
-
+    echo '</tr>';
 }
 
 ?>

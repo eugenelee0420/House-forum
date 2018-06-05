@@ -1,8 +1,7 @@
 <?php
 // User setting page, require login
 
-
-require "functions.php";
+require 'functions.php';
 
 session_start();
 
@@ -12,18 +11,18 @@ $result = $conn->query($sql);
 // No need to check query result. If query failed, the user is not logged in
 $row = mysqli_fetch_assoc($result);
 if ((($row['lastActivity'] + $userTimeout) < time())) {
-  // Logout the user
-	mysqli_free_result($result);
-  $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
-  $conn->query($sql);
-  // No need to check result here as well
-  session_unset();
+    // Logout the user
+    mysqli_free_result($result);
+    $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
+    $conn->query($sql);
+    // No need to check result here as well
+    session_unset();
 }
 
 // Check if user is logged in
 if ($_SESSION['logged_in'] !== 1) {
-	header('Location: login.php');
-	die();
+    header('Location: login.php');
+    die();
 }
 
 // Update last activity
@@ -31,7 +30,7 @@ mysqli_free_result($result);
 $sql = 'UPDATE session SET lastActivity = '.time().' WHERE sessionId = "'.session_id().'"';
 $result = $conn->query($sql);
 if (!$result) {
-  die('Query failed. '.$conn->error);
+    die('Query failed. '.$conn->error);
 }
 
 ?>
@@ -62,145 +61,144 @@ $(document).ready(function() {
 
 <?php
 
-require "sidenav.php";
+require 'sidenav.php';
 
 // Get the studentId
 $studentId = getStudentId(session_id());
 
-if ($_POST['submit'] == "submit") {
+if ($_POST['submit'] == 'submit') {
 
   // Form submitted, process data
 
-  // Check all the fields are filled in
-  if ((strlen($_POST['rowsPerPage']) < 1) OR (strlen($_POST['avatarPic']) < 1) OR (strlen($_POST['bgPic']) < 1) OR (strlen($_POST['userName']) < 1)) {
-    die('Please fill in all the fields!');
-  }
+    // Check all the fields are filled in
+    if ((strlen($_POST['rowsPerPage']) < 1) or (strlen($_POST['avatarPic']) < 1) or (strlen($_POST['bgPic']) < 1) or (strlen($_POST['userName']) < 1)) {
+        die('Please fill in all the fields!');
+    }
 
-	// Check for invalid value
-	if (intval($_POST['rowsPerPage']) < 1) {
-		die('Please input an integer larger than 0 for rowsPerPage!');
-	}
+    // Check for invalid value
+    if (intval($_POST['rowsPerPage']) < 1) {
+        die('Please input an integer larger than 0 for rowsPerPage!');
+    }
 
-  // Check field constraint
-	if (strlen($_POST['userName']) > 30) {
-		die('Please do not enter more than 30 characters for the userName!');
-	}
+    // Check field constraint
+    if (strlen($_POST['userName']) > 30) {
+        die('Please do not enter more than 30 characters for the userName!');
+    }
 
-  if (strlen($_POST['avatarPic']) > 200) {
-    die('Please do not enter more than 200 characters for avatar image link!');
-  }
+    if (strlen($_POST['avatarPic']) > 200) {
+        die('Please do not enter more than 200 characters for avatar image link!');
+    }
 
-  if (strlen($_POST['bgPic']) > 200) {
-    die('Please do not enter more than 200 characters for background image link!');
-  }
+    if (strlen($_POST['bgPic']) > 200) {
+        die('Please do not enter more than 200 characters for background image link!');
+    }
 
-	// Check if userName is used
-	$stmt = $conn->prepare('SELECT studentId, userName FROM users WHERE userName = ?');
-	$stmt->bind_param("s",$_POST['userName']);
-	$result = $stmt->execute();
-	if (!$result) {
-		die('Query failed. '.$stmt->error);
-	}
+    // Check if userName is used
+    $stmt = $conn->prepare('SELECT studentId, userName FROM users WHERE userName = ?');
+    $stmt->bind_param('s', $_POST['userName']);
+    $result = $stmt->execute();
+    if (!$result) {
+        die('Query failed. '.$stmt->error);
+    }
 
-	$stmt->bind_result($qStudentId,$qUserName);
-	$stmt->fetch();
+    $stmt->bind_result($qStudentId, $qUserName);
+    $stmt->fetch();
 
-	// If the query result returned the inputted userName, and the studentId did not match
-	// So that if the user's current userName is entered, error will not be triggered
-	if (($qUserName == $_POST['userName']) AND ($qStudentId !== $studentId)) {
-		die('The username '.$_POST['userName'].' has been used! Please choose another one.');
-	}
+    // If the query result returned the inputted userName, and the studentId did not match
+    // So that if the user's current userName is entered, error will not be triggered
+    if (($qUserName == $_POST['userName']) and ($qStudentId !== $studentId)) {
+        die('The username '.$_POST['userName'].' has been used! Please choose another one.');
+    }
 
-	$stmt->free_result();
-	$stmt->close();
+    $stmt->free_result();
+    $stmt->close();
 
-	// Check if entered userName equal the user's password
-	// Do not allow this because of security reasons
+    // Check if entered userName equal the user's password
+    // Do not allow this because of security reasons
 
-	// Get the user's password
-	$stmt = $conn->prepare('SELECT hash FROM users WHERE studentId = ?');
-	$stmt->bind_param("s",$studentId);
-	$result = $stmt->execute();
-	if (!$result) {
-		die('Query failed. '.$stmt->error);
-	}
+    // Get the user's password
+    $stmt = $conn->prepare('SELECT hash FROM users WHERE studentId = ?');
+    $stmt->bind_param('s', $studentId);
+    $result = $stmt->execute();
+    if (!$result) {
+        die('Query failed. '.$stmt->error);
+    }
 
-	$stmt->bind_result($qHash);
-	$stmt->fetch();
+    $stmt->bind_result($qHash);
+    $stmt->fetch();
 
-	if (password_verify($_POST['userName'],$qHash)) {
-		die('Please do not use your password as your username!');
-	}
+    if (password_verify($_POST['userName'], $qHash)) {
+        die('Please do not use your password as your username!');
+    }
 
-	$stmt->free_result();
-	$stmt->close();
+    $stmt->free_result();
+    $stmt->close();
 
-	// Check image
-	// Avatar
-	$avatarInfo = getimagesize($_POST['avatarPic']);
+    // Check image
+    // Avatar
+    $avatarInfo = getimagesize($_POST['avatarPic']);
 
-	// If width or height < 1
-	if (($avatarInfo[0] < 1) OR ($avatarInfo[1] < 1)) {
-		die('Please input a valid image link for the avatar image!');
-	}
+    // If width or height < 1
+    if (($avatarInfo[0] < 1) or ($avatarInfo[1] < 1)) {
+        die('Please input a valid image link for the avatar image!');
+    }
 
-	// Check profile ratio
-	if ($avatarInfo[0] !== $avatarInfo[1]) {
-		die('Please use an image with 1:1 aspect ratio for the avatar image!');
-	}
+    // Check profile ratio
+    if ($avatarInfo[0] !== $avatarInfo[1]) {
+        die('Please use an image with 1:1 aspect ratio for the avatar image!');
+    }
 
-	// Background image
-	$bgInfo = getimagesize($_POST['bgPic']);
+    // Background image
+    $bgInfo = getimagesize($_POST['bgPic']);
 
-	// If width or height < 1
-	if(($bgInfo[0] < 1) OR ($bgInfo[1] < 1)) {
-		die('Please input a valid image link for the background image!');
-	}
+    // If width or height < 1
+    if (($bgInfo[0] < 1) or ($bgInfo[1] < 1)) {
+        die('Please input a valid image link for the background image!');
+    }
 
-  // Update database
-  $stmt = $conn->prepare('UPDATE userSetting SET rowsPerPage = ?, avatarPic = ?, bgPic = ? WHERE studentId = ?');
-  $stmt->bind_param("isss",floor(intval($_POST['rowsPerPage'])),$_POST['avatarPic'],$_POST['bgPic'],$studentId);
-  $result = $stmt->execute();
-  if (!$result) {
-    die('Query failed. '.$stmt->error);
-  }
+    // Update database
+    $stmt = $conn->prepare('UPDATE userSetting SET rowsPerPage = ?, avatarPic = ?, bgPic = ? WHERE studentId = ?');
+    $stmt->bind_param('isss', floor(intval($_POST['rowsPerPage'])), $_POST['avatarPic'], $_POST['bgPic'], $studentId);
+    $result = $stmt->execute();
+    if (!$result) {
+        die('Query failed. '.$stmt->error);
+    }
 
-  $stmt->free_result();
-  $stmt->close();
+    $stmt->free_result();
+    $stmt->close();
 
-	// Update username
-	$stmt = $conn->prepare('UPDATE users SET userName = ? WHERE studentId = ?');
-	$stmt->bind_param("ss",$_POST['userName'],$studentId);
-	$result = $stmt->execute();
-	if (!$result) {
-		die('Query failed. '.$stmt->error);
-	}
+    // Update username
+    $stmt = $conn->prepare('UPDATE users SET userName = ? WHERE studentId = ?');
+    $stmt->bind_param('ss', $_POST['userName'], $studentId);
+    $result = $stmt->execute();
+    if (!$result) {
+        die('Query failed. '.$stmt->error);
+    }
 
-	$stmt->free_result();
-	$stmt->close();
+    $stmt->free_result();
+    $stmt->close();
 
-	// Display toast
-	?>
+    // Display toast
+    ?>
 
 	<script>
 	Materialize.toast('Changes saved.', 4000);
 	</script>
 
 	<?php
-
 }
 
 // Display form
 
 // Get the settings
 $stmt = $conn->prepare('SELECT rowsPerPage, avatarPic, bgPic FROM userSetting WHERE studentId = ?');
-$stmt->bind_param("s",$studentId);
+$stmt->bind_param('s', $studentId);
 $result = $stmt->execute();
 if (!$result) {
-  die('Query failed. '.$stmt->error);
+    die('Query failed. '.$stmt->error);
 }
 
-$stmt->bind_result($rowsPerPage,$avatarPic,$bgPic);
+$stmt->bind_result($rowsPerPage, $avatarPic, $bgPic);
 $stmt->fetch();
 
 $stmt->free_result();

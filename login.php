@@ -1,7 +1,7 @@
 <?php
 // login page
 
-require "functions.php";
+require 'functions.php';
 
 session_start();
 
@@ -11,109 +11,107 @@ $result = $conn->query($sql);
 // No need to check query result. If query failed, the user is not logged in
 $row = mysqli_fetch_assoc($result);
 if ((($row['lastActivity'] + $userTimeout) < time())) {
-  // Logout the user
-  session_unset();
-	mysqli_free_result($result);
-  $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
-  $conn->query($sql);
-  // No need to check result here as well
+    // Logout the user
+    session_unset();
+    mysqli_free_result($result);
+    $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
+    $conn->query($sql);
+    // No need to check result here as well
 }
 
 // Check if user is logged in
 if ($_SESSION['logged_in'] == 1) {
-	header('Location: index.php');
-	die();
+    header('Location: index.php');
+    die();
 }
 
 // Check if form is submitted
-if ($_POST['submit'] == "submit") {
+if ($_POST['submit'] == 'submit') {
 
   // Login Check
-  $stmt = $conn->prepare('SELECT studentId, hash FROM users WHERE studentId = ? ');
-  $stmt->bind_param("s",$_POST['studentId']);
-  $result = $stmt->execute();
+    $stmt = $conn->prepare('SELECT studentId, hash FROM users WHERE studentId = ? ');
+    $stmt->bind_param('s', $_POST['studentId']);
+    $result = $stmt->execute();
 
-  // Check query result
-  if (!$result) {
-    die('Query failed. '.$conn->error);
-  }
+    // Check query result
+    if (!$result) {
+        die('Query failed. '.$conn->error);
+    }
 
-  $stmt->bind_result($qStudentId,$qHash);
-  $stmt->fetch();
-	$stmt->free_result();
-	$stmt->close();
+    $stmt->bind_result($qStudentId, $qHash);
+    $stmt->fetch();
+    $stmt->free_result();
+    $stmt->close();
 
-  // Check if the inputted studentId is correct / exists
-  if ($qStudentId !== $_POST['studentId']) {
-    die('Student ID or password is incorrect!');
-  }
+    // Check if the inputted studentId is correct / exists
+    if ($qStudentId !== $_POST['studentId']) {
+        die('Student ID or password is incorrect!');
+    }
 
-  // Check password
-  if (!password_verify($_POST['pass'],$qHash)) {
-    die('Student ID or password is incorrect!');
-  }
+    // Check password
+    if (!password_verify($_POST['pass'], $qHash)) {
+        die('Student ID or password is incorrect!');
+    }
 
-  // Check if user is using tfa
-  $stmt = $conn->prepare('SELECT studentId, tfaSecret FROM tfa WHERE studentId = ?');
-  $stmt->bind_param("s",$_POST['studentId']);
-  $result = $stmt->execute();
-  if (!$result) {
-    die('Query failed. '.$stmt->error);
-  }
+    // Check if user is using tfa
+    $stmt = $conn->prepare('SELECT studentId, tfaSecret FROM tfa WHERE studentId = ?');
+    $stmt->bind_param('s', $_POST['studentId']);
+    $result = $stmt->execute();
+    if (!$result) {
+        die('Query failed. '.$stmt->error);
+    }
 
-  $stmt->bind_result($qStudentId,$tfaSecret);
-  $stmt->fetch();
-  $stmt->free_result();
-  $stmt->close();
+    $stmt->bind_result($qStudentId, $tfaSecret);
+    $stmt->fetch();
+    $stmt->free_result();
+    $stmt->close();
 
-  if ($qStudentId == $_POST['studentId']) {
+    if ($qStudentId == $_POST['studentId']) {
 
     // Using tfa
-    // Check if otp field is filled
-    if (strlen($_POST['otp'] < 1)) {
-      die('2-factor authentication is enabled, please provide one time token to login.');
+        // Check if otp field is filled
+        if (strlen($_POST['otp'] < 1)) {
+            die('2-factor authentication is enabled, please provide one time token to login.');
+        }
+
+        // Verify code
+        $result = $tfa->verifyCode($tfaSecret, $_POST['otp']);
+        if (!$result) {
+            die('OTP verification failed');
+        }
     }
 
-    // Verify code
-    $result = $tfa->verifyCode($tfaSecret,$_POST['otp']);
+    // Login success
+    // regenerate session id on Login
+    session_regenerate_id();
+
+    // Update database (update before setting variable. If update failed (maybe duplicate session id), user need to retry and generate new session id)
+    $stmt = $conn->prepare('INSERT INTO session VALUES ("'.session_id().'", ?, '.time().');');
+    $stmt->bind_param('s', $_POST['studentId']);
+    $result = $stmt->execute();
     if (!$result) {
-      die('OTP verification failed');
+        die('Query failed! Please retry. '.$stmt->error);
+    }
+    // Set session variable to indicate logged in
+    $_SESSION['logged_in'] = 1;
+
+    // Add login record
+    $stmt = $conn->prepare('INSERT INTO loginRecord VALUES ('.time().',?,"'.getIp().'")');
+    $stmt->bind_param('s', $_POST['studentId']);
+    $result = $stmt->execute();
+    if (!$result) {
+        die('Query failed. '.$stmt->error);
     }
 
-  }
+    $stmt->free_result();
+    $stmt->close();
 
-  // Login success
-  // regenerate session id on Login
-  session_regenerate_id();
-
-  // Update database (update before setting variable. If update failed (maybe duplicate session id), user need to retry and generate new session id)
-  $stmt = $conn->prepare('INSERT INTO session VALUES ("'.session_id().'", ?, '.time().');');
-  $stmt->bind_param("s",$_POST['studentId']);
-  $result = $stmt->execute();
-  if (!$result) {
-    die('Query failed! Please retry. '.$stmt->error);
-  }
-  // Set session variable to indicate logged in
-  $_SESSION['logged_in'] = 1;
-
-  // Add login record
-  $stmt = $conn->prepare('INSERT INTO loginRecord VALUES ('.time().',?,"'.getIp().'")');
-  $stmt->bind_param("s",$_POST['studentId']);
-  $result = $stmt->execute();
-  if (!$result) {
-    die('Query failed. '.$stmt->error);
-  }
-
-  $stmt->free_result();
-  $stmt->close();
-
-	header('Location: index.php');
-	die();
+    header('Location: index.php');
+    die();
 
 // If form was not submitted, display the form (html)
-
 } else {
-?>
+    ?>
 
 <!DOCTYPE html>
 <html>
