@@ -9,6 +9,8 @@ require 'vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 
+require 'vendor/autoload.php';
+
 $parsedown = new Parsedown();
 $tfa = new RobThree\Auth\TwoFactorAuth();
 $mail = new PHPMailer();
@@ -182,7 +184,7 @@ function getUserGroup($sessId)
     global $conn;
 
     $studentId = getStudentId($sessId);
-
+  
     $stmt = $conn->prepare('SELECT userGroup from users WHERE studentId = ?');
     $stmt->bind_param('s', $studentId);
     $result = $stmt->execute();

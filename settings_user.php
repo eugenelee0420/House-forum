@@ -96,7 +96,7 @@ if ($_POST['submit'] == 'submit') {
     if (strlen($_POST['email']) > 100) {
         die('Please do not enter more than 100 characters for email!');
     }
-
+  
     // Check if userName is used
     $stmt = $conn->prepare('SELECT studentId, userName FROM users WHERE userName = ?');
     $stmt->bind_param('s', $_POST['userName']);

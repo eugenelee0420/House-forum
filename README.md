@@ -73,6 +73,42 @@ CREATE DATABASE forums;
 
 6. Use a web browser to navigate to setup.php and follow the instructions
 
+7. Make sure cfg.json is inaccessible through the web server, as it contains database credentials.
+
+To do this on apache web server, enable the use of .htaccess and create a .htaccess file. (or modify the server config if you wish)
+
+First enable .htaccess by adding these lines to your site's configuration file: (located in `/etc/apache2/sites-enabled/`)
+
+```
+<Directory /var/www/html/>
+    Options Indexes FollowSymLinks
+    AllowOverride All
+    Require all granted
+</Directory>
+```
+
+Change the directory to your site's root if necessary.
+
+Restart the apache service after changing:
+
+```bash
+service apache2 restart
+```
+
+Then create a file called `.htaccess` that contain the following in your site's root:
+
+```
+<Files .htaccess>
+Require all denied
+</files>
+
+<Files *.json>
+Require all denied
+</Files>
+```
+
+Then test to make sure that attempt to access cfg.json through a browser will result in a 403 error.
+
 ## Database tables
 
 ### `forum` table

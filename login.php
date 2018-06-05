@@ -86,6 +86,7 @@ if ($_POST['submit'] == 'submit') {
     session_regenerate_id();
 
     // Update database (update before setting variable. If update failed (maybe duplicate session id), user need to retry and generate new session id)
+
     $stmt = $conn->prepare('INSERT INTO session (sessionId, studentId, lastActivity) VALUES ("'.session_id().'", ?, '.time().');');
     $stmt->bind_param('s', $_POST['studentId']);
     $result = $stmt->execute();
