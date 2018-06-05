@@ -1,119 +1,108 @@
 <?php
 // Script to create forums after first time setup
 
-require "functions.php";
+require 'functions.php';
 
 // Die if forum table have records
 
 $sql = 'SELECT * FROM forum';
 $result = $conn->query($sql);
 if (!$result) {
-  die('Query failed. '.$conn->error);
+    die('Query failed. '.$conn->error);
 }
 
 if ($conn->affected_rows > 0) {
-  die('The forums are already set up, you do not need this script.');
+    die('The forums are already set up, you do not need this script.');
 }
 
-if ($_POST['submit'] == "submit") {
+if ($_POST['submit'] == 'submit') {
 
   // Get the houses
-  $sql = 'SELECT hId, houseName FROM house';
-  $result = $conn->query($sql);
-  if (!$result) {
-    die('Query failed. '.$conn->error);
-  }
-
-  // Convert query result into array
-  $houses = array();
-  $count = 0;
-  while ($row = mysqli_fetch_assoc($result)) {
-
-    $houses[$count]['id'] = $row['hId'];
-    $houses[$count]['name'] = $row['houseName'];
-
-    $count++;
-
-  }
-
-  // Check if all required fields are filled in
-  $errormsg = 'Please fill in all the required fields!';
-  foreach ($houses as $row) {
-
-    if (strlen($_POST['hf_id_'.$row['id']]) < 1) {
-      die($errormsg);
+    $sql = 'SELECT hId, houseName FROM house';
+    $result = $conn->query($sql);
+    if (!$result) {
+        die('Query failed. '.$conn->error);
     }
 
-    if (strlen($_POST['hf_name_'.$row['id']]) < 1) {
-      die($errormsg);
+    // Convert query result into array
+    $houses = [];
+    $count = 0;
+    while ($row = mysqli_fetch_assoc($result)) {
+        $houses[$count]['id'] = $row['hId'];
+        $houses[$count]['name'] = $row['houseName'];
+
+        $count++;
     }
 
-  }
+    // Check if all required fields are filled in
+    $errormsg = 'Please fill in all the required fields!';
+    foreach ($houses as $row) {
+        if (strlen($_POST['hf_id_'.$row['id']]) < 1) {
+            die($errormsg);
+        }
 
-  if ((strlen($_POST['ihf_id']) < 1) OR (strlen($_POST['ihf_name']) < 1)) {
-    die($errormsg);
-  }
-
-  // Check field constraints
-  foreach ($houses as $row) {
-
-    if (strlen($_POST['hf_id_'.$row['id']]) > 3) {
-      die('Please do not input more than 3 characters for the forum ID! ('.$row['name'].')');
+        if (strlen($_POST['hf_name_'.$row['id']]) < 1) {
+            die($errormsg);
+        }
     }
 
-    if (strlen($_POST['hf_name_'.$row['id']]) > 30) {
-      die('Please do not input more than 30 characters for the forum name! ('.$row['name'].')');
+    if ((strlen($_POST['ihf_id']) < 1) or (strlen($_POST['ihf_name']) < 1)) {
+        die($errormsg);
     }
 
-    if (strlen($_POST['hf_des_'.$row['id']]) > 100) {
-      die('Please do not input more than 100 characters for the forum description! ('.$row['name'].')');
+    // Check field constraints
+    foreach ($houses as $row) {
+        if (strlen($_POST['hf_id_'.$row['id']]) > 3) {
+            die('Please do not input more than 3 characters for the forum ID! ('.$row['name'].')');
+        }
+
+        if (strlen($_POST['hf_name_'.$row['id']]) > 30) {
+            die('Please do not input more than 30 characters for the forum name! ('.$row['name'].')');
+        }
+
+        if (strlen($_POST['hf_des_'.$row['id']]) > 100) {
+            die('Please do not input more than 100 characters for the forum description! ('.$row['name'].')');
+        }
     }
 
-  }
+    if (strlen($_POST['ihf_id']) > 3) {
+        die('Please do not input more than 3 characters for the forum ID! (Inter-house forum)');
+    }
 
-  if (strlen($_POST['ihf_id']) > 3) {
-    die('Please do not input more than 3 characters for the forum ID! (Inter-house forum)');
-  }
+    if (strlen($_POST['ihf_name']) > 30) {
+        die('Please do not input more than 30 characters for the forum name! (Inter-house forum)');
+    }
 
-  if (strlen($_POST['ihf_name']) > 30) {
-    die('Please do not input more than 30 characters for the forum name! (Inter-house forum)');
-  }
+    if (strlen($_POST['ihf_des']) > 100) {
+        die('Please do not input more than 100 characters for the forum description! (Inter-house forum)');
+    }
 
-  if (strlen($_POST['ihf_des']) > 100) {
-    die('Please do not input more than 100 characters for the forum description! (Inter-house forum)');
-  }
+    // Insert records
+    $stmt = $conn->prepare('INSERT INTO forum (fId, fName, fDescription, hId) VALUES (?,?,?,?)');
 
-  // Insert records
-  $stmt = $conn->prepare('INSERT INTO forum (fId, fName, fDescription, hId) VALUES (?,?,?,?)');
+    foreach ($houses as $row) {
+        $stmt->bind_param('ssss', $_POST['hf_id_'.$row['id']], $_POST['hf_name_'.$row['id']], $_POST['hf_des_'.$row['id']], $row['id']);
+        $result = $stmt->execute();
+        if (!$result) {
+            die('Query failed. '.$stmt->error);
+        }
 
-  foreach ($houses as $row) {
+        $stmt->free_result();
+    }
 
-    $stmt->bind_param("ssss",$_POST['hf_id_'.$row['id']],$_POST['hf_name_'.$row['id']],$_POST['hf_des_'.$row['id']],$row['id']);
+    $stmt = $conn->prepare('INSERT INTO forum (fId, fName, fDescription, hId) VALUES (?,?,?,NULL)');
+    $stmt->bind_param('sss', $_POST['ihf_id'], $_POST['ihf_name'], $_POST['ihf_des']);
     $result = $stmt->execute();
     if (!$result) {
-      die('Query failed. '.$stmt->error);
+        die('Query failed. '.$stmt->error);
     }
 
     $stmt->free_result();
 
-  }
-
-  $stmt = $conn->prepare('INSERT INTO forum (fId, fName, fDescription, hId) VALUES (?,?,?,NULL)');
-  $stmt->bind_param("sss",$_POST['ihf_id'],$_POST['ihf_name'],$_POST['ihf_des']);
-  $result = $stmt->execute();
-  if (!$result) {
-    die('Query failed. '.$stmt->error);
-  }
-
-  $stmt->free_result();
-
-  echo 'The forums are set up. You can view them <a href="index.php">here.</a>';
-
+    echo 'The forums are set up. You can view them <a href="index.php">here.</a>';
 } else {
 
-  // Display form
-
-  ?>
+  // Display form ?>
 
   <!DOCTYPE html>
   <html>
@@ -149,14 +138,13 @@ if ($_POST['submit'] == "submit") {
 
       // Grab house ID and names
       $sql = 'SELECT hId, houseName FROM house';
-      $result = $conn->query($sql);
-      if (!$result) {
+    $result = $conn->query($sql);
+    if (!$result) {
         die('Query failed. '.$conn->error);
-      }
+    }
 
-      // Create house forums
-      while ($row = mysqli_fetch_assoc($result)) {
-
+    // Create house forums
+    while ($row = mysqli_fetch_assoc($result)) {
         echo '<div class="row"><div class="col s12">';
         echo '<p>Create forum for house "'.$row['houseName'].'"</p>';
         echo '</div></div>';
@@ -177,12 +165,9 @@ if ($_POST['submit'] == "submit") {
         echo '</div></div>';
 
         echo '<br><br>';
+    }
 
-      }
-
-      mysqli_free_result($result);
-
-      ?>
+    mysqli_free_result($result); ?>
 
       <div class="row">
         <div class="col s12">
@@ -218,7 +203,6 @@ if ($_POST['submit'] == "submit") {
   </div>
 
   <?php
-
 }
 
 ?>

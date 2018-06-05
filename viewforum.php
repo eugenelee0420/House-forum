@@ -2,8 +2,7 @@
 // Lists the requested forum
 // Require login and sufficient permission (varies with forums)
 
-
-require "functions.php";
+require 'functions.php';
 
 session_start();
 
@@ -13,18 +12,18 @@ $result = $conn->query($sql);
 // No need to check query result. If query failed, the user is not logged in
 $row = mysqli_fetch_assoc($result);
 if ((($row['lastActivity'] + $userTimeout) < time())) {
-  // Logout the user
-	mysqli_free_result($result);
-  $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
-  $conn->query($sql);
-  // No need to check result here as well
-  session_unset();
+    // Logout the user
+    mysqli_free_result($result);
+    $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
+    $conn->query($sql);
+    // No need to check result here as well
+    session_unset();
 }
 
 // Check if user is logged in
 if ($_SESSION['logged_in'] !== 1) {
-	header('Location: login.php');
-	die();
+    header('Location: login.php');
+    die();
 }
 
 // Update last activity
@@ -32,9 +31,8 @@ mysqli_free_result($result);
 $sql = 'UPDATE session SET lastActivity = '.time().' WHERE sessionId = "'.session_id().'"';
 $result = $conn->query($sql);
 if (!$result) {
-  die('Query failed. '.$conn->error);
+    die('Query failed. '.$conn->error);
 }
-
 
 ?>
 
@@ -64,78 +62,73 @@ $(document).ready(function() {
 
 <?php
 
-require "sidenav.php";
+require 'sidenav.php';
 
 // Check if user requested a forum to display
 // If not, redirect to index.php
 if (!isset($_GET['fId'])) {
-	// Cannot use header because some html have already been sent
-	?>
+    // Cannot use header because some html have already been sent ?>
 	<script type="text/javascript">
 		window.location = "index.php";
   </script>
 	<?php
-	die();
+    die();
 }
 
 // Check if requested forum exist
 $stmt = $conn->prepare('SELECT fId FROM forum WHERE fId = ?');
-$stmt->bind_param("s",$_GET['fId']);
+$stmt->bind_param('s', $_GET['fId']);
 $result = $stmt->execute();
 if (!$result) {
-	die('Query failed. '.$stmt->error);
+    die('Query failed. '.$stmt->error);
 }
 
 $stmt->bind_result($fId);
 $stmt->fetch();
 
 if ($fId !== $_GET['fId']) {
-	die('The requested forum does not exist!');
+    die('The requested forum does not exist!');
 }
 
 $stmt->free_result();
 $stmt->close();
 
-
 // Check forum type then check permission accordingly
 // Also get fName for later use
 $stmt = $conn->prepare('SELECT hId,fName FROM forum WHERE fId = ?');
-$stmt->bind_param("s",$_GET['fId']);
+$stmt->bind_param('s', $_GET['fId']);
 $result = $stmt->execute();
 if (!$result) {
-  die('Query failed. '.$stmt->error);
+    die('Query failed. '.$stmt->error);
 }
 
-$stmt->bind_result($hId,$fName);
+$stmt->bind_result($hId, $fName);
 $stmt->fetch();
 
 $stmt->free_result();
 $stmt->close();
 
-if ($hId === NULL) {
+if ($hId === null) {
 
   // Check for VI permission
-  if (!havePermission(session_id(),"VI")) {
-    die('You do not have permission to perform this action!');
-  }
-
+    if (!havePermission(session_id(), 'VI')) {
+        die('You do not have permission to perform this action!');
+    }
 } else {
 
   // Check for VH or VAH permission
-  if (!havePermission(session_id(),"VH") AND !havePermission(session_id(),"VAH")) {
-    die('You do not have permission to perform this action!');
-  }
-
-  // If user only have VH permission
-  if (havePermission(session_id(),"VH") AND !havePermission(session_id(),"VAH")) {
-
-    // Check if the user's house and forum's house match
-    if (getUserHId(session_id()) !== $hId) {
-      die('You do not have permission to perform this action!');
+    if (!havePermission(session_id(), 'VH') and !havePermission(session_id(), 'VAH')) {
+        die('You do not have permission to perform this action!');
     }
 
-  }
+    // If user only have VH permission
+    if (havePermission(session_id(), 'VH') and !havePermission(session_id(), 'VAH')) {
 
+    // Check if the user's house and forum's house match
+        if (getUserHId(session_id()) !== $hId) {
+            die('You do not have permission to perform this action!');
+        }
+    }
 }
 
 // The user have sufficient permissions, can safely perform actions
@@ -151,13 +144,13 @@ echo '</div></div>';
 
 // Get the pinned thread listing of the current page
 $stmt = $conn->prepare('SELECT t.tId,t.tTitle,t.tTime,t.studentId,u.userName FROM thread t JOIN users u ON t.studentId = u.studentId WHERE fId = ? AND pin = "1" ORDER BY tTime DESC');
-$stmt->bind_param("s",$_GET['fId']);
+$stmt->bind_param('s', $_GET['fId']);
 $result = $stmt->execute();
 if (!$result) {
-	die('Query failed. '.$stmt->error);
+    die('Query failed. '.$stmt->error);
 }
 
-$stmt->bind_result($tId,$tTitle,$tTime,$studentId,$userName);
+$stmt->bind_result($tId, $tTitle, $tTime, $studentId, $userName);
 
 echo '<div class="row"><div class="col s12">';
 echo '<table><thead><tr>';
@@ -168,25 +161,23 @@ echo '</tr></thead>';
 echo '<tbody>';
 
 while ($stmt->fetch()) {
+    echo '<tr>';
 
-	echo '<tr>';
+    echo '<td>';
+    echo '<a href="viewthread.php?tId='.$tId.'">';
+    echo $tTitle;
+    echo '</a></td>';
 
-	echo '<td>';
-	echo '<a href="viewthread.php?tId='.$tId.'">';
-	echo $tTitle;
-	echo '</a></td>';
+    echo '<td class="hide-on-small-only">';
+    echo gmdate('j/n/Y G:i', $tTime + $timezoneOffset);
+    echo '</td>';
 
-	echo '<td class="hide-on-small-only">';
-	echo gmdate('j/n/Y G:i',$tTime + $timezoneOffset);
-	echo '</td>';
+    echo '<td class="hide-on-small-only">';
+    echo '<a href="profile.php?studentId='.$studentId.'">';
+    echo $userName;
+    echo '</a></td>';
 
-	echo '<td class="hide-on-small-only">';
-	echo '<a href="profile.php?studentId='.$studentId.'">';
-	echo $userName;
-	echo '</a></td>';
-
-	echo '</tr>';
-
+    echo '</tr>';
 }
 
 $stmt->free_result();
@@ -197,10 +188,10 @@ echo '</div></div>';
 
 // Count the number of threads
 $stmt = $conn->prepare('SELECT COUNT(*) AS numT FROM thread WHERE fId = ? AND pin = "0"');
-$stmt->bind_param("s",$_GET['fId']);
+$stmt->bind_param('s', $_GET['fId']);
 $result = $stmt->execute();
 if (!$result) {
-	die('Query failed. '.$stmt->error);
+    die('Query failed. '.$stmt->error);
 }
 
 $stmt->bind_result($numT);
@@ -210,16 +201,16 @@ $stmt->free_result();
 $stmt->close();
 
 // Get user's rowsPerPage
-$rowsPerPage = getUserSetting(getStudentId(session_id()),"rowsPerPage");
+$rowsPerPage = getUserSetting(getStudentId(session_id()), 'rowsPerPage');
 
 // Calculate how many pages are needed
-$numPage = ceil($numT/$rowsPerPage);
+$numPage = ceil($numT / $rowsPerPage);
 
 // Get current page
-if (!isset($_GET['page']) OR $_GET['page'] < 1) {
-	$cPage = 1;
+if (!isset($_GET['page']) or $_GET['page'] < 1) {
+    $cPage = 1;
 } else {
-	$cPage = intval($_GET['page']);
+    $cPage = intval($_GET['page']);
 }
 
 // Pagination
@@ -230,9 +221,9 @@ echo '<ul class="pagination">';
 // <li class="(disabled)"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
 echo '<li class="';
 if ($cPage < 2) {
-	echo 'disabled';
+    echo 'disabled';
 } else {
-	echo 'waves-effect';
+    echo 'waves-effect';
 }
 echo '">';
 echo '<a href="viewforum.php?fId='.$_GET['fId'].'&page='.($cPage - 1).'">';
@@ -242,13 +233,13 @@ echo '<i class="material-icons">chevron_left</i></a></li>';
 
 // 3 pages before current page
 if (($cPage - 3) > 0) {
-	echo '<li class="waves-effect"><a href="viewforum.php?fId='.$_GET['fId'].'&page='.($cPage - 3).'">'.($cPage - 3).'</a></li>';
+    echo '<li class="waves-effect"><a href="viewforum.php?fId='.$_GET['fId'].'&page='.($cPage - 3).'">'.($cPage - 3).'</a></li>';
 }
 if (($cPage - 2) > 0) {
-	echo '<li class="waves-effect"><a href="viewforum.php?fId='.$_GET['fId'].'&page='.($cPage - 2).'">'.($cPage - 2).'</a></li>';
+    echo '<li class="waves-effect"><a href="viewforum.php?fId='.$_GET['fId'].'&page='.($cPage - 2).'">'.($cPage - 2).'</a></li>';
 }
 if (($cPage - 1) > 0) {
-	echo '<li class="waves-effect"><a href="viewforum.php?fId='.$_GET['fId'].'&page='.($cPage - 1).'">'.($cPage - 1).'</a></li>';
+    echo '<li class="waves-effect"><a href="viewforum.php?fId='.$_GET['fId'].'&page='.($cPage - 1).'">'.($cPage - 1).'</a></li>';
 }
 
 // Current page
@@ -256,22 +247,22 @@ echo '<li class="active"><a href="viewforum.php?fId='.$_GET['fId'].'&page='.($cP
 
 // 3 pages after the current page
 if (($cPage + 1) <= $numPage) {
-	echo '<li class="waves-effect"><a href="viewforum.php?fId='.$_GET['fId'].'&page='.($cPage + 1).'">'.($cPage + 1).'</a></li>';
+    echo '<li class="waves-effect"><a href="viewforum.php?fId='.$_GET['fId'].'&page='.($cPage + 1).'">'.($cPage + 1).'</a></li>';
 }
 if (($cPage + 2) <= $numPage) {
-	echo '<li class="waves-effect"><a href="viewforum.php?fId='.$_GET['fId'].'&page='.($cPage + 2).'">'.($cPage + 2).'</a></li>';
+    echo '<li class="waves-effect"><a href="viewforum.php?fId='.$_GET['fId'].'&page='.($cPage + 2).'">'.($cPage + 2).'</a></li>';
 }
 if (($cPage + 3) <= $numPage) {
-	echo '<li class="waves-effect"><a href="viewforum.php?fId='.$_GET['fId'].'&page='.($cPage + 3).'">'.($cPage + 3).'</a></li>';
+    echo '<li class="waves-effect"><a href="viewforum.php?fId='.$_GET['fId'].'&page='.($cPage + 3).'">'.($cPage + 3).'</a></li>';
 }
 
 // Forward button
 // <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
 echo '<li class="';
 if ($cPage == $numPage) {
-	echo 'disabled';
+    echo 'disabled';
 } else {
-	echo 'waves-effect';
+    echo 'waves-effect';
 }
 echo '">';
 echo '<a href="viewforum.php?fId='.$_GET['fId'].'&page='.($cPage + 1).'">';
@@ -282,13 +273,13 @@ echo '</div></div>';
 
 // Get the thread listing of the current page
 $stmt = $conn->prepare('SELECT t.tId,t.tTitle,t.tTime,t.studentId,u.userName FROM thread t JOIN users u ON t.studentId = u.studentId WHERE fId = ? AND pin = "0" ORDER BY tTime DESC LIMIT '.$rowsPerPage.' OFFSET '.($rowsPerPage * ($cPage - 1)).';');
-$stmt->bind_param("s",$_GET['fId']);
+$stmt->bind_param('s', $_GET['fId']);
 $result = $stmt->execute();
 if (!$result) {
-	die('Query failed. '.$stmt->error);
+    die('Query failed. '.$stmt->error);
 }
 
-$stmt->bind_result($tId,$tTitle,$tTime,$studentId,$userName);
+$stmt->bind_result($tId, $tTitle, $tTime, $studentId, $userName);
 
 echo '<div class="row"><div class="col s12">';
 echo '<table><thead><tr>';
@@ -299,25 +290,23 @@ echo '</tr></thead>';
 echo '<tbody>';
 
 while ($stmt->fetch()) {
+    echo '<tr>';
 
-	echo '<tr>';
+    echo '<td>';
+    echo '<a href="viewthread.php?tId='.$tId.'">';
+    echo $tTitle;
+    echo '</a></td>';
 
-	echo '<td>';
-	echo '<a href="viewthread.php?tId='.$tId.'">';
-	echo $tTitle;
-	echo '</a></td>';
+    echo '<td class="hide-on-small-only">';
+    echo gmdate('j/n/Y G:i', $tTime + $timezoneOffset);
+    echo '</td>';
 
-	echo '<td class="hide-on-small-only">';
-	echo gmdate('j/n/Y G:i',$tTime + $timezoneOffset);
-	echo '</td>';
+    echo '<td class="hide-on-small-only">';
+    echo '<a href="profile.php?studentId='.$studentId.'">';
+    echo $userName;
+    echo '</a></td>';
 
-	echo '<td class="hide-on-small-only">';
-	echo '<a href="profile.php?studentId='.$studentId.'">';
-	echo $userName;
-	echo '</a></td>';
-
-	echo '</tr>';
-
+    echo '</tr>';
 }
 
 $stmt->free_result();
@@ -328,26 +317,22 @@ echo '</div></div>';
 
 // Function to display post reply form
 // Because this button will appear in code multiple times, but will only be called once
-function displayFAB() {
+function displayFAB()
+{
 
-	// FAB to create new thread
-	echo '<div class="fixed-action-btn">';
-	echo '<a href="postthread.php?fId='.$_GET['fId'].'" class="btn-floating btn-large red waves-effect waves-light tooltipped" data-tooltip="Post new thread" data-position="left" data-delay="0">';
-	echo '<i class="large material-icons">add</i>';
-	echo '</a></div>';
-
+    // FAB to create new thread
+    echo '<div class="fixed-action-btn">';
+    echo '<a href="postthread.php?fId='.$_GET['fId'].'" class="btn-floating btn-large red waves-effect waves-light tooltipped" data-tooltip="Post new thread" data-position="left" data-delay="0">';
+    echo '<i class="large material-icons">add</i>';
+    echo '</a></div>';
 }
 
-if ($hId == NULL) {
-
-	if(havePermission(session_id(),"PI")) {
-		displayFAB();
-	}
-
-} elseif (havePermission(session_id(),"PH") OR havePermission(session_id(),"PAH")) {
-
-	displayFAB();
-
+if ($hId == null) {
+    if (havePermission(session_id(), 'PI')) {
+        displayFAB();
+    }
+} elseif (havePermission(session_id(), 'PH') or havePermission(session_id(), 'PAH')) {
+    displayFAB();
 }
 
 ?>

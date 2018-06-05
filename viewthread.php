@@ -2,8 +2,7 @@
 // Shows the requested thread
 // Require login and sufficient permission (varies with forums)
 
-
-require "functions.php";
+require 'functions.php';
 
 session_start();
 
@@ -13,18 +12,18 @@ $result = $conn->query($sql);
 // No need to check query result. If query failed, the user is not logged in
 $row = mysqli_fetch_assoc($result);
 if ((($row['lastActivity'] + $userTimeout) < time())) {
-  // Logout the user
-	mysqli_free_result($result);
-  $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
-  $conn->query($sql);
-  // No need to check result here as well
-  session_unset();
+    // Logout the user
+    mysqli_free_result($result);
+    $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
+    $conn->query($sql);
+    // No need to check result here as well
+    session_unset();
 }
 
 // Check if user is logged in
 if ($_SESSION['logged_in'] !== 1) {
-	header('Location: login.php');
-	die();
+    header('Location: login.php');
+    die();
 }
 
 // Update last activity
@@ -32,9 +31,8 @@ mysqli_free_result($result);
 $sql = 'UPDATE session SET lastActivity = '.time().' WHERE sessionId = "'.session_id().'"';
 $result = $conn->query($sql);
 if (!$result) {
-  die('Query failed. '.$conn->error);
+    die('Query failed. '.$conn->error);
 }
-
 
 ?>
 
@@ -65,33 +63,32 @@ $(document).ready(function() {
 
 <?php
 
-require "sidenav.php";
+require 'sidenav.php';
 
 // Check if user requested a thread to display
 // If not, redirect to index.php
 if (!isset($_GET['tId'])) {
-	// Cannot use header because some html have already been sent
-	?>
+    // Cannot use header because some html have already been sent ?>
 	<script type="text/javascript">
 		window.location = "index.php";
   </script>
 	<?php
-	die();
+    die();
 }
 
 // Check if the requested thread exist
 $stmt = $conn->prepare('SELECT tId FROM thread WHERE tId = ?');
-$stmt->bind_param("i",intval($_GET['tId']));
+$stmt->bind_param('i', intval($_GET['tId']));
 $result = $stmt->execute();
 if (!$result) {
-	die('Query failed. '.$stmt->error);
+    die('Query failed. '.$stmt->error);
 }
 
 $stmt->bind_result($tId);
 $stmt->fetch();
 
 if ($tId !== intval($_GET['tId'])) {
-	die('The requested thread does not exist!');
+    die('The requested thread does not exist!');
 }
 
 $stmt->free_result();
@@ -99,53 +96,50 @@ $stmt->close();
 
 // Check forum type then check permission accordingly
 $stmt = $conn->prepare('SELECT f.hId, t.fId FROM forum f JOIN thread t ON f.fId = t.fId WHERE t.tId = ?');
-$stmt->bind_param("i",intval($_GET['tId']));
+$stmt->bind_param('i', intval($_GET['tId']));
 $result = $stmt->execute();
 if (!$result) {
-	die('Query failed. '.$stmt->error);
+    die('Query failed. '.$stmt->error);
 }
 
-$stmt->bind_result($hId,$fId);
+$stmt->bind_result($hId, $fId);
 $stmt->fetch();
 
 $stmt->free_result();
 $stmt->close();
 
-if ($hId === NULL) {
+if ($hId === null) {
 
   // Check for VI permission
-  if (!havePermission(session_id(),"VI")) {
-    die('You do not have permission to perform this action!');
-  }
-
+    if (!havePermission(session_id(), 'VI')) {
+        die('You do not have permission to perform this action!');
+    }
 } else {
 
   // Check for VH or VAH permission
-  if (!havePermission(session_id(),"VH") AND !havePermission(session_id(),"VAH")) {
-    die('You do not have permission to perform this action!');
-  }
-
-  // If user only have VH permission
-  if (havePermission(session_id(),"VH") AND !havePermission(session_id(),"VAH")) {
-
-    // Check if the user's house and forum's house match
-    if (getUserHId(session_id()) !== $hId) {
-      die('You do not have permission to perform this action!');
+    if (!havePermission(session_id(), 'VH') and !havePermission(session_id(), 'VAH')) {
+        die('You do not have permission to perform this action!');
     }
 
-  }
+    // If user only have VH permission
+    if (havePermission(session_id(), 'VH') and !havePermission(session_id(), 'VAH')) {
 
+    // Check if the user's house and forum's house match
+        if (getUserHId(session_id()) !== $hId) {
+            die('You do not have permission to perform this action!');
+        }
+    }
 }
 
 // Get the thread contents
 $stmt = $conn->prepare('SELECT t.tTitle, t.tContent, t.tTime, t.fId, f.fName, t.studentId FROM thread t JOIN forum f ON t.fId = f.fId WHERE t.tId = ?');
-$stmt->bind_param("i",intval($_GET['tId']));
+$stmt->bind_param('i', intval($_GET['tId']));
 $result = $stmt->execute();
 if (!$result) {
-	die('Query failed. '.$conn->error);
+    die('Query failed. '.$conn->error);
 }
 
-$stmt->bind_result($tTitle,$tContent,$tTime,$fId,$fName,$studentId);
+$stmt->bind_result($tTitle, $tContent, $tTime, $fId, $fName, $studentId);
 $stmt->fetch();
 
 $stmt->free_result();
@@ -167,7 +161,7 @@ echo '</div></div></nav>';
 echo '<div class="row"><div class="col s12">';
 
 echo '<h3>'.$tTitle.'</h3>';
-echo '<p class="grey-text">Started by <a href="profile.php?studentId='.$studentId.'">'.userNameFromStudentId($studentId).'</a> on '.gmdate('j/n/Y G:i',$tTime + $timezoneOffset).'</p>';
+echo '<p class="grey-text">Started by <a href="profile.php?studentId='.$studentId.'">'.userNameFromStudentId($studentId).'</a> on '.gmdate('j/n/Y G:i', $tTime + $timezoneOffset).'</p>';
 
 echo '<div class="flow-text">'.$mdContent.'</div>';
 
@@ -177,10 +171,10 @@ echo '<hr>';
 
 // Get replies
 $stmt = $conn->prepare('SELECT r.rId, r.rContent, r.rTime, r.studentId, u.userName FROM reply r JOIN users u ON r.studentId = u.studentId WHERE r.tId = ? ORDER BY r.rTime ASC');
-$stmt->bind_param("i",intval($_GET['tId']));
+$stmt->bind_param('i', intval($_GET['tId']));
 $result = $stmt->execute();
 if (!$result) {
-	die('Query failed. '.$stmt->error);
+    die('Query failed. '.$stmt->error);
 }
 
 $stmt->bind_result($rId, $rContent, $rTime, $studentId, $userName);
@@ -198,75 +192,72 @@ $stmt->store_result();
 $numrow = $stmt->num_rows;
 
 // Functions to display buttons to delete or edit reply
-function displayBtnEdit($rId) {
-	echo '<a href="edit.php?rId='.$rId.'" class="btn-floating tooltipped red" data-tooltip="Edit reply" data-position="down" data-delay="0"><i class="material-icons">edit</i></a>';
+function displayBtnEdit($rId)
+{
+    echo '<a href="edit.php?rId='.$rId.'" class="btn-floating tooltipped red" data-tooltip="Edit reply" data-position="down" data-delay="0"><i class="material-icons">edit</i></a>';
 }
-function displayBtnDelete($rId) {
-	echo ' ';
-	echo '<a href="actions.php?action=rdelete&rId='.$rId.'" class="btn-floating tooltipped yellow darken-1" data-tooltip="Delete reply" data-position="down" data-delay="0"><i class="material-icons">delete</i></a>';
+function displayBtnDelete($rId)
+{
+    echo ' ';
+    echo '<a href="actions.php?action=rdelete&rId='.$rId.'" class="btn-floating tooltipped yellow darken-1" data-tooltip="Delete reply" data-position="down" data-delay="0"><i class="material-icons">delete</i></a>';
 }
 
 // Display the replies
 while ($stmt->fetch()) {
+    echo '<li>';
 
-	echo '<li>';
+    // Expand the reply if this is the last row
+    if ($x == $numrow) {
+        echo '<div class="collapsible-header active">'.$userName.'</div>';
+    } else {
+        echo '<div class="collapsible-header">'.$userName.'</div>';
+    }
 
-	// Expand the reply if this is the last row
-	if ($x == $numrow) {
-		echo '<div class="collapsible-header active">'.$userName.'</div>';
-	} else {
-		echo '<div class="collapsible-header">'.$userName.'</div>';
-	}
+    // Parse markdown
+    $mdReply = $parsedown->text($rContent);
 
-	// Parse markdown
-	$mdReply = $parsedown->text($rContent);
+    echo '<div class="collapsible-body">';
+    echo '<p class="grey-text"><a href="profile.php?studentId='.$studentId.'">'.$userName.'</a> replied on '.gmdate('j/n/Y G:i', $rTime + $timezoneOffset).'</p>';
+    echo '<div class="flow-text">'.$mdReply.'</div>';
+    echo '<p>';
 
-	echo '<div class="collapsible-body">';
-	echo '<p class="grey-text"><a href="profile.php?studentId='.$studentId.'">'.$userName.'</a> replied on '.gmdate('j/n/Y G:i',$rTime + $timezoneOffset).'</p>';
-	echo '<div class="flow-text">'.$mdReply.'</div>';
-	echo '<p>';
+    // Display buttons based on permissions
+    if ($hId == null) {
+        if (havePermission(session_id(), 'EI')) {
+            displayBtnEdit($rId);
+        }
 
-	// Display buttons based on permissions
-	if ($hId == NULL) {
+        if (havePermission(session_id(), 'DI')) {
+            displayBtnDelete($rId);
+        }
+    } else {
 
-		if (havePermission(session_id(),"EI")) {
-			displayBtnEdit($rId);
-		}
+        // Only have EH
+        if (havePermission(session_id(), 'EH') and !havePermission(session_id(), 'EAH') and (getUserHId(session_id()) == $hId)) {
+            displayBtnEdit($rId);
+        }
 
-		if (havePermission(session_id(),"DI")) {
-			displayBtnDelete($rId);
-		}
+        // Have EAH
+        if (havePermission(session_id(), 'EAH')) {
+            displayBtnEdit($rId);
+        }
 
-	} else {
+        // Only have DH
+        if (havePermission(session_id(), 'DH') and !havePermission(session_id(), 'DAH') and (getUserHId(session_id()) == $hId)) {
+            displayBtnDelete($rId);
+        }
 
-		// Only have EH
-		if (havePermission(session_id(),"EH") AND !havePermission(session_id(),"EAH") AND (getUserHId(session_id()) == $hId)) {
-			displayBtnEdit($rId);
-		}
+        // Have DAH
+        if (havePermission(session_id(), 'DAH')) {
+            displayBtnDelete($rId);
+        }
+    }
 
-		// Have EAH
-		if (havePermission(session_id(),"EAH")) {
-			displayBtnEdit($rId);
-		}
+    echo '</p>';
+    echo '</li>';
 
-		// Only have DH
-		if (havePermission(session_id(),"DH") AND !havePermission(session_id(),"DAH") AND (getUserHId(session_id()) == $hId)) {
-			displayBtnDelete($rId);
-		}
-
-		// Have DAH
-		if (havePermission(session_id(),"DAH")) {
-			displayBtnDelete($rId);
-		}
-
-	}
-
-	echo '</p>';
-	echo '</li>';
-
-	// Increment counter
-	$x++;
-
+    // Increment counter
+    $x++;
 }
 
 echo '</ul>';
@@ -277,12 +268,12 @@ $stmt->close();
 
 // Function to display post reply form
 // Because this form will appear in code multiple times, but will only be called once
-function displayForm() {
+function displayForm()
+{
+    global $_GET;
 
-	global $_GET;
-
-	echo
-	'<hr>
+    echo
+    '<hr>
 
 	<div class="row">
 		<form class="col s12" action="actions.php?tId='.$_GET['tId'].'&action=reply" method="post">
@@ -304,114 +295,107 @@ function displayForm() {
 
 		</form>
 	</div>';
-
 }
 
-if ($hId == NULL) {
-
-	if (havePermission(session_id(),"RI")) {
-		displayForm();
-	}
-
+if ($hId == null) {
+    if (havePermission(session_id(), 'RI')) {
+        displayForm();
+    }
 } else {
 
-	// Only have RH
-	if (havePermission(session_id(),"RH") AND !havePermission(session_id(),"RAH") AND (getUserHId(session_id()) == $hId)) {
-		displayForm();
-	}
+    // Only have RH
+    if (havePermission(session_id(), 'RH') and !havePermission(session_id(), 'RAH') and (getUserHId(session_id()) == $hId)) {
+        displayForm();
+    }
 
-	// Have RAH
-	if (havePermission(session_id(),"RAH")) {
-		displayForm();
-	}
-
+    // Have RAH
+    if (havePermission(session_id(), 'RAH')) {
+        displayForm();
+    }
 }
 
 // Functions to display buttons in FAB
-function displayFABEdit() {
-	echo '<li><a href="edit.php?tId='.$_GET['tId'].'" class="btn-floating tooltipped red" data-tooltip="Edit thread" data-position="left" data-delay="0"><i class="material-icons">edit</i></a></li>';
+function displayFABEdit()
+{
+    echo '<li><a href="edit.php?tId='.$_GET['tId'].'" class="btn-floating tooltipped red" data-tooltip="Edit thread" data-position="left" data-delay="0"><i class="material-icons">edit</i></a></li>';
 }
-function displayFABDelete() {
-	echo '<li><a href="actions.php?action=delete&tId='.$_GET['tId'].'" class="btn-floating tooltipped yellow darken-1" data-tooltip="Delete thread" data-position="left" data-delay="0"><i class="material-icons">delete</i></a></li>';
+function displayFABDelete()
+{
+    echo '<li><a href="actions.php?action=delete&tId='.$_GET['tId'].'" class="btn-floating tooltipped yellow darken-1" data-tooltip="Delete thread" data-position="left" data-delay="0"><i class="material-icons">delete</i></a></li>';
 }
-function displayFABPin() {
-	echo '<li><a href="actions.php?action=pin&tId='.$_GET['tId'].'" class="btn-floating tooltipped blue" data-tooltip="Pin thread" data-position="left" data-delay="0"><i class="material-icons">label</i></a></li>';
+function displayFABPin()
+{
+    echo '<li><a href="actions.php?action=pin&tId='.$_GET['tId'].'" class="btn-floating tooltipped blue" data-tooltip="Pin thread" data-position="left" data-delay="0"><i class="material-icons">label</i></a></li>';
 }
-function displayFABUnpin() {
-	echo '<li><a href="actions.php?action=unpin&tId='.$_GET['tId'].'" class="btn-floating tooltipped blue" data-tooltip="Unpin thread" data-position="left" data-delay="0"><i class="material-icons">label_outline</i></a></li>';
+function displayFABUnpin()
+{
+    echo '<li><a href="actions.php?action=unpin&tId='.$_GET['tId'].'" class="btn-floating tooltipped blue" data-tooltip="Unpin thread" data-position="left" data-delay="0"><i class="material-icons">label_outline</i></a></li>';
 }
 
 // If user have either one permission to delete or edit
 // If hId is null, either EI or DI must be true
 // If hId is not null, either EAH or EH or DAH or DH must be true
-if (( ($hId == NULL) AND (havePermission(session_id(),"EI") OR havePermission(session_id(),"DI")) ) OR ( ($hId !== NULL) AND (havePermission(session_id(),"EAH") OR (havePermission(session_id(),"EH") AND (getUserHId(session_id()) == $hId)) OR havePermission(session_id(),"DAH") OR (havePermission(session_id(),"DH") AND (getUserHId(session_id()) == $hId)) ))) {
+if ((($hId == null) and (havePermission(session_id(), 'EI') or havePermission(session_id(), 'DI'))) or (($hId !== null) and (havePermission(session_id(), 'EAH') or (havePermission(session_id(), 'EH') and (getUserHId(session_id()) == $hId)) or havePermission(session_id(), 'DAH') or (havePermission(session_id(), 'DH') and (getUserHId(session_id()) == $hId))))) {
 
-	// Display the "more" icon/FAB
-	echo '<div class="fixed-action-btn">';
-	echo '<a class="btn-floating btn-large red">';
-	echo '<i class="large material-icons">more_vert</i>';
-	echo '</a>';
+    // Display the "more" icon/FAB
+    echo '<div class="fixed-action-btn">';
+    echo '<a class="btn-floating btn-large red">';
+    echo '<i class="large material-icons">more_vert</i>';
+    echo '</a>';
 
-	echo '<ul>';
-	// Display sub-fab based on permissions
-	if ($hId == NULL) {
+    echo '<ul>';
+    // Display sub-fab based on permissions
+    if ($hId == null) {
+        if (havePermission(session_id(), 'EI')) {
+            displayFABEdit();
 
-		if (havePermission(session_id(),"EI")) {
-			displayFABEdit();
+            if (!isPinned($_GET['tId'])) {
+                displayFABPin();
+            } elseif (isPinned($_GET['tId'])) {
+                displayFABUnpin();
+            }
+        }
 
-			if (!isPinned($_GET['tId'])) {
-				displayFABPin();
-			} elseif (isPinned($_GET['tId'])) {
-				displayFABUnpin();
-			}
+        if (havePermission(session_id(), 'DI')) {
+            displayFABDelete();
+        }
+    } else {
 
-		}
+        // Only have EH
+        if (havePermission(session_id(), 'EH') and !havePermission(session_id(), 'EAH') and (getUserHId(session_id()) == $hId)) {
+            displayFABEdit();
 
-		if (havePermission(session_id(),"DI")) {
-			displayFABDelete();
-		}
+            if (!isPinned($_GET['tId'])) {
+                displayFABPin();
+            } elseif (isPinned($_GET['tId'])) {
+                displayFABUnpin();
+            }
+        }
 
-	} else {
+        // Have EAH
+        if (havePermission(session_id(), 'EAH')) {
+            displayFABEdit();
 
-		// Only have EH
-		if (havePermission(session_id(),"EH") AND !havePermission(session_id(),"EAH") AND (getUserHId(session_id()) == $hId)) {
-			displayFABEdit();
+            if (!isPinned($_GET['tId'])) {
+                displayFABPin();
+            } elseif (isPinned($_GET['tId'])) {
+                displayFABUnpin();
+            }
+        }
 
-			if (!isPinned($_GET['tId'])) {
-				displayFABPin();
-			} elseif (isPinned($_GET['tId'])) {
-				displayFABUnpin();
-			}
+        // Only have DH
+        if (havePermission(session_id(), 'DH') and !havePermission(session_id(), 'DAH') and (getUserHId(session_id()) == $hId)) {
+            displayFABDelete();
+        }
 
-		}
+        // Have DAH
+        if (havePermission(session_id(), 'DAH')) {
+            displayFABDelete();
+        }
+    }
 
-		// Have EAH
-		if (havePermission(session_id(),"EAH")) {
-			displayFABEdit();
-
-			if (!isPinned($_GET['tId'])) {
-				displayFABPin();
-			} elseif (isPinned($_GET['tId'])) {
-				displayFABUnpin();
-			}
-
-		}
-
-		// Only have DH
-		if (havePermission(session_id(),"DH") AND !havePermission(session_id(),"DAH") AND (getUserHId(session_id()) == $hId)) {
-			displayFABDelete();
-		}
-
-		// Have DAH
-		if (havePermission(session_id(),"DAH")) {
-			displayFABDelete();
-		}
-
-	}
-
-	echo '</ul>';
-	echo '</div>';
-
+    echo '</ul>';
+    echo '</div>';
 }
 
 ?>
