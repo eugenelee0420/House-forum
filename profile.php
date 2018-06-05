@@ -2,8 +2,7 @@
 // Profile page, display information about the requested user, and links to admin actions (change user group etc.)
 // Require login
 
-
-require "functions.php";
+require 'functions.php';
 
 session_start();
 
@@ -13,18 +12,18 @@ $result = $conn->query($sql);
 // No need to check query result. If query failed, the user is not logged in
 $row = mysqli_fetch_assoc($result);
 if ((($row['lastActivity'] + $userTimeout) < time())) {
-  // Logout the user
-	mysqli_free_result($result);
-  $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
-  $conn->query($sql);
-  // No need to check result here as well
-  session_unset();
+    // Logout the user
+    mysqli_free_result($result);
+    $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
+    $conn->query($sql);
+    // No need to check result here as well
+    session_unset();
 }
 
 // Check if user is logged in
 if ($_SESSION['logged_in'] !== 1) {
-	header('Location: login.php');
-	die();
+    header('Location: login.php');
+    die();
 }
 
 // Update last activity
@@ -32,7 +31,7 @@ mysqli_free_result($result);
 $sql = 'UPDATE session SET lastActivity = '.time().' WHERE sessionId = "'.session_id().'"';
 $result = $conn->query($sql);
 if (!$result) {
-  die('Query failed. '.$conn->error);
+    die('Query failed. '.$conn->error);
 }
 
 ?>
@@ -64,13 +63,12 @@ $(document).ready(function() {
 
 <?php
 
-require "sidenav.php";
+require 'sidenav.php';
 
 // Check if user requested a user to display
 // If not, redirect to index.php
 if (!isset($_GET['studentId'])) {
-  // Cannot use header because some html have already been sent
-  ?>
+    // Cannot use header because some html have already been sent ?>
   <script type="text/javascript">
     window.location = "index.php";
   </script>
@@ -80,13 +78,13 @@ if (!isset($_GET['studentId'])) {
 
 // Get information of the user
 $stmt = $conn->prepare('SELECT u.studentId, u.userName, h.houseName, g.userGroupName FROM users u JOIN house h ON u.hId = h.hId JOIN userGroup g ON u.userGroup = g.userGroup WHERE u.studentId = ?');
-$stmt->bind_param("s",$_GET['studentId']);
+$stmt->bind_param('s', $_GET['studentId']);
 $result = $stmt->execute();
 if (!$result) {
-  die('Query failed. '.$stmt->error);
+    die('Query failed. '.$stmt->error);
 }
 
-$stmt->bind_result($studentId,$userName,$houseName,$userGroupName);
+$stmt->bind_result($studentId, $userName, $houseName, $userGroupName);
 $stmt->fetch();
 
 $stmt->free_result();
@@ -94,7 +92,7 @@ $stmt->close();
 
 // Check if requested user exist
 if ($_GET['studentId'] !== $studentId) {
-  die('The requested user does not exist!');
+    die('The requested user does not exist!');
 }
 
 // Display the info
@@ -104,7 +102,7 @@ if ($_GET['studentId'] !== $studentId) {
 
 <div class="parallax-container hide-on-small-only" style="height: 350px">
   <div class="parallax">
-    <img class="responsive-img" src="<?php echoGetUserSetting($studentId,'bgPic'); ?>">
+    <img class="responsive-img" src="<?php echoGetUserSetting($studentId, 'bgPic'); ?>">
   </div>
 </div>
 
@@ -112,11 +110,11 @@ if ($_GET['studentId'] !== $studentId) {
   <div class="row container">
     <!-- s10 col for showing avatar pic on phones -->
     <div class="col s10 hide-on-med-and-up">
-      <img class="circle responsive-img" src="<?php echoGetUserSetting($studentId,'avatarPic'); ?>">
+      <img class="circle responsive-img" src="<?php echoGetUserSetting($studentId, 'avatarPic'); ?>">
     </div>
     <!-- normal s2/s10 division for other devices -->
     <div class="col s2 hide-on-small-only">
-      <img class="circle responsive-img" src="<?php echoGetUserSetting($studentId,'avatarPic'); ?>">
+      <img class="circle responsive-img" src="<?php echoGetUserSetting($studentId, 'avatarPic'); ?>">
     </div>
     <div class="col s10">
       <h2><?php echo $userName; ?></h2>
@@ -128,20 +126,18 @@ if ($_GET['studentId'] !== $studentId) {
 
 <div class="parallax-container hide-on-med-and-down" style="height: 350px">
   <div class="parallax">
-    <img class="responsive-img" src="<?php echoGetUserSetting($studentId,'bgPic'); ?>">
+    <img class="responsive-img" src="<?php echoGetUserSetting($studentId, 'bgPic'); ?>">
   </div>
 </div>
 
 <?php
 
 // Check for userGroup editing permission then display FAB to edit userGroup
-if (havePermission(session_id(),"AUS")) {
-
-	echo '<div class="fixed-action-btn">';
-	echo '<a href="change_userGroup.php?studentId='.$studentId.'" class="btn-floating btn-large red waves-effect waves-light tooltipped" data-tooltip="Change user group" data-position="left" data-delay="0">';
-	echo '<i class="large material-icons">edit</i>';
-	echo '</a></div>';
-
+if (havePermission(session_id(), 'AUS')) {
+    echo '<div class="fixed-action-btn">';
+    echo '<a href="change_userGroup.php?studentId='.$studentId.'" class="btn-floating btn-large red waves-effect waves-light tooltipped" data-tooltip="Change user group" data-position="left" data-delay="0">';
+    echo '<i class="large material-icons">edit</i>';
+    echo '</a></div>';
 }
 
 ?>

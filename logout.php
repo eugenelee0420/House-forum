@@ -1,8 +1,8 @@
 <?php
+
 // Page the logs user out
 
-
-require "functions.php";
+require 'functions.php';
 
 session_start();
 
@@ -18,5 +18,3 @@ session_unset();
 session_destroy();
 
 header('Location: login.php');
-
-?>

@@ -4,8 +4,7 @@
 // Self-submitting forms
 // Because editing thread and replies require the same permission, by combining the two, permission check can be performed once only
 
-
-require "functions.php";
+require 'functions.php';
 
 session_start();
 
@@ -15,18 +14,18 @@ $result = $conn->query($sql);
 // No need to check query result. If query failed, the user is not logged in
 $row = mysqli_fetch_assoc($result);
 if ((($row['lastActivity'] + $userTimeout) < time())) {
-  // Logout the user
-	mysqli_free_result($result);
-  $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
-  $conn->query($sql);
-  // No need to check result here as well
-  session_unset();
+    // Logout the user
+    mysqli_free_result($result);
+    $sql = 'DELETE FROM session WHERE sessionId = "'.session_id().'";';
+    $conn->query($sql);
+    // No need to check result here as well
+    session_unset();
 }
 
 // Check if user is logged in
 if ($_SESSION['logged_in'] !== 1) {
-	header('Location: login.php');
-	die();
+    header('Location: login.php');
+    die();
 }
 
 // Update last activity
@@ -34,7 +33,7 @@ mysqli_free_result($result);
 $sql = 'UPDATE session SET lastActivity = '.time().' WHERE sessionId = "'.session_id().'"';
 $result = $conn->query($sql);
 if (!$result) {
-  die('Query failed. '.$conn->error);
+    die('Query failed. '.$conn->error);
 }
 
 ?>
@@ -68,50 +67,45 @@ $(document).ready(function() {
 
 <?php
 
-require "sidenav.php";
+require 'sidenav.php';
 
 // Check if user requested anything
 // If not, redirect to index.php
-if (!isset($_GET['tId']) AND !isset($_GET['rId'])) {
-  // Cannot use header because some html have already been sent
-	?>
+if (!isset($_GET['tId']) and !isset($_GET['rId'])) {
+    // Cannot use header because some html have already been sent ?>
 	<script type="text/javascript">
 		window.location = "index.php";
   </script>
 	<?php
-	die();
+    die();
 }
 
 // Set up the cases
 if (isset($_GET['tId'])) {
+    $field = 'tId';
+    $table = 'thread';
 
-  $field = 'tId';
-  $table = 'thread';
-
-  $tId = $_GET['tId'];
-
+    $tId = $_GET['tId'];
 } elseif (isset($_GET['rId'])) {
+    $field = 'rId';
+    $table = 'reply';
 
-  $field = 'rId';
-  $table = 'reply';
-
-  // leave tId unset, get after checking the reply exist
-
+    // leave tId unset, get after checking the reply exist
 }
 
 // Check if thread/reply exist
 $stmt = $conn->prepare('SELECT '.$field.' FROM '.$table.' WHERE '.$field.' = ?');
-$stmt->bind_param("i",intval($_GET[$field]));
+$stmt->bind_param('i', intval($_GET[$field]));
 $result = $stmt->execute();
 if (!$result) {
-  die('Query failed. '.$stmt->error);
+    die('Query failed. '.$stmt->error);
 }
 
 $stmt->bind_result($theId);
 $stmt->fetch();
 
 if ($theId !== intval($_GET[$field])) {
-  die('The requested '.$table.' does not exist!');
+    die('The requested '.$table.' does not exist!');
 }
 
 $stmt->free_result();
@@ -119,157 +113,147 @@ $stmt->close();
 
 // Get tId (for reply)
 if (!isset($tId)) {
-  $stmt = $conn->prepare('SELECT tId FROM reply WHERE rId = ?');
-  $stmt->bind_param("i",intval($_GET['rId']));
-  $result = $stmt->execute();
-  if (!$result) {
-    die('Query failed. '.$stmt->error);
-  }
+    $stmt = $conn->prepare('SELECT tId FROM reply WHERE rId = ?');
+    $stmt->bind_param('i', intval($_GET['rId']));
+    $result = $stmt->execute();
+    if (!$result) {
+        die('Query failed. '.$stmt->error);
+    }
 
-  $stmt->bind_result($tId);
-  $stmt->fetch();
+    $stmt->bind_result($tId);
+    $stmt->fetch();
 
-  $stmt->free_result();
-  $stmt->close();
+    $stmt->free_result();
+    $stmt->close();
 }
 
 // Check forum type then check permission accordingly
 $stmt = $conn->prepare('SELECT f.hId, t.fId FROM forum f JOIN thread t ON f.fId = t.fId WHERE t.tId = ?');
-$stmt->bind_param("i",intval($tId));
+$stmt->bind_param('i', intval($tId));
 $result = $stmt->execute();
 if (!$result) {
-	die('Query failed. '.$stmt->error);
+    die('Query failed. '.$stmt->error);
 }
 
-$stmt->bind_result($hId,$fId);
+$stmt->bind_result($hId, $fId);
 $stmt->fetch();
 
 $stmt->free_result();
 $stmt->close();
 
-if ($hId === NULL) {
+if ($hId === null) {
 
   // Check for EI permission
-  if (!havePermission(session_id(),"EI")) {
-    die('You do not have permission to perform this action!');
-  }
-
+    if (!havePermission(session_id(), 'EI')) {
+        die('You do not have permission to perform this action!');
+    }
 } else {
 
   // Check for EH or EAH permission
-  if (!havePermission(session_id(),"EH") AND !havePermission(session_id(),"EAH")) {
-    die('You do not have permission to perform this action!');
-  }
-
-  // If user only have EH permission
-  if (havePermission(session_id(),"EH") AND !havePermission(session_id(),"EAH")) {
-
-    // Check if the user's house and forum's house match
-    if (getUserHId(session_id()) !== $hId) {
-      die('You do not have permission to perform this action!');
+    if (!havePermission(session_id(), 'EH') and !havePermission(session_id(), 'EAH')) {
+        die('You do not have permission to perform this action!');
     }
 
-  }
+    // If user only have EH permission
+    if (havePermission(session_id(), 'EH') and !havePermission(session_id(), 'EAH')) {
 
+    // Check if the user's house and forum's house match
+        if (getUserHId(session_id()) !== $hId) {
+            die('You do not have permission to perform this action!');
+        }
+    }
 }
 
 // Check if form is submitted
 if ($_POST['submit'] == 'submit') {
 
   // Form submitted, process form
-  if (isset($_GET['tId'])) {
+    if (isset($_GET['tId'])) {
 
     // Check if all the fields are filled in
-    if ((strlen($_POST['tTitle']) < 1) OR (strlen($_POST['tContent']) < 1)) {
-      die('Please fill in all the fields!');
-    }
+        if ((strlen($_POST['tTitle']) < 1) or (strlen($_POST['tContent']) < 1)) {
+            die('Please fill in all the fields!');
+        }
 
-    // Check field constraint
-    if (strlen($_POST['tTitle']) > 40) {
-      die('Please do not enter more than 40 characters for the title!');
-    }
-    if (strlen($_POST['tContent']) > 65535) {
-      die('Please do not enter more than 65,535 characters for the content!');
-    }
+        // Check field constraint
+        if (strlen($_POST['tTitle']) > 40) {
+            die('Please do not enter more than 40 characters for the title!');
+        }
+        if (strlen($_POST['tContent']) > 65535) {
+            die('Please do not enter more than 65,535 characters for the content!');
+        }
 
-    // Strip html tags
-    $title = strip_tags($_POST['tTitle']);
-    $content = strip_tags($_POST['tContent']);
+        // Strip html tags
+        $title = strip_tags($_POST['tTitle']);
+        $content = strip_tags($_POST['tContent']);
 
-    // Update database
-    $stmt = $conn->prepare('UPDATE thread SET tTitle = ?, tContent = ? WHERE tId = ?');
-    $stmt->bind_param("ssi",$title,$content,intval($_GET['tId']));
-    $result = $stmt->execute();
-    if (!$result) {
-      die('Query failed. '.$stmt->error);
-    }
+        // Update database
+        $stmt = $conn->prepare('UPDATE thread SET tTitle = ?, tContent = ? WHERE tId = ?');
+        $stmt->bind_param('ssi', $title, $content, intval($_GET['tId']));
+        $result = $stmt->execute();
+        if (!$result) {
+            die('Query failed. '.$stmt->error);
+        }
 
-    $stmt->free_result();
-    $stmt->close();
+        $stmt->free_result();
+        $stmt->close();
 
-    // Redirect to edited thread
-    // Cannot use header because some html have already been sent
-    ?>
+        // Redirect to edited thread
+        // Cannot use header because some html have already been sent ?>
     <script type="text/javascript">
       window.location = "viewthread.php?tId=<?php echo $_GET['tId']; ?>";
     </script>
     <?php
     die();
-
-  } elseif (isset($_GET['rId'])) {
+    } elseif (isset($_GET['rId'])) {
 
     // Check if reply is empty
-    if (strlen($_POST['reply']) < 1) {
-      die('The reply cannot be empty!');
-    }
+        if (strlen($_POST['reply']) < 1) {
+            die('The reply cannot be empty!');
+        }
 
-    // Check field constraint
-    if (strlen($_POST['reply']) > 65535) {
-      die('Please do not enter more than 65,535 characters for the reply!');
-    }
+        // Check field constraint
+        if (strlen($_POST['reply']) > 65535) {
+            die('Please do not enter more than 65,535 characters for the reply!');
+        }
 
-    // Strip html tags
-    $reply = strip_tags($_POST['reply']);
+        // Strip html tags
+        $reply = strip_tags($_POST['reply']);
 
-    // Update database
-    $stmt = $conn->prepare('UPDATE reply SET rContent = ? WHERE rId = ?');
-    $stmt->bind_param("si",$reply,intval($_GET['rId']));
-    $result = $stmt->execute();
-    if (!$result) {
-      die('Query failed. '.$stmt->error);
-    }
+        // Update database
+        $stmt = $conn->prepare('UPDATE reply SET rContent = ? WHERE rId = ?');
+        $stmt->bind_param('si', $reply, intval($_GET['rId']));
+        $result = $stmt->execute();
+        if (!$result) {
+            die('Query failed. '.$stmt->error);
+        }
 
-    $stmt->free_result();
-    $stmt->close();
+        $stmt->free_result();
+        $stmt->close();
 
-    // Redirect to edited thread
-    // Cannot use header because some html have already been sent
-    ?>
+        // Redirect to edited thread
+        // Cannot use header because some html have already been sent ?>
     <script type="text/javascript">
       window.location = "viewthread.php?tId=<?php echo $tId; ?>";
     </script>
     <?php
     die();
-
-  }
-
+    }
 } else {
 
   // Display form
-  if (isset($_GET['tId'])) {
+    if (isset($_GET['tId'])) {
 
     // Get thread title and content
-    $stmt = $conn->prepare('SELECT tTitle, tContent FROM thread WHERE tId = ?');
-    $stmt->bind_param("i",intval($_GET['tId']));
-    $result = $stmt->execute();
-    if (!$result) {
-      die('Query failed. '.$stmt->error);
-    }
+        $stmt = $conn->prepare('SELECT tTitle, tContent FROM thread WHERE tId = ?');
+        $stmt->bind_param('i', intval($_GET['tId']));
+        $result = $stmt->execute();
+        if (!$result) {
+            die('Query failed. '.$stmt->error);
+        }
 
-    $stmt->bind_result($tTitle,$tContent);
-    $stmt->fetch();
-
-    ?>
+        $stmt->bind_result($tTitle, $tContent);
+        $stmt->fetch(); ?>
 
     <div class="row">
     <form class="col s12 m12 l6" action="" method="post">
@@ -294,22 +278,19 @@ if ($_POST['submit'] == 'submit') {
     <?php
 
     $stmt->free_result();
-    $stmt->close();
-
-  } elseif (isset($_GET['rId'])) {
+        $stmt->close();
+    } elseif (isset($_GET['rId'])) {
 
     // Get reply content
-    $stmt = $conn->prepare('SELECT rContent FROM reply WHERE rId = ?');
-    $stmt->bind_param("i",intval($_GET['rId']));
-    $result = $stmt->execute();
-    if (!$result) {
-      die('Query failed. '.$stmt->error);
-    }
+        $stmt = $conn->prepare('SELECT rContent FROM reply WHERE rId = ?');
+        $stmt->bind_param('i', intval($_GET['rId']));
+        $result = $stmt->execute();
+        if (!$result) {
+            die('Query failed. '.$stmt->error);
+        }
 
-    $stmt->bind_result($rContent);
-    $stmt->fetch();
-
-    ?>
+        $stmt->bind_result($rContent);
+        $stmt->fetch(); ?>
 
     <div class="row">
       <form class="col s12 m12 l6" action="" method="post">
@@ -334,10 +315,8 @@ if ($_POST['submit'] == 'submit') {
     <?php
 
     $stmt->free_result();
-    $stmt->close();
-
-  }
-
+        $stmt->close();
+    }
 }
 
 ?>
