@@ -4,7 +4,7 @@
   "permission": "CREATE TABLE permission (permission CHAR(3) PRIMARY KEY, permissionDescription VARCHAR(100) NOT NULL) ENGINE=InnoDB;",
   "userGroup": "CREATE TABLE userGroup (userGroup CHAR(3) PRIMARY KEY, userGroupName varchar(50) NOT NULL, userGroupDescription VARCHAR(100)) ENGINE=InnoDB;",
   "userPermission": "CREATE TABLE userPermission (userGroup CHAR(3) NOT NULL, permission CHAR(3) NOT NULL, PRIMARY KEY (userGroup, permission), FOREIGN KEY (userGroup) REFERENCES userGroup(userGroup), FOREIGN KEY (permission) REFERENCES permission(permission)) ENGINE=InnoDB;",
-  "users": "CREATE TABLE users (studentId CHAR(7) PRIMARY KEY, userName VARCHAR(30) NOT NULL UNIQUE, hId CHAR(3) NOT NULL, userGroup CHAR(3) NOT NULL, hash VARCHAR(255) NOT NULL, FOREIGN KEY (hId) REFERENCES house(hId), FOREIGN KEY (userGroup) REFERENCES userGroup(userGroup)) ENGINE=InnoDB;",
+  "users": "CREATE TABLE users (studentId CHAR(7) PRIMARY KEY, userName VARCHAR(30) NOT NULL UNIQUE, hId CHAR(3) NOT NULL, userGroup CHAR(3) NOT NULL, hash VARCHAR(255) NOT NULL, email VARCHAR(100) UNIQUE, emailVerified INT(1) NOT NULL DEFAULT 0, FOREIGN KEY (hId) REFERENCES house(hId), FOREIGN KEY (userGroup) REFERENCES userGroup(userGroup)) ENGINE=InnoDB;",
   "userSetting": "CREATE TABLE userSetting (studentId CHAR(7) PRIMARY KEY, rowsPerPage INT(5) NOT NULL, avatarPic VARCHAR(200) NOT NULL, bgPic VARCHAR(200) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;",
   "globalSetting": "CREATE TABLE globalSetting (setting VARCHAR(30) NOT NULL, value TEXT NOT NULL, settingDescription VARCHAR(100)) ENGINE=InnoDB;",
   "loginRecord": "CREATE TABLE loginRecord (time int(10) PRIMARY KEY AUTO_INCREMENT, studentId char(7) NOT NULL, ip char(45) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;",
@@ -12,7 +12,8 @@
   "thread": "CREATE TABLE thread (tId INT(10) PRIMARY KEY, tTitle VARCHAR(40) NOT NULL, tContent TEXT NOT NULL, tTime INT(10) NOT NULL, fId CHAR(3) NOT NULL, studentId CHAR(7) NOT NULL, pin CHAR(1) DEFAULT '0', FOREIGN KEY (fId) REFERENCES forum(fId), FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;",
   "reply": "CREATE TABLE reply (rId INT(10) PRIMARY KEY, rContent TEXT NOT NULL, rTime INT(10) NOT NULL, tId INT(10) NOT NULL, studentId CHAR(7) NOT NULL, FOREIGN KEY (tId) REFERENCES thread(tId), FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;",
   "session": "CREATE TABLE session (sessionId CHAR(40) PRIMARY KEY, studentId CHAR(7) NOT NULL, lastActivity INT(10) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;",
-  "tfa":"CREATE TABLE tfa (studentId CHAR(7) PRIMARY KEY, tfaSecret VARCHAR(100) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;"
+  "tfa":"CREATE TABLE tfa (studentId CHAR(7) PRIMARY KEY, tfaSecret VARCHAR(100) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;",
+  "mailToken":"CREATE TABLE mailToken (token VARCHAR(100) PRIMARY KEY, action VARCHAR(20) NOT NULL, studentId CHAR(7) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;"
   },
   {
     "AGS": "Access global settings",

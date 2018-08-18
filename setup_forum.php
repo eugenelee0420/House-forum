@@ -18,7 +18,7 @@ if ($conn->affected_rows > 0) {
 if ($_POST['submit'] == 'submit') {
 
   // Get the houses
-    $sql = 'SELECT * FROM house';
+    $sql = 'SELECT hId, houseName FROM house';
     $result = $conn->query($sql);
     if (!$result) {
         die('Query failed. '.$conn->error);
@@ -78,7 +78,7 @@ if ($_POST['submit'] == 'submit') {
     }
 
     // Insert records
-    $stmt = $conn->prepare('INSERT INTO forum VALUES (?,?,?,?)');
+    $stmt = $conn->prepare('INSERT INTO forum (fId, fName, fDescription, hId) VALUES (?,?,?,?)');
 
     foreach ($houses as $row) {
         $stmt->bind_param('ssss', $_POST['hf_id_'.$row['id']], $_POST['hf_name_'.$row['id']], $_POST['hf_des_'.$row['id']], $row['id']);
@@ -90,7 +90,7 @@ if ($_POST['submit'] == 'submit') {
         $stmt->free_result();
     }
 
-    $stmt = $conn->prepare('INSERT INTO forum VALUES (?,?,?,NULL)');
+    $stmt = $conn->prepare('INSERT INTO forum (fId, fName, fDescription, hId) VALUES (?,?,?,NULL)');
     $stmt->bind_param('sss', $_POST['ihf_id'], $_POST['ihf_name'], $_POST['ihf_des']);
     $result = $stmt->execute();
     if (!$result) {
@@ -137,7 +137,7 @@ if ($_POST['submit'] == 'submit') {
       <?php
 
       // Grab house ID and names
-      $sql = 'SELECT * FROM house';
+      $sql = 'SELECT hId, houseName FROM house';
     $result = $conn->query($sql);
     if (!$result) {
         die('Query failed. '.$conn->error);

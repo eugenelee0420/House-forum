@@ -226,6 +226,36 @@ function echoGetUserGroupName($sessId)
     echo $return;
 }
 
+// Function to get user's email address
+function getUserEmail($sessId)
+{
+    global $conn;
+
+    $studentId = getStudentId($sessId);
+
+    $stmt = $conn->prepare('SELECT email FROM users WHERE studentId = ?');
+    $stmt->bind_param('s', $studentId);
+    $result = $stmt->execute();
+    if (!$result) {
+        die('Query failed. '.$stmt->error);
+    }
+
+    $stmt->bind_result($email);
+    $stmt->fetch();
+
+    return $email;
+
+    $stmt->free_result();
+    $stmt->close();
+}
+
+// Wrapper function to echo getUserEmail
+function echoGetUserEmail($sessId)
+{
+    $return = getUserEmail($sessId);
+    echo $return;
+}
+
 // Function to check if the current session have certain permission
 function havePermission($sessId, $perm)
 {
@@ -233,7 +263,7 @@ function havePermission($sessId, $perm)
 
     $userGroup = getUserGroup($sessId);
 
-    $stmt = $conn->prepare('SELECT * FROM userPermission WHERE userGroup = ? AND permission = ?');
+    $stmt = $conn->prepare('SELECT userGroup, permission FROM userPermission WHERE userGroup = ? AND permission = ?');
     $stmt->bind_param('ss', $userGroup, $perm);
     $result = $stmt->execute();
     if (!$result) {

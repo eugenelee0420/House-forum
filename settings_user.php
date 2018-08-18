@@ -2,6 +2,7 @@
 // User setting page, require login
 
 require 'functions.php';
+require 'mail.php';
 
 session_start();
 
@@ -93,6 +94,10 @@ if ($_POST['submit'] == 'submit') {
         die('Please do not enter more than 200 characters for background image link!');
     }
 
+    if (strlen($_POST['email']) > 100) {
+        die('Please do not enter more than 100 characters for email!');
+    }
+
     // Check if userName is used
     $stmt = $conn->prepare('SELECT studentId, userName FROM users WHERE userName = ?');
     $stmt->bind_param('s', $_POST['userName']);
@@ -154,6 +159,96 @@ if ($_POST['submit'] == 'submit') {
     // If width or height < 1
     if (($bgInfo[0] < 1) or ($bgInfo[1] < 1)) {
         die('Please input a valid image link for the background image!');
+    }
+
+    // Check if email changed
+    $email = getUserEmail(session_id());
+    if (($_POST['email'] !== $email) and (strlen($_POST['email']) > 0)) {
+
+        // Email changed
+        // Check for duplicates
+        $stmt = $conn->prepare('SELECT email FROM users WHERE email = ?');
+        $stmt->bind_param('s', $_POST['email']);
+        $result = $stmt->execute();
+        if (!$result) {
+            die('Query failed. '.$stmt->error);
+        }
+
+        $stmt->bind_result($qEmail);
+
+        while ($stmt->fetch()) {
+            if ($qEmail == $_POST['email']) {
+                die('The email address have already been used!');
+            }
+        }
+
+        $stmt->free_result();
+        $stmt->close();
+
+        $userName = getUserName(session_id());
+
+        // Send verification email
+        $token = bin2hex(openssl_random_pseudo_bytes(20));
+        $url = str_replace('settings_user.php', '', $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']);
+
+        $mail->addAddress($_POST['email'], $userName);
+        $mail->Subject = 'Verify Email';
+        $mail->isHTML(true);
+
+        $mail->Body =
+        '
+		<p>Dear '.$userName.' ('.$studentId.'),</p>
+		<p>You have recently updated your email address on House forum ('.$_SERVER['HTTP_HOST'].'), please verify your email addres by clicking the link below.</p>
+		<p><a href="http://'.$url.'actions.php?action=email_verify&token='.$token.'&email='.$_POST['email'].'">Verify Email</a></p>
+		<p>This email is generated automatically by the system. Please do not reply to this email.</p>
+		';
+        $mail->AltBody = 'Please verify your email by following this link: http://'.$url.'actions.php?action=email_verify&token='.$token.'&email='.$_POST['email'];
+
+        $result = $mail->send();
+        if (!$result) {
+            die('Mailer error. '.$mail->ErrorInfo);
+        }
+
+        // Store token
+        $stmt = $conn->prepare('INSERT INTO mailToken (token, action, studentId) VALUES (?,"verify",?)');
+        $stmt->bind_param('ss', $token, $studentId);
+        $result = $stmt->execute();
+        if (!$result) {
+            die('Query failed. '.$stmt->error);
+        }
+
+        $stmt->free_result();
+        $stmt->close();
+
+        // Set emailVerified to 0
+        $stmt = $conn->prepare('UPDATE users SET emailVerified = 0 WHERE studentId = ?');
+        $stmt->bind_param('s', $studentId);
+        $result = $stmt->execute();
+        if (!$result) {
+            die('Query failed. '.$stmt->error);
+        }
+
+        $stmt->free_result();
+        $stmt->close();
+
+        // Display toast ?>
+
+		<script>
+		Materialize.toast('Email address updated. Please check your email.', 4000);
+		</script>
+
+		<?php
+
+        // Update email address
+        $stmt = $conn->prepare('UPDATE users SET email = ? WHERE studentId = ?');
+        $stmt->bind_param('ss', $_POST['email'], $studentId);
+        $result = $stmt->execute();
+        if (!$result) {
+            die('Query failed. '.$stmt->error);
+        }
+
+        $stmt->free_result();
+        $stmt->close();
     }
 
     // Update database
@@ -276,6 +371,19 @@ $stmt->close();
       <label for="bgPic">Background picture</label>
     </div>
   </div>
+
+	<div class="row">
+		<div class="col s12">
+			Email address:
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="input-field col s12">
+			<input id="email" name="email" type="email" value="<?php echoGetUserEmail(session_id()); ?>">
+			<label for="email">Email address</label>
+		</div>
+	</div>
 
 	<div class="row">
 		<div class="col s12">

@@ -12,9 +12,11 @@ ICT SBA Project
 
 ## Minimum requirement
 
-* PHP 5.5.0
+* PHP 7.0.2
 * MySQL 4.1.13
 * Apache 2
+* OpenSSL
+* Sendmail (Follow [this guide](https://gist.github.com/adamstac/7462202) to install and configure Sendmail on Ubuntu)
 
 ### PHP modules
 
@@ -265,6 +267,8 @@ userName | varchar(30) | `NOT NULL`, `UNIQUE`
 hId | char(3) | `NOT NULL`, `FOREIGN KEY REFERENCES house(hId)`
 userGroup | char(3) | `NOT NULL`, `FOREIGN KEY REFERENCES userGroup(userGroup)`
 hash | varchar(255) | `NOT NULL`
+email | varchar(100) | `UNIQUE`
+emailVerified | int(1) | `NOT NULL`, `DEFAULT 0`
 
 SQL to create the table:
 
@@ -368,4 +372,20 @@ SQL to create the table:
 
 ```sql
 CREATE TABLE tfa (studentId CHAR(7) PRIMARY KEY, tfaSecret VARCHAR(100) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;
+```
+
+### `mailToken` table
+
+Used to store tokens for sent emails
+
+Field Name | Data Type (Size) | Constraints
+----- | ----- | -----
+token | varchar(100) | `PRIMARY KEY`
+action | varchar(20) | `NOT NULL`
+studentId | char(7) | `NOT NULL`, `FOREIGN KEY REFERENCES users(studentId)`
+
+SQL to create the table:
+
+```sql
+CREATE TABLE mailToken (token VARCHAR(100) PRIMARY KEY, action VARCHAR(20) NOT NULL, studentId CHAR(7) NOT NULL, FOREIGN KEY (studentId) REFERENCES users(studentId)) ENGINE=InnoDB;
 ```
