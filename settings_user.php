@@ -2,6 +2,7 @@
 // User setting page, require login
 
 require 'functions.php';
+require 'mail.php';
 
 session_start();
 
@@ -96,7 +97,7 @@ if ($_POST['submit'] == 'submit') {
     if (strlen($_POST['email']) > 100) {
         die('Please do not enter more than 100 characters for email!');
     }
-  
+
     // Check if userName is used
     $stmt = $conn->prepare('SELECT studentId, userName FROM users WHERE userName = ?');
     $stmt->bind_param('s', $_POST['userName']);
@@ -190,8 +191,6 @@ if ($_POST['submit'] == 'submit') {
         $token = bin2hex(openssl_random_pseudo_bytes(20));
         $url = str_replace('settings_user.php', '', $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']);
 
-        $mail->isSendMail();
-        $mail->setFrom('no-reply@'.$_SERVER['HTTP_HOST']);
         $mail->addAddress($_POST['email'], $userName);
         $mail->Subject = 'Verify Email';
         $mail->isHTML(true);
